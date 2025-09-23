@@ -21,6 +21,7 @@ const badgeVariants = cva(
         bad: "border-transparent bg-status-bad text-white hover:bg-status-bad/80",
         normal: "border-transparent bg-status-normal text-white hover:bg-status-normal/80",
         enb: "border-transparent bg-status-enb text-white hover:bg-status-enb/80 shadow-glow animate-pulse-slow",
+        frozen: "border-transparent bg-status-frozen text-white hover:bg-status-frozen/80 shadow-glow animate-pulse-slow",
       },
     },
     defaultVariants: {

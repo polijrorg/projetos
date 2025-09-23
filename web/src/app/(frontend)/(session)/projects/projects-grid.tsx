@@ -22,7 +22,8 @@ import {
   Edit,
   MoreHorizontal,
   Pause,
-  Play
+  Play,
+  Snowflake
 } from "lucide-react";
 import { fi } from "date-fns/locale";
 import { Progress } from "@/components/ui/progress";
@@ -156,28 +157,25 @@ const router = useRouter()
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between gap-2">
               <CardTitle className="text-lg font-semibold mb-1">{p.name}</CardTitle>
+                {p.isFrozen ? (
+                    <Badge variant="frozen" className="flex items-center gap-1">
+                      {}
+                      {<Snowflake className="h-4 w-4" />}
+                      Congelado
+                    </Badge>
+                  ) : (
                     <Badge variant={getStatusVariant(p.status)} className="flex items-center gap-1">
                       {getStatusIcon(p.status)}
                       {p.status}
                     </Badge>
+                  )}
               </div>
             <p className="text-sm text-muted-foreground">Cliente: {p.client}</p>
-
-               {p.isENBCandidate && (
-                  <Badge variant="enb" className="w-fit mt-2">
-                    <Star className="h-3 w-3 mr-1" />
-                    Possível ENB
-                  </Badge>
-                )}
                 
-              {p.isFrozen && (
-                  <Badge variant="outline" className="w-fit mt-1">
-                    Congelado
-                  </Badge>
-                )}
+
           </CardHeader>
 
-          <CardContent className="pt-0 space-y-2">
+          <CardContent className="pt-0 space-y-2 justify-between">
             
               <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                   {p.shortDescription}
