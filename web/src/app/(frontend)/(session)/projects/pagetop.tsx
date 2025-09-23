@@ -29,7 +29,7 @@ export default function PageTop({
         </p>
       </div>
 
-      <Button onClick={onNewProject} variant="hero">
+      <Button className="cursor-pointer" onClick={onNewProject} variant="hero">
         <Plus className="h-4 w-4 mr-2" />
         Novo Projeto
       </Button>

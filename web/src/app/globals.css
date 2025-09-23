@@ -172,7 +172,9 @@ body {
   --color-status-critical: hsl(0, 84%, 60%);    /* Red */
   --color-status-bad: hsl(25, 95%, 53%);        /* Orange */
   --color-status-normal: var(--color-neutral-400);
-  --color-status-enb: hsl(142, 76%, 36%); 
+  --color-status-enb: hsl(142, 76%, 36%);
+  --color-gradient-primary: var(--gradient-primary);
+  
 }
 
 :root {

@@ -73,7 +73,7 @@ export default function ProjectsGrid({
 const router = useRouter()                  
 
   const handleViewProject = (project: Project) => {
-    router.push(`/projects/${project.name}`)     
+    router.push(`/projects/${project.id}`)     
   }
 
 
@@ -227,7 +227,7 @@ const router = useRouter()
           </CardContent>
 
           <CardFooter className="mt-auto pt-0">
-            <Button className="w-full" variant="hero" onClick={() => handleViewProject(p)}>
+            <Button className="w-full cursor-pointer" variant="hero" onClick={() => handleViewProject(p)}>
               Ver Projeto Completo
             </Button>
           </CardFooter>
