@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -25,8 +26,8 @@ body {
   overflow-x: hidden;
 }
 ::selection {
-  color: var(--color-pink-100);
-  background-color: var(--color-pink-500);
+  color: #FFFFFF;
+  background-color: hsl(var(--poli-blue) / 0.9);
 }
 
 @utility button-md {
@@ -203,7 +204,19 @@ body {
   --sidebar-ring: oklch(0.708 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --poli-blue: 202 100% 33%;      /* #014c97 - Azul da Poli */
+  --poli-yellow: 42 95% 57%;      /* #faa928 - Amarelo da Poli */
+  --poli-white: 0 0% 100%;        /* #ffffff */
+  --primary: var(--poli-blue);           /* Botão padrão = Azul Poli */
+  --primary-foreground: var(--poli-white);
+  --secondary: var(--poli-yellow);       /* Botão secundário = Amarelo Poli */
+  --secondary-foreground: var(--neutral-800);
+  --success: 142 76% 36%;               /* Verde para botões de sucesso */
+  --destructive: 0 84% 60%;             /* Vermelho para botões destrutivos */
+  --gradient-primary: linear-gradient(135deg, hsl(var(--poli-blue)), hsl(var(--poli-blue) / 0.8));
+
 }
+
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -238,3 +251,15 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+.bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+
+.bg-gradient-secondary {
+  background-image: var(--gradient-secondary);
+}
+
+
+
+
