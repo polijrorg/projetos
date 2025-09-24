@@ -20,15 +20,14 @@ import { ptBR } from "date-fns/locale";
 import { differenceInDays, isAfter } from "date-fns";
 import { useRouter } from "next/navigation";
 
-// Se você já tem esse componente, mantenha o import real.
-// Aqui fica como placeholder para não quebrar:
+
 const ProjectBacklog = ({ projectId, sprintCount }: { projectId: string; sprintCount: number }) => (
   <div className="p-4 border rounded-lg text-sm text-muted-foreground">
     Backlog do projeto {projectId} — {sprintCount} sprints (placeholder)
   </div>
 );
 
-// Helpers mínimos para não quebrar:
+
 const getPriorityVariant = (priority: TaskPriority) => {
   switch (priority) {
     case "Alta":
@@ -43,7 +42,7 @@ const getPriorityVariant = (priority: TaskPriority) => {
 };
 
 const getTaskStatusIcon = (status: string) => {
-  // ajuste conforme seu enum real
+
   if (status === "done") return <CheckCircle2 className="h-4 w-4 text-green-500" />;
   if (status === "doing") return <div className="h-2 w-2 rounded-full bg-yellow-500" />;
   return <div className="h-2 w-2 rounded-full bg-muted-foreground" />;
@@ -96,16 +95,16 @@ export default function PageContent({ project }: Props) {
     return Math.min(Math.max((elapsed / total) * 100, 0), 100);
   };
 
-  // placeholders simples (substitua pela sua lógica/diálogos reais)
+  
   const handleCreateSprint = () => {
     setIsSprintDialogOpen(true);
-    // ... abra modal / salve estado
+
   };
 
   const handleCreateTask = (sprint: Sprint) => {
     setSelectedSprint(sprint);
     setIsTaskDialogOpen(true);
-    // ... abra modal / salve estado
+
   };
 
   return (

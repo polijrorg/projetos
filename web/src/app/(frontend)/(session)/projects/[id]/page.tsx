@@ -3,12 +3,10 @@
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { loadProjects } from "@/utils/storage";
 import { mockProjects } from "@/data/mockData";
 import Header from "./pageheader";
 import PageContent from "./pagecontent";
-
-
+import { loadProjects } from "@/utils/storage/storage";
 
 export default function ProjectPage() {
   const { id } = useParams() as { id: string };
@@ -32,7 +30,7 @@ export default function ProjectPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header project={project} onBack={() => router.push("/projects")} />
+      <Header project={project} onBack={() => router.push("/projetos")} />
       <PageContent project={project} />
     </div>
   );

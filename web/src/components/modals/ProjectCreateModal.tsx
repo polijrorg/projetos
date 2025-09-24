@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Project, MemberRole } from "@/types";
-import { saveProjects, loadProjects } from "@/utils/storage";
+import { saveProjects, loadProjects } from "@/utils/storage/storage";
 import { Calendar } from "../ui/calendar";
 
 interface ProjectCreateModalProps {

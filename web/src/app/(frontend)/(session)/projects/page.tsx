@@ -3,7 +3,7 @@
 import { useState } from "react";
 import PageTop from "./pagetop"; 
 import { ProjectCreateModal } from "@/components/modals/ProjectCreateModal";
-import { loadProjects } from "@/utils/storage";
+import { loadProjects } from "@/utils/storage/storage";
 import ProjectsGrid from "./projects-grid";
 import { Project } from "@/types";
 
