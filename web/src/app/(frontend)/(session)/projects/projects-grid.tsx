@@ -28,6 +28,7 @@ import {
 import { fi } from "date-fns/locale";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
+import { calculateProgress } from "@/utils/projects/project-metrics";
 
 
 
@@ -76,12 +77,6 @@ const router = useRouter()
     router.push(`/projects/${project.id}`)     
   }
 
-
-    const calculateProgress = (project: Project) => {
-    const total = differenceInDays(project.plannedEndDate, project.startDate);
-    const elapsed = differenceInDays(new Date(), project.startDate);
-    return Math.min(Math.max((elapsed / total) * 100, 0), 100);
-  };
 
 
   const [projects, setProjects] = useState<Project[]>(projectsProp || []);

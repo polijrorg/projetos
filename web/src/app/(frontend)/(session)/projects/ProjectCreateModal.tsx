@@ -11,7 +11,7 @@ import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Project, MemberRole } from "@/types";
 import { saveProjects, loadProjects } from "@/utils/storage/storage";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "../../../../components/ui/calendar";
 
 interface ProjectCreateModalProps {
   isOpen: boolean;
@@ -289,7 +289,7 @@ export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: Projec
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button type="button" variant="cancel" onClick={onClose} className="flex-1">
               Cancelar
             </Button>
             <Button variant="hero" type="submit" className="flex-1">

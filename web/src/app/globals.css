@@ -174,6 +174,9 @@ body {
   --color-status-normal: var(--color-neutral-400);
   --color-status-enb: hsl(142, 76%, 36%);
   --color-gradient-primary: var(--gradient-primary);
+  --color-gradient-secondary: var(--gradient-secondary);
+  --color-gradient-secondary-3: var(--gradient-secondary-3);
+  --color-gradient-secondary-glass: var(--gradient-secondary-glass);
   
 }
 
@@ -220,6 +223,46 @@ body {
   --success: 142 76% 36%;               /* Verde para botões de sucesso */
   --destructive: 0 84% 60%;             /* Vermelho para botões destrutivos */
   --gradient-primary: linear-gradient(135deg, hsl(var(--poli-blue)), hsl(var(--poli-blue) / 0.8));
+  --gradient-yellow: linear-gradient(
+    135deg,
+    hsl(var(--poli-yellow-light) / 0.95) 0%,
+    hsl(var(--poli-yellow) / 0.98) 55%,
+    hsl(var(--poli-yellow-dark) / 1) 100%
+  );
+
+  --gradient-secondary-glass: linear-gradient(
+    135deg,
+    hsl(var(--poli-yellow) / 0.35),
+    hsl(var(--poli-blue) / 0.35)
+  );
+
+    /* Opção A — Lemon clean */
+  --yellow-a1: 48 100% 55%; /* #FFD538 */
+  --yellow-a2: 52 100% 65%; /* #FFE766 */
+  --gradient-yellow-a: linear-gradient(
+    135deg,
+    hsl(var(--yellow-a1)),
+    hsl(var(--yellow-a2))
+  );
+
+  /* Opção B — Gold suave */
+  --yellow-b1: 48 100% 45%; /* #E6B800 */
+  --yellow-b2: 48 100% 55%; /* #FFD54D */
+  --gradient-yellow-b: linear-gradient(
+    135deg,
+    hsl(var(--yellow-b1)),
+    hsl(var(--yellow-b2))
+  );
+
+  /* Opção C — Butter pastel */
+  --yellow-c1: 50 100% 70%; /* #FFF07A */
+  --yellow-c2: 54 100% 78%; /* #FFF6A6 */
+  --gradient-yellow-c: linear-gradient(
+    135deg,
+    hsl(var(--yellow-c1)),
+    hsl(var(--yellow-c2))
+  );
+  
   --status-critical: 0 84% 60%;    /* Red */
   --status-bad: 25 95% 53%;        /* Orange */
   --status-normal: var(--neutral-400);
@@ -266,10 +309,11 @@ body {
   background-image: var(--gradient-primary);
 }
 
-.bg-gradient-secondary {
-  background-image: var(--gradient-secondary);
+.bg-gradient-secondary-glass {
+  background-image: var(--gradient-secondary-glass);
 }
 
+.btn-yellow-b { background: var(--gradient-yellow-b); }
 
 
 

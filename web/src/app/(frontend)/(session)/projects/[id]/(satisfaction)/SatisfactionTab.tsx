@@ -20,14 +20,15 @@ export default function SatisfactionTab({ project }: { project: Project }) {
           <Button
             variant="outline"
             onClick={() => router.push(`/projeto/${project.id}/nps`)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
           >
             <TrendingUp className="h-4 w-4" />
             Coletar NPS
           </Button>
           <Button
             onClick={() => router.push(`/projeto/${project.id}/satisfacao`)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
+            variant="hero"
           >
             <MessageSquare className="h-4 w-4" />
             Ver Respostas
@@ -65,6 +66,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                         variant="outline"
                         size="sm"
                         onClick={() => router.push(`/projeto/${project.id}/sprint/${sprint.number}/csat`)}
+                        className="cursor-pointer"
                       >
                         Coletar CSAT
                       </Button>
@@ -94,7 +96,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="mt-4"
+                    className="mt-4 cursor-pointer"
                     onClick={() => router.push(`/projeto/${project.id}/satisfacao`)}
                   >
                     Ver Detalhes
@@ -105,7 +107,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                   <div className="text-muted-foreground mb-4">
                     NPS ainda não coletado
                   </div>
-                  <Button onClick={() => router.push(`/projeto/${project.id}/nps`)}>
+                  <Button className="cursor-pointer" onClick={() => router.push(`/projeto/${project.id}/nps`)}>
                     Coletar NPS
                   </Button>
                 </div>

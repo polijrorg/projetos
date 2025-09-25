@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import type { Project, Sprint, TaskPriority, TaskType } from "@/types";
 import SprintList from "./SprintList";
+import SprintDialog, { SprintInput } from "./SprintDialog";
+import TaskDialog, { TaskInput } from "./TaskDialog";
 
 export default function SprintsTab({ project }: { project: Project }) {
   const [isSprintDialogOpen, setIsSprintDialogOpen] = useState(false);
@@ -15,6 +17,17 @@ export default function SprintsTab({ project }: { project: Project }) {
   const handleCreateTask = (sprint: Sprint) => {
     setSelectedSprint(sprint);
     setIsTaskDialogOpen(true);
+  };
+
+   const onSubmitSprint = (data: SprintInput) => {
+
+    console.log("Sprint criada:", data);
+  };
+
+  const onSubmitTask = (data: TaskInput) => {
+    if (!selectedSprint) return;
+
+    console.log(`Task criada na sprint ${selectedSprint.number}:`, data);
   };
 
   return (
@@ -29,7 +42,19 @@ export default function SprintsTab({ project }: { project: Project }) {
 
       <SprintList project={project} onCreateTask={handleCreateTask} />
 
-      {/* Dialogs/Sheets podem ser adicionados aqui */}
+            <SprintDialog
+        open={isSprintDialogOpen}
+        onOpenChange={setIsSprintDialogOpen}
+        onSubmit={onSubmitSprint}
+      />
+
+      <TaskDialog
+        open={isTaskDialogOpen}
+        onOpenChange={setIsTaskDialogOpen}
+        onSubmit={onSubmitTask}
+        project={project}
+        sprint={selectedSprint}
+      />
     </div>
   );
 }
