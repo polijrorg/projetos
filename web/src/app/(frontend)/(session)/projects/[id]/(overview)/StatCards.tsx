@@ -5,7 +5,7 @@ import { Calendar, CheckCircle2, Target, Users } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { Project } from "@/types";
-import { calculateDelay } from "@/utils/projects/project-metrics";
+import { calculateDelay, calculateITIP, calculateRealITIP } from "@/utils/projects/project-metrics";
 
 export default function StatCards({ project }: { project: Project }) {
   return (
@@ -58,6 +58,19 @@ export default function StatCards({ project }: { project: Project }) {
             {calculateDelay(project) > 0 ? `${calculateDelay(project)} dias` : "No prazo"}
           </p>
         </CardContent>
+      </Card>
+
+      <Card>
+         <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">ITIP / ITIP Real</span>
+          </div>
+          <p className="text-lg font-semibold">
+            R${calculateITIP(project)} / R${calculateRealITIP(project)}
+          </p>
+        </CardContent>
+
       </Card>
     </div>
   );

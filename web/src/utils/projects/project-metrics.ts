@@ -1,4 +1,4 @@
-import { differenceInDays, isAfter } from "date-fns";
+import { differenceInDays, differenceInWeeks, isAfter } from "date-fns";
 import type { Project } from "@/types";
 
 export const calculateDelay = (project: Project) => {
@@ -21,3 +21,15 @@ export const calculateCSATCollectionRate = (project: Project) => {
   const withCsat = project.sprints.filter(s => s.csatResponses && s.csatResponses.length > 0).length;
   return Math.round((withCsat / project.sprints.length) * 100);
 };
+
+export const calculateITIP = (project: Project) => {
+  if (!project.analysts.length || !project.sprints.length || !project.price) return 0;
+  const itip = project.price /(project.analysts.length * differenceInWeeks(project.plannedEndDate, project.startDate));
+  return itip;
+}
+
+export const calculateRealITIP = (project: Project) => {
+  if (!project.analysts.length || !project.sprints.length || !project.price) return 0;
+  const realItip = project.price / (project.analysts.length * project.sprints.length * 2);
+  return realItip;
+}

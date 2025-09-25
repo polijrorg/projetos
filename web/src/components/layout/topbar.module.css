@@ -57,9 +57,10 @@
 }
 
 .link:hover {
-  background-color: #fabb29;
+  
+  background-image: var(--gradient-secondary-glass);
 }
 
 .active {
-  background-color: #fabb29;
+  background-image: var(--gradient-secondary-glass);
 }

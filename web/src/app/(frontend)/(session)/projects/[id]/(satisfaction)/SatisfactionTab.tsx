@@ -20,7 +20,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
           <Button
             variant="outline"
             onClick={() => router.push(`/projeto/${project.id}/nps`)}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer hover:bg-poli-yellow"
           >
             <TrendingUp className="h-4 w-4" />
             Coletar NPS
@@ -66,7 +66,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                         variant="outline"
                         size="sm"
                         onClick={() => router.push(`/projeto/${project.id}/sprint/${sprint.number}/csat`)}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:bg-poli-blue hover:text-white"
                       >
                         Coletar CSAT
                       </Button>
@@ -107,7 +107,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                   <div className="text-muted-foreground mb-4">
                     NPS ainda não coletado
                   </div>
-                  <Button className="cursor-pointer" onClick={() => router.push(`/projeto/${project.id}/nps`)}>
+                  <Button className="cursor-pointer hover:bg-poli-yellow" onClick={() => router.push(`/projeto/${project.id}/nps`)}>
                     Coletar NPS
                   </Button>
                 </div>
