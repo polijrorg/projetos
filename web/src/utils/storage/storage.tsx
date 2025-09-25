@@ -135,3 +135,16 @@ export const loadNPSResponses = (): NPSResponse[] => {
   const stored = localStorage.getItem(STORAGE_KEYS.NPS_RESPONSES);
   return stored ? JSON.parse(stored) : [];
 };
+
+export const updateProjectStatus = (projectId: string, status?: string) => {
+  const projects = loadProjects();
+  const projectIndex = projects.findIndex(p => p.id === projectId);
+    if (projectIndex === -1) {
+    throw new Error(`Projeto não encontrado: ${projectId}`);
+  }
+    if (status) {
+      projects[projectIndex].status = status as any;
+    }
+    saveProjects(projects);
+    return projects[projectIndex];
+};

@@ -22,7 +22,7 @@ export default function ProjectPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Projeto não encontrado</h1>
-          <Button onClick={() => router.push("/projetos")}>Voltar para Projetos</Button>
+          <Button onClick={() => router.push("/projects")}>Voltar para Projetos</Button>
         </div>
       </div>
     );

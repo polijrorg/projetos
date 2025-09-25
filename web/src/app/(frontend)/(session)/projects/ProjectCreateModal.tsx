@@ -58,7 +58,6 @@ export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: Projec
       startDate: formData.startDate,
       plannedEndDate: formData.endDate,
       status: "Normal",
-      isFrozen: false,
       price: formData.price ? parseFloat(formData.price) : undefined,
       isContracted: true,
       analysts: formData.analysts

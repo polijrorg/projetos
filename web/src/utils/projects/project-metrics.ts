@@ -2,7 +2,7 @@ import { differenceInDays, differenceInWeeks, isAfter } from "date-fns";
 import type { Project } from "@/types";
 
 export const calculateDelay = (project: Project) => {
-  if (project.isFrozen) return 0;
+  if (project.status === 'Congelado') return 0;
   const today = new Date();
   if (isAfter(today, project.plannedEndDate)) {
     return differenceInDays(today, project.plannedEndDate);
@@ -25,11 +25,12 @@ export const calculateCSATCollectionRate = (project: Project) => {
 export const calculateITIP = (project: Project) => {
   if (!project.analysts.length || !project.sprints.length || !project.price) return 0;
   const itip = project.price /(project.analysts.length * differenceInWeeks(project.plannedEndDate, project.startDate));
-  return itip;
+  return Number(itip.toFixed(2));
 }
 
 export const calculateRealITIP = (project: Project) => {
   if (!project.analysts.length || !project.sprints.length || !project.price) return 0;
   const realItip = project.price / (project.analysts.length * project.sprints.length * 2);
-  return realItip;
+  return Number(realItip.toFixed(2));
 }
+

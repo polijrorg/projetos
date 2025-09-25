@@ -9,7 +9,7 @@ export type AllowedRoutes = {
 
 // Main application types for Poli Júnior project management
 
-export type ProjectStatus = 'Crítica' | 'Ruim' | 'Normal' | 'Possível ENB';
+export type ProjectStatus = 'Crítica' | 'Ruim' | 'Normal' | 'Possível ENB' | 'Congelado' | 'Finalizado';
 
 export type TaskPriority = 'Alta' | 'Média' | 'Baixa';
 export type TaskType = 'Front' | 'Back';
@@ -27,7 +27,6 @@ export interface Project {
   plannedEndDate: Date;
   actualEndDate?: Date;
   status: ProjectStatus;
-  isFrozen: boolean;
   price?: number;
   isContracted: boolean;
   

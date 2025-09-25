@@ -172,12 +172,14 @@ body {
   --color-status-critical: hsl(0, 84%, 60%);    /* Red */
   --color-status-bad: hsl(25, 95%, 53%);        /* Orange */
   --color-status-normal: var(--color-neutral-400);
-  --color-status-enb: hsl(142, 76%, 36%);
+  --color-status-enb: var(--status-enb);
   --color-gradient-primary: var(--gradient-primary);
   --color-gradient-secondary-glass: var(--gradient-secondary-glass);
   --color-gradient-yellow-b: var(--gradient-yellow-b);
   --color-poli-blue: hsl(var(--poli-blue));      /* #014c97 - Azul da Poli */
   --color-poli-yellow: hsl(var(--poli-yellow));  /* #faa928 - Amarelo da Poli */
+  --color-status-done: hsl(142, 76%, 36%) ;
+  --color-status-frozen: var(--status-frozen);
   
 }
 
@@ -241,7 +243,9 @@ body {
   --status-critical: 0 84% 60%;    /* Red */
   --status-bad: 25 95% 53%;        /* Orange */
   --status-normal: var(--neutral-400);
-  --status-enb: 142 76% 36%;     
+  --status-done: 142 76% 36%;     
+  --status-enb: #A88CCC;
+  --status-frozen: 	#71acd6;
 
 }
 

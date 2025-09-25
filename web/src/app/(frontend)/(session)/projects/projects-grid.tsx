@@ -23,12 +23,15 @@ import {
   MoreHorizontal,
   Pause,
   Play,
-  Snowflake
+  Snowflake,
+  CheckCircle2
 } from "lucide-react";
 import { fi } from "date-fns/locale";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
 import { calculateProgress } from "@/utils/projects/project-metrics";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 
 
 
@@ -56,6 +59,8 @@ export default function ProjectsGrid({
         case 'Ruim': return 'bad';
         case 'Normal': return 'normal';
         case 'Possível ENB': return 'enb';
+        case 'Congelado': return 'frozen';
+        case 'Finalizado': return 'done';
         default: return 'normal';
       }
   
@@ -67,6 +72,8 @@ export default function ProjectsGrid({
       case 'Ruim': return <TrendingUp className="h-4 w-4" />;
       case 'Normal': return <Clock className="h-4 w-4" />;
       case 'Possível ENB': return <Star className="h-4 w-4" />;
+      case 'Congelado': return <Snowflake className="h-4 w-4" />;
+      case 'Finalizado': return <CheckCircle2 className="h-4 w-4" />;
       default: return <Clock className="h-4 w-4" />;
     }
   };
@@ -141,6 +148,34 @@ const router = useRouter()
 
 
   return (
+<div>
+      <div>
+
+       <Tabs className="mb-6" value={statusFilter} onValueChange={setStatusFilter}>
+            <TabsList>
+              <TabsTrigger value="all">Todos</TabsTrigger>
+              <TabsTrigger value="Normal">Normal</TabsTrigger>
+              <TabsTrigger value="Crítica">Crítica</TabsTrigger>
+              <TabsTrigger value="Ruim">Ruim</TabsTrigger>
+              <TabsTrigger value="Possível ENB">Possível ENB</TabsTrigger>
+              <TabsTrigger value="Congelado">Congelados</TabsTrigger>
+              <TabsTrigger value="Finalizado">Finalizados</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar projetos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          
+
+          </div>
+        </div>
     <div
       className={cn(
         "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
@@ -152,18 +187,10 @@ const router = useRouter()
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between gap-2">
               <CardTitle className="text-lg font-semibold mb-1">{p.name}</CardTitle>
-                {p.isFrozen ? (
-                    <Badge variant="frozen" className="flex items-center gap-1">
-                      {}
-                      {<Snowflake className="h-4 w-4" />}
-                      Congelado
-                    </Badge>
-                  ) : (
                     <Badge variant={getStatusVariant(p.status)} className="flex items-center gap-1">
                       {getStatusIcon(p.status)}
                       {p.status}
                     </Badge>
-                  )}
               </div>
             <p className="text-sm text-muted-foreground">Cliente: {p.client}</p>
                 
@@ -229,7 +256,7 @@ const router = useRouter()
         </Card>
       ))}
     </div>
-    
+ </div>    
   )
 }
 

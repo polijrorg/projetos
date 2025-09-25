@@ -15,7 +15,6 @@ export const mockProjects: Project[] = [
     startDate: subDays(now, 45),
     plannedEndDate: addDays(now, 15),
     status: 'Normal',
-    isFrozen: false,
     price: 15000,
     isContracted: true,
     analysts: [
@@ -62,8 +61,7 @@ export const mockProjects: Project[] = [
     shortDescription: 'Dashboard administrativo para gestão de e-commerce',
     startDate: subDays(now, 30),
     plannedEndDate: addDays(now, 30),
-    status: 'Crítica',
-    isFrozen: false,
+    status: 'Congelado',
     price: 25000,
     isContracted: true,
     analysts: [
@@ -102,7 +100,6 @@ export const mockProjects: Project[] = [
     plannedEndDate: subDays(now, 5),
     actualEndDate: subDays(now, 2),
     status: 'Possível ENB',
-    isFrozen: false,
     price: 35000,
     isContracted: true,
     analysts: [
