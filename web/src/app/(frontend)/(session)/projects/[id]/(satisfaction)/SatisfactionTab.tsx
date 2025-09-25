@@ -19,14 +19,14 @@ export default function SatisfactionTab({ project }: { project: Project }) {
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => router.push(`/projeto/${project.id}/nps`)}
+            onClick={() => router.push(`/projects/${project.id}/nps`)}
             className="flex items-center gap-2 cursor-pointer hover:bg-poli-yellow"
           >
             <TrendingUp className="h-4 w-4" />
             Coletar NPS
           </Button>
           <Button
-            onClick={() => router.push(`/projeto/${project.id}/satisfacao`)}
+            onClick={() => router.push(`/projects/${project.id}/satisfacao`)}
             className="flex items-center gap-2 cursor-pointer"
             variant="hero"
           >
@@ -65,7 +65,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => router.push(`/projeto/${project.id}/sprint/${sprint.number}/csat`)}
+                        onClick={() => router.push(`/projects/${project.id}/sprint/${sprint.number}/csat`)}
                         className="cursor-pointer hover:bg-poli-blue hover:text-white"
                       >
                         Coletar CSAT
@@ -97,7 +97,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                     variant="outline"
                     size="sm"
                     className="mt-4 cursor-pointer"
-                    onClick={() => router.push(`/projeto/${project.id}/satisfacao`)}
+                    onClick={() => router.push(`/projects/${project.id}/satisfacao`)}
                   >
                     Ver Detalhes
                   </Button>
@@ -107,7 +107,7 @@ export default function SatisfactionTab({ project }: { project: Project }) {
                   <div className="text-muted-foreground mb-4">
                     NPS ainda não coletado
                   </div>
-                  <Button className="cursor-pointer hover:bg-poli-yellow" onClick={() => router.push(`/projeto/${project.id}/nps`)}>
+                  <Button className="cursor-pointer hover:bg-poli-yellow" onClick={() => router.push(`/projects/${project.id}/nps`)}>
                     Coletar NPS
                   </Button>
                 </div>

@@ -21,8 +21,9 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
         hero: "bg-gradient-primary text-white hover:opacity-90 shadow-elevated border-0",
-        success: "bg-success text-success-foreground hover:bg-success/90 shadow-card",
+        success: "bg-status-done text-white hover:opacity-90 shadow-elevated border-0",
         cancel: "border border-input bg-background hover:bg-destructive/90 hover:text-accent-foreground hover:text-white",
+        npsNeutral: "bg-yellow-500 text-white hover:opacity-90 shadow-xs hover:bg-neutral-foreground/80",
       },
       size: {
         default: "h-12 px-6 py-3",

@@ -145,8 +145,8 @@ export interface NPSResponse {
   // Main NPS question (0-10 scale)
   npsScore: number;
   
-  // SDR field (for promoters)
-  sdrNotes?: string;
+  
+  pmNotes?: string;
   
   uniqueToken: string; // for public form access
 }

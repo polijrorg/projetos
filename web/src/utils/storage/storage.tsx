@@ -1,6 +1,6 @@
 // Local storage utilities for persisting data
-import { mockProjects } from "@/data/mockData";
 import { Project, Sprint, Task, CSATResponse, NPSResponse } from "@/types";
+import { mockProjects } from "@/data/mockData";
 
 const STORAGE_KEYS = {
   PROJECTS: 'poli_projects',
@@ -136,6 +136,7 @@ export const loadNPSResponses = (): NPSResponse[] => {
   return stored ? JSON.parse(stored) : [];
 };
 
+// Update project status and freeze state
 export const updateProjectStatus = (projectId: string, status?: string) => {
   const projects = loadProjects();
   const projectIndex = projects.findIndex(p => p.id === projectId);
