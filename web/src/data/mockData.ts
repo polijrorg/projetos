@@ -239,7 +239,7 @@ export const mockNPSResponses: NPSResponse[] = [
     missingFeatures: 'Nada significativo.',
     improvementSuggestions: 'Continuar com a mesma qualidade.',
     npsScore: 10,
-    sdrNotes: 'Cliente interessado em novos projetos.',
+    pmNotes: 'Cliente interessado em novos projetos.',
     uniqueToken: 'nps-token-1'
   }
 ];
