@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Local storage utilities for persisting data
 import { Project, Sprint, Task, CSATResponse, NPSResponse } from "@/types";
 import { mockProjects } from "@/data/mockData";

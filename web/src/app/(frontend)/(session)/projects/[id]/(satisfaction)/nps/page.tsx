@@ -157,13 +157,13 @@ const handleSubmit = (e: React.FormEvent) => {
                 <h3 className="font-semibold text-lg mb-4">Roteiro de Coleta</h3>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    "Boa tarde, {form.clientName || project.client}! Sou o representante da área de satisfação do cliente na Poli Júnior."
+                    Boa tarde, {form.clientName || project.client}! Sou o representante da área de satisfação do cliente na Poli Júnior.
                   </p>
                   <p>
-                    "Estou entrando em contato para coletar percepções a respeito da sua experiência com o {project.name}. Você teria 2 minutos agora para conversar?"
+                    Estou entrando em contato para coletar percepções a respeito da sua experiência com o {project.name}. Você teria 2 minutos agora para conversar?
                   </p>
                   <p>
-                    "Perfeito! Em primeiro lugar gostaria de ouvir suas percepções em relação ao projeto."
+                    Perfeito! Em primeiro lugar gostaria de ouvir suas percepções em relação ao projeto.
                   </p>
                 </div>
               </div>
@@ -339,7 +339,7 @@ const handleSubmit = (e: React.FormEvent) => {
 
               <div className="bg-muted/30 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  "Ótimo, muito obrigado pela atenção, {form.clientName || project.client}, vamos encaminhar em breve o Termo de Encerramento de Projeto, qualquer dúvida estamos à disposição!"
+                  Ótimo, muito obrigado pela atenção, {form.clientName || project.client}, vamos encaminhar em breve o Termo de Encerramento de Projeto, qualquer dúvida estamos à disposição!
                 </p>
               </div>
 

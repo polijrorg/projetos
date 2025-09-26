@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Role } from '@/generated/prisma';
 
 export type AllowedRoutes = { 

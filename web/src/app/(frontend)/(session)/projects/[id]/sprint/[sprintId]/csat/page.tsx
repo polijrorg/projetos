@@ -124,13 +124,13 @@ export default function CSATForm() {
               <div className="bg-muted/30 p-6 rounded-lg">
                 <h3 className="font-semibold text-lg mb-4">Introdução</h3>
                 <p className="text-muted-foreground mb-4">
-                  "Olá {form.clientName || project.client}! Boa tarde!
+                  Olá {form.clientName || project.client}! Boa tarde!
                 </p>
                 <p className="text-muted-foreground mb-4">
                   Sou o validador do projeto que estamos realizando com vocês. Venho aqui hoje para fazer uma coleta da sua avaliação em relação à nossa execução até agora."
                 </p>
                 <p className="text-muted-foreground">
-                  "Para isso, peço por favor que nos avalie com uma nota de 1 (pior) a 5 (melhor) em 3 critérios:"
+                  Para isso, peço por favor que nos avalie com uma nota de 1 (pior) a 5 (melhor) em 3 critérios:
                 </p>
               </div>
 
