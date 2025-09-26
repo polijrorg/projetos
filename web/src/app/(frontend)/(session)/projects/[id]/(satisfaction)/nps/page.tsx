@@ -15,10 +15,10 @@ import { toast } from "sonner";
 const ScoreButton = ({ score, selected, onClick }: { score: number; selected: boolean; onClick: () => void }) => (
   <Button
     type="button"
-    variant={selected ? "default" : "outline"}
+    variant={selected ? "hero" : "outline"}
     size="lg"
     onClick={onClick}
-    className={`w-16 h-16 text-lg font-bold ${selected ? 'shadow-lg' : ''}`}
+    className={` cursor-pointer w-16 h-16 text-lg font-bold ${selected ? 'shadow-lg' : ''}`}
   >
     {score}
   </Button>
@@ -37,7 +37,7 @@ const NPSButton = ({ score, selected, onClick }: { score: number; selected: bool
       variant={selected ? getColor(score) : "outline"}
       size="lg"
       onClick={onClick}
-      className={`w-12 h-12 text-sm font-bold ${selected ? 'shadow-lg' : ''}`}
+      className={` cursor-pointer w-12 h-12 text-sm font-bold ${selected ? 'shadow-lg' : ''}`}
     >
       {score}
     </Button>
@@ -348,6 +348,7 @@ const handleSubmit = (e: React.FormEvent) => {
                   type="button"
                   variant="cancel"
                   onClick={() => router.push(`/projects/${projectId}`)}
+                  className="cursor-pointer"
                 >
                   Cancelar
                 </Button>

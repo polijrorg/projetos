@@ -3,6 +3,7 @@ import type { Project } from "@/types";
 
 export const calculateDelay = (project: Project) => {
   if (project.status === 'Congelado') return 0;
+  
   const today = new Date();
   if (isAfter(today, project.plannedEndDate)) {
     return differenceInDays(today, project.plannedEndDate);
@@ -33,4 +34,6 @@ export const calculateRealITIP = (project: Project) => {
   const realItip = project.price / (project.analysts.length * project.sprints.length * 2);
   return Number(realItip.toFixed(2));
 }
+
+
 

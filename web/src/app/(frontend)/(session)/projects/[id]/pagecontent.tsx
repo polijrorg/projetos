@@ -7,7 +7,7 @@ import BacklogTab from "./(backlog)/BacklogTab";
 import MetricsTab from "./(metrics)/MetricsTab";
 import OverviewTab from "./(overview)/OverviewTab";
 import SatisfactionTab from "./(satisfaction)/SatisfactionTab";
-import SprintsTab from "./(sprint)/SprintTab";
+import SprintsTab from "./(sprintTab)/SprintTab";
 import TeamTab from "./(team)/TeamTab";
 import HandoffTab from "./(handoff)/HandoffTab";
 

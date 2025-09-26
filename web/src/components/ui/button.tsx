@@ -10,20 +10,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-poli-blue border border-input text-primary-foreground shadow-xs hover:opacity-90 hover:text-accent-foreground",
+          "cursor-pointer bg-poli-blue border border-input text-primary-foreground shadow-xs hover:opacity-90 hover:text-accent-foreground",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "cursor-pointer bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "cursor-pointer border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "cursor-pointer bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-gradient-primary text-white hover:opacity-90 shadow-elevated border-0",
-        success: "bg-status-done text-white hover:opacity-90 shadow-elevated border-0",
-        cancel: "border border-input bg-background hover:bg-destructive/90 hover:text-accent-foreground hover:text-white",
-        npsNeutral: "bg-yellow-500 text-white hover:opacity-90 shadow-xs hover:bg-neutral-foreground/80",
+          "cursor-pointer hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "cursor-pointer text-primary underline-offset-4 hover:underline",
+        hero: "cursor-pointer bg-gradient-primary text-white hover:opacity-90 shadow-elevated border-0",
+        success: "cursor-pointer bg-status-done text-white hover:opacity-90 shadow-elevated border-0",
+        cancel: "cursor-pointer border border-input bg-background hover:bg-destructive/90 hover:text-accent-foreground hover:text-white",
+        npsNeutral: "cursor-pointer bg-yellow-500 text-white hover:opacity-90 shadow-xs hover:bg-neutral-foreground/80",
       },
       size: {
         default: "h-12 px-6 py-3",

@@ -175,7 +175,7 @@ body {
   --color-status-enb: var(--status-enb);
   --color-gradient-primary: var(--gradient-primary);
   --color-gradient-secondary-glass: var(--gradient-secondary-glass);
-  --color-gradient-yellow-b: var(--gradient-yellow-b);
+  --color-gradient-yellow: var(--gradient-yellow);
   --color-poli-blue: hsl(var(--poli-blue));      /* #014c97 - Azul da Poli */
   --color-poli-yellow: hsl(var(--poli-yellow));  /* #faa928 - Amarelo da Poli */
   --color-status-done: hsl(142, 76%, 36%) ;
@@ -292,7 +292,7 @@ body {
   background-image: var(--gradient-secondary-glass);
 }
 
-.bg-gradient-yellow-b { background-image: var(--gradient-yellow-b); }
+.bg-gradient-yellow { background-image: var(--gradient-yellow); }
 
 
 
