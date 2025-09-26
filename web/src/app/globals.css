@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -25,8 +26,8 @@ body {
   overflow-x: hidden;
 }
 ::selection {
-  color: var(--color-pink-100);
-  background-color: var(--color-pink-500);
+  color: #FFFFFF;
+  background-color: hsl(var(--poli-blue) / 0.9);
 }
 
 @utility button-md {
@@ -168,6 +169,18 @@ body {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-status-critical: hsl(0, 84%, 60%);    /* Red */
+  --color-status-bad: hsl(25, 95%, 53%);        /* Orange */
+  --color-status-normal: var(--color-neutral-400);
+  --color-status-enb: var(--status-enb);
+  --color-gradient-primary: var(--gradient-primary);
+  --color-gradient-secondary-glass: var(--gradient-secondary-glass);
+  --color-gradient-yellow: var(--gradient-yellow);
+  --color-poli-blue: hsl(var(--poli-blue));      /* #014c97 - Azul da Poli */
+  --color-poli-yellow: hsl(var(--poli-yellow));  /* #faa928 - Amarelo da Poli */
+  --color-status-done: hsl(142, 76%, 36%) ;
+  --color-status-frozen: var(--status-frozen);
+  
 }
 
 :root {
@@ -203,7 +216,39 @@ body {
   --sidebar-ring: oklch(0.708 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --poli-blue: 202 100% 33%;      /* #014c97 - Azul da Poli */
+  --poli-yellow: 42 95% 57%;      /* #faa928 - Amarelo da Poli */
+  --poli-white: 0 0% 100%;        /* #ffffff */
+  --primary: var(--poli-blue);           /* Botão padrão = Azul Poli */
+  --primary-foreground: var(--poli-white);
+  --secondary: var(--poli-yellow);       /* Botão secundário = Amarelo Poli */
+  --secondary-foreground: var(--neutral-800);
+  --success: 142 76% 36%;               /* Verde para botões de sucesso */
+  --destructive: 0 84% 60%;             /* Vermelho para botões destrutivos */
+  --gradient-primary: linear-gradient(135deg, hsl(var(--poli-blue)), hsl(var(--poli-blue) / 0.8));
+  --gradient-yellow: linear-gradient(
+    135deg,
+    hsl(var(--poli-yellow-light) / 0.95) 0%,
+    hsl(var(--poli-yellow) / 0.98) 55%,
+    hsl(var(--poli-yellow-dark) / 1) 100%
+  );
+
+  --gradient-secondary-glass: linear-gradient(
+    135deg,
+  hsl(var(--poli-yellow) / 0.95) 0 50%,
+  hsl(var(--poli-blue) / 0.45) 90% 100%
+  );
+
+
+  --status-critical: 0 84% 60%;    /* Red */
+  --status-bad: 25 95% 53%;        /* Orange */
+  --status-normal: var(--neutral-400);
+  --status-done: 142 76% 36%;     
+  --status-enb: #A88CCC;
+  --status-frozen: 	#71acd6;
+
 }
+
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -238,3 +283,16 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+.bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+
+.bg-gradient-secondary-glass {
+  background-image: var(--gradient-secondary-glass);
+}
+
+.bg-gradient-yellow { background-image: var(--gradient-yellow); }
+
+
+

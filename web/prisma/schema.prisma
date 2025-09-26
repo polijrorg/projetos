@@ -83,6 +83,81 @@ model Conteudo {
   licaoId String?
 }
 
+
+model Project{
+  id      String @id @default(uuid()) @map("_id")
+  name    String
+  client  String
+  shortDescription String
+  plannedEndDate DateTime
+  startDate DateTime
+  endDate DateTime
+  status String
+  price Float?
+  analysts Analyst[]
+  delayDays Int
+  csatCollectionRate Float
+  averageCSAT Float
+  isENB Boolean
+  sprintNumber Int
+  sprints Sprint[]
+  npsScore Float?
+  npsResponses NPSResponse[]
+  @@map("project")
+}
+
+model Sprint {
+  id String @id @default(uuid()) @map("_id")
+  number Int
+  startDate DateTime
+  endDate DateTime
+  csatResponses CSATResponse[]
+  projectId String @unique
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model CSATResponse {
+  id String @id @default(uuid()) @map("_id")
+  sprintId String
+  sprint Sprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  responseDate DateTime
+  teamCommunicationScore Int
+  teamCommunicationFeedback String
+  qualityScore Int
+  qualityFeedback String
+  overallSatisfactionScore Int
+  averageScore Int
+}
+
+model Analyst {
+  id String @id @default(uuid()) @map("_id")
+  name String
+  role String
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model NPSResponse {
+  id String @id @default(uuid()) @map("_id")
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  clientName String
+  clietNumber String
+  responseDate DateTime
+  accordanceScore Int
+  accordanceFeedback String
+  expectationsScore Int
+  expectationsFeedback String
+  qualityScore Int
+  qualityFeedback String
+  missingFeatures String
+  improvementSuggestions String
+  npsScore Int
+  pmNotes String
+}
+
+
+
 // evitar mexer daqui pra baixo:
 model Session {
   id        String   @id @map("_id")
@@ -98,6 +173,8 @@ model Session {
   @@unique([token])
   @@map("session")
 }
+
+
 
 model Account {
   id                    String    @id @map("_id")
@@ -118,6 +195,9 @@ model Account {
   @@map("account")
 }
 
+
+
+
 model Verification {
   id         String    @id @map("_id")
   identifier String
@@ -128,3 +208,4 @@ model Verification {
 
   @@map("verification")
 }
+

@@ -1,28 +1,52 @@
-import LandingPagesNav from "@/components/nav/InitialNav";
-import Image from "next/image";
+// app/not-found.tsx
 import Link from "next/link";
+import { Home, ArrowLeft } from "lucide-react";
 
-function NotFound() {
-  return ( 
-    <div className="flex flex-col min-h-screen">
-      <LandingPagesNav isLogged={false} />
+export default function NotFound() {
+  return (
+    <main className="min-h-screen bg-background text-foreground pt-[84px]">
+      <section className="mx-auto max-w-3xl px-6">
+        <div className="rounded-2xl border border-[color:var(--border)] bg-white/70 dark:bg-card/80 backdrop-blur p-10 shadow-card">
+          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs text-muted-foreground bg-accent/50">
+            404 · Página não encontrada
+          </span>
 
-      <main className="flex-1 flex flex-col gap-2 items-center justify-start text-pink-900">
-        <Image
-          src='/under-construction.png'
-          alt=""
-          width={300}
-          height={300}
+          {/* “404” com gradiente do tema */}
+          <div className="mt-6 text-7xl font-extrabold leading-none tracking-tight text-transparent bg-clip-text bg-[image:var(--gradient-primary)]">
+            404
+          </div>
 
-        />
-        <h1 className="text-pink-500 font-bold text-8xl mt-2">404</h1>
-        <p className="font-semibold text-4xl">Página não encontrada</p>
-        <p className="text-xl leading-7 max-w-[445px] text-center">Ainda estamos trabalhando para adicionar novas páginas e serviços</p>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight">
+            Oops! Não encontramos essa página.
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            O link pode estar incorreto ou a página foi movida. Você pode voltar ao início ou explorar os projetos.
+          </p>
 
-        <Link href='/' className="button-md bg-pink-500 text-white border-pink-300 text-xl mt-2">Voltar ao início</Link>
-      </main>
-    </div>
-   );
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-lg px-5 py-3 text-white shadow-elevated transition
+                         bg-[hsl(var(--poli-blue))] hover:bg-[hsl(var(--poli-blue)/0.9)]"
+            >
+              <Home className="h-4 w-4" />
+              Ir para o Dashboard
+            </Link>
+
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 rounded-lg px-5 py-3 transition
+                         border border-[color:var(--border)] bg-background hover:bg-[hsl(var(--poli-blue)/0.08)]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Ver Projetos
+            </Link>
+          </div>
+        </div>
+
+        {/* detalhe decorativo sutil */}
+        <p> joao guten easter egg - feat carlos eduardo tavares</p>
+      </section>
+    </main>
+  );
 }
-
-export default NotFound;

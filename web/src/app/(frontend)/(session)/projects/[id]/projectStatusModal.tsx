@@ -1,0 +1,82 @@
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Project, ProjectStatus } from "@/types";
+import { AlertTriangle, BarChart3, Clock, Star, Snowflake, CheckCircle2 } from "lucide-react";
+
+interface ProjectStatusModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  currentStatus: ProjectStatus;
+  onStatusChange: (status: ProjectStatus) => void;
+}
+
+const statusOptions: { status: ProjectStatus; icon: React.ReactNode; variant: string }[] = [
+  { status: 'Crítica', icon: <AlertTriangle className="h-4 w-4" />, variant: 'critical' },
+  { status: 'Ruim', icon: <BarChart3 className="h-4 w-4" />, variant: 'bad' },
+  { status: 'Normal', icon: <Clock className="h-4 w-4" />, variant: 'normal' },
+  { status: 'Possível ENB', icon: <Star className="h-4 w-4" />, variant: 'enb' },
+  { status: 'Congelado', icon: <Snowflake className="h-4 w-4" />, variant: 'outline' },
+  { status: 'Finalizado', icon: <CheckCircle2 className="h-4 w-4" />, variant: 'default' }
+];
+
+export function ProjectStatusModal({ isOpen, onClose, currentStatus, onStatusChange }: ProjectStatusModalProps) {
+  const handleStatusSelect = (status: ProjectStatus) => {
+    onStatusChange(status);
+    onClose();
+  };
+
+    const getStatusVariant = (status: Project['status']) => {
+        switch (status) {
+          case 'Crítica': return 'critical';
+          case 'Ruim': return 'bad';
+          case 'Normal': return 'normal';
+          case 'Possível ENB': return 'enb';
+          case 'Congelado': return 'frozen';
+          case 'Finalizado': return 'done';
+          default: return 'normal';
+        }
+    
+      };
+  
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Alterar Situação do Projeto</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Selecione o novo status para o projeto:
+          </p>
+          
+          <div className="grid gap-2">
+            {statusOptions.map(({ status, icon, variant }) => (
+              <Button
+                key={status}
+                variant={currentStatus === status ? "default" : "outline"}
+                className="justify-start h-auto p-3 cursor-pointer"
+                onClick={() => handleStatusSelect(status)}
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <Badge variant={getStatusVariant(status)} className="flex items-center gap-1">
+                    {icon}
+                    {status}
+                  </Badge>
+                  {currentStatus === status && (
+                    <span className="text-xs text-muted-foreground ml-auto text-white">
+                      Atual
+                    </span>
+                  )}
+                </div>
+              </Button>
+            ))}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
