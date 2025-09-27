@@ -3,9 +3,9 @@
 import { useState } from "react";
 import PageTop from "./pagetop"; 
 import { ProjectCreateModal } from "@/app/(frontend)/(session)/projects/ProjectCreateModal";
-import { loadProjects } from "@/utils/storage/storage";
 import ProjectsGrid from "./projects-grid";
 import { Project } from "@/types";
+import { loadProjects } from "@/utils/storage/storage";
 
 export default function ProjectsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
