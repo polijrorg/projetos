@@ -6,16 +6,33 @@ import { Button } from "@/components/ui/button";
 import { mockProjects } from "@/data/mockData";
 import Header from "./pageheader";
 import PageContent from "./pagecontent";
-import { loadProjects } from "@/utils/storage/storage";
+import { useEffect, useState } from "react";
+import { getProjectById } from "./api";
 
 export default function ProjectPage() {
   const { id } = useParams() as { id: string };
   const router = useRouter();
 
-  // busca projeto do storage; fallback pro mock
-  const storedProjects = loadProjects();
-  let project = storedProjects.find((p) => p.id === id);
-  if (!project) project = mockProjects.find((p) => p.id === id);
+    const [project, setProject] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const p = await getProjectById(id);
+        setProject(p); // pode ser null se 404
+      } catch (e: any) {
+        setError(e?.message ?? "Erro ao carregar projeto");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id]);
+
+  if (loading) return <p>Carregando…</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   if (!project) {
     return (

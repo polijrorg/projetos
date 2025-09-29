@@ -1,8 +1,70 @@
 import prisma from "@/backend/services/db";
-import { patchSchema } from "../../schemas";
-import { z } from "zod";
+
 
 
 export async function getAllProjects() {
-  return await prisma.project.findMany();
+  return await prisma.project.findMany({include: { analysts: true, sprints: true }
+  });
 }
+
+export async function createProject(data: {
+  name: string;
+  client: string;
+  shortDescription: string;
+  plannedEndDate: Date;
+  startDate: Date;
+  sprintNumber: number;
+  endDate?: Date | null;
+  price?: number | null;
+  analysts: Array<{ name: string; role: 'front' | 'back' | 'pm' | 'coord' }>;
+}) {
+  try {
+    const project = await prisma.project.create({
+      data: {
+        name: data.name,
+        client: data.client,
+        shortDescription: data.shortDescription,
+        plannedEndDate: data.plannedEndDate,
+        startDate: data.startDate,
+        price: data.price ?? null,
+        sprintNumber: data.sprintNumber,
+        analysts: {
+          create: data.analysts.map(a => ({
+            name: a.name,
+            role: a.role as any,
+          })),
+        },
+      },
+      include: { analysts: true },
+    });
+
+    return project;
+  } catch (error) {
+    throw new Error((error as Error)?.message || 'Falha ao criar projeto');
+  }
+}
+
+export async function getProjectById(id: string) {
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id },
+      include: { analysts: true, sprints: true },
+    });
+    return project;
+  } catch (error) {
+    throw new Error((error as Error)?.message || 'Falha ao buscar projeto');
+  }
+}
+
+export async function deleteProject(id: string) {
+  try {
+    const project = await prisma.project.delete({
+      where: { id },
+    });
+    return project;
+  } catch (error) {
+    throw new Error((error as Error)?.message || 'Falha ao deletar projeto');
+  }
+}
+
+

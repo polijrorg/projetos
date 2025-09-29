@@ -91,14 +91,14 @@ model Project{
   shortDescription String
   plannedEndDate DateTime
   startDate DateTime
-  endDate DateTime
-  status String
+  endDate DateTime?
+  status String @default("normal")
   price Float?
   analysts Analyst[]
-  delayDays Int
-  csatCollectionRate Float
-  averageCSAT Float
-  isENB Boolean
+  delayDays Int? @default(0)
+  csatCollectionRate Float?
+  averageCSAT Float? @default(0)
+  isENB Boolean @default(false)
   sprintNumber Int
   sprints Sprint[]
   npsScore Float?
@@ -127,6 +127,13 @@ model CSATResponse {
   qualityFeedback String
   overallSatisfactionScore Int
   averageScore Int
+}
+
+enum AnalystRole {
+  front
+  back
+  pm
+  coord
 }
 
 model Analyst {

@@ -9,7 +9,6 @@ import { ArrowLeft, Star } from "lucide-react";
 import { mockProjects } from "@/data/mockData";
 import { CSATResponse } from "@/types";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { loadProjects, saveCSATResponse } from "@/utils/storage/storage";
 import { toast } from "sonner";
 
 

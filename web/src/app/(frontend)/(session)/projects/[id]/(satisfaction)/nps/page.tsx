@@ -9,7 +9,7 @@ import { ArrowLeft, TrendingUp } from "lucide-react";
 import { mockProjects } from "@/data/mockData";
 import { NPSResponse } from "@/types";
 import { useRouter, useParams } from "next/navigation";
-import { loadProjects, saveNPSResponse } from "@/utils/storage/storage";
+import { loadProjects, saveNPSResponse } from ";
 import { toast } from "sonner";
 
 const ScoreButton = ({ score, selected, onClick }: { score: number; selected: boolean; onClick: () => void }) => (

@@ -17,7 +17,6 @@ import {
 import { Project, ProjectStatus } from "@/types";
 import { useState } from "react";
 import { ProjectStatusModal } from "./projectStatusModal";
-import { updateProjectStatus } from "@/utils/storage/storage";
 import { ca } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 

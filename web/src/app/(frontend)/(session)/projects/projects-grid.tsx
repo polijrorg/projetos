@@ -1,5 +1,4 @@
 "use client";
-import { loadProjects } from "@/utils/storage/storage";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
@@ -93,26 +92,14 @@ const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | string>("all")
 
+
   useEffect(() => {
-    let active = true
-    async function run() {
-      if (projectsProp && active) return
-      if (!loadProjects) return
-      try {
-        setLoading(true)
-        const data = await Promise.resolve(loadProjects())
-        if (active) setProjects(data)
-      } catch (e) {
-        if (active) setError("Falha ao carregar projetos.")
-      } finally {
-        if (active) setLoading(false)
-      }
-    }
-    run()
-    return () => {
-      active = false
-    }
-  },[projectsProp, loadProjects])
+    fetch('/api/projects')
+      .then(response => response.json())
+      .then(data => setProjects(data))
+      .catch(error => console.error('Erro ao buscar projetos:', error));
+  }, []);
+
 
 
   const filteredProjects = projects.filter(project => {
