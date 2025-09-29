@@ -9,7 +9,9 @@ import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Project, MemberRole } from "@/types";import { Calendar } from "../../../../components/ui/calendar";
+import { ProjectComplete} from "@/types";
+import { Calendar } from "../../../../components/ui/calendar";
+import { Analyst } from "@/generated/prisma";
 
 interface ProjectCreateModalProps {
   isOpen: boolean;
@@ -25,20 +27,22 @@ interface ProjectFormData {
   endDate: Date | undefined;
   price: string;
   sprintCount: string;
-  analysts: Array<{ name: string; role: MemberRole }>;
+  analysts: Omit<Analyst, "id" | "projectId">[];
 }
 
+const EMPTY_PROJECT: ProjectFormData = {
+  name: "",
+  client: "",
+  description: "",
+  startDate: undefined,
+  endDate: undefined,
+  price: "",
+  sprintCount: "",
+  analysts: []
+};
+
 export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: ProjectCreateModalProps) {
-  const [formData, setFormData] = useState<ProjectFormData>({
-    name: "",
-    client: "",
-    description: "",
-    startDate: undefined,
-    endDate: undefined,
-    price: "",
-    sprintCount: "",
-    analysts: [{ name: "", role: "Front" }]
-  });
+  const [formData, setFormData] = useState<ProjectFormData>(EMPTY_PROJECT);
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -47,7 +51,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     alert("Preencha todos os campos obrigatórios");
     return;
   }
-
+  
+  type ChangeFields<T, R> = Omit<T, keyof R> & R;
+  type Project = ChangeFields<ProjectComplete, { 
+    analysts: Omit<ProjectComplete['analysts'], 'projectId'> 
+  }>;
+  
   const newProject: Project = {
     id: `project-${Date.now()}`,
     name: formData.name,
@@ -56,9 +65,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     startDate: formData.startDate,
     plannedEndDate: formData.endDate,
     status: "Normal",
-    price: formData.price ? parseFloat(formData.price) : undefined,
-    isContracted: true,
-    analysts: formData.analysts
+    price: formData.price ? parseFloat(formData.price) : 0,
+    analysts: formData?.analysts
       .filter(analyst => analyst.name.trim())
       .map((analyst, index) => ({
         id: `analyst-${Date.now()}-${index}`,
@@ -68,7 +76,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     delayDays: 0,
     csatCollectionRate: 0,
     averageCSAT: 0,
-    isENBCandidate: false,
     isENB: false,
     sprints: []
   };
@@ -80,16 +87,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   });
 
   // Reset form
-  setFormData({
-    name: "",
-    client: "",
-    description: "",
-    startDate: undefined,
-    endDate: undefined,
-    price: "",
-    sprintCount: "",
-    analysts: [{ name: "", role: "Front" }]
-  });
+  setFormData(EMPTY_PROJECT);
 
   onProjectCreated();
   onClose();
@@ -124,7 +122,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           <DialogTitle>Criar Novo Projeto</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" >
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome do Projeto *</Label>
@@ -265,7 +263,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <select
                     className="w-full h-10 px-3 border border-input bg-background rounded-md text-sm"
                     value={analyst.role}
-                    onChange={(e) => updateAnalyst(index, "role", e.target.value as MemberRole)}
                   >
                     <option value="Front">Front</option>
                     <option value="Back">Back</option>

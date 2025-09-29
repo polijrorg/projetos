@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { format, differenceInDays } from "date-fns";
-import type { Project } from "@/types"
+import type { ProjectComplete } from "@/types"
 import { ptBR } from "date-fns/locale";
 import { 
   Search, 
@@ -37,9 +37,9 @@ import { Input } from "@/components/ui/input";
 
 type ProjectsGridProps = {
   className?: string;
-  projects: Project[];
-  loadProjects?: () => Promise<Project[]> | Project[]
-  onSelect?: (project: Project) => void;
+  projects: ProjectComplete[];
+  loadProjects?: () => Promise<ProjectComplete[]> | ProjectComplete[]
+  onSelect?: (project: ProjectComplete) => void;
   ctaText?: string;
 }
 
@@ -52,7 +52,7 @@ export default function ProjectsGrid({
 }: ProjectsGridProps){
 
   
-  const getStatusVariant = (status: Project['status']) => {
+  const getStatusVariant = (status: ProjectComplete['status']) => {
       switch (status) {
         case 'Crítica': return 'critical';
         case 'Ruim': return 'bad';
@@ -65,7 +65,7 @@ export default function ProjectsGrid({
   
     };
 
-  const getStatusIcon = (status: Project['status']) => {
+  const getStatusIcon = (status: ProjectComplete['status']) => {
     switch (status) {
       case 'Crítica': return <AlertTriangle className="h-4 w-4" />;
       case 'Ruim': return <TrendingUp className="h-4 w-4" />;
@@ -79,13 +79,13 @@ export default function ProjectsGrid({
 
 const router = useRouter()                  
 
-  const handleViewProject = (project: Project) => {
+  const handleViewProject = (project: ProjectComplete) => {
     router.push(`/projects/${project.id}`)     
   }
 
 
 
-  const [projects, setProjects] = useState<Project[]>(projectsProp || []);
+  const [projects, setProjects] = useState<ProjectComplete[]>(projectsProp || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -222,7 +222,7 @@ const router = useRouter()
                  <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">CSAT Médio</div>
-                    <div className="font-semibold">{p.averageCSAT.toFixed(1)}/5.0</div>
+                    <div className="font-semibold">{p?.averageCSAT?.toFixed(1)}/5.0</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">NPS</div>

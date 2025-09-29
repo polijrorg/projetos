@@ -84,7 +84,7 @@ model Conteudo {
 }
 
 
-model Project{
+model Project {
   id      String @id @default(uuid()) @map("_id")
   name    String
   client  String
@@ -92,7 +92,7 @@ model Project{
   plannedEndDate DateTime
   startDate DateTime
   endDate DateTime?
-  status String @default("normal")
+  status String @default("Normal")
   price Float?
   analysts Analyst[]
   delayDays Int? @default(0)
@@ -130,16 +130,16 @@ model CSATResponse {
 }
 
 enum AnalystRole {
-  front
-  back
-  pm
-  coord
+  Front
+  Back
+  PM
+  Coord
 }
 
 model Analyst {
   id String @id @default(uuid()) @map("_id")
   name String
-  role String
+  role AnalystRole
   projectId String
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }

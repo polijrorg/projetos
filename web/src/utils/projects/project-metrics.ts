@@ -24,7 +24,7 @@ export const calculateCSATCollectionRate = (project: Project) => {
 };
 
 export const calculateITIP = (project: Project) => {
-  if (!project.analysts.length || !project.sprints.length || !project.price) return 0;
+  if (!project.analysts.length || !project.price) return 0;
   const itip = project.price /(project.analysts.length * differenceInWeeks(project.plannedEndDate, project.startDate));
   return Number(itip.toFixed(2));
 }
