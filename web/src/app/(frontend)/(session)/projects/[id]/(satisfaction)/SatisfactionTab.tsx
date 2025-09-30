@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Star, TrendingUp, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { Project } from "@/types";
+import type { ProjectComplete } from "@/types";
 import { useRouter } from "next/navigation";
 
-export default function SatisfactionTab({ project }: { project: Project }) {
+export default function SatisfactionTab({ project }: { project: ProjectComplete }) {
   const router = useRouter();
 
   return (
@@ -87,10 +87,10 @@ export default function SatisfactionTab({ project }: { project: Project }) {
           </CardHeader>
           <CardContent>
             <div className="text-center p-6">
-              {typeof project.npsScore === "number" ? (
+              {typeof project.npsResponse?.npsScore === "number" ? (
                 <div>
                   <div className="text-4xl font-bold text-foreground mb-2">
-                    {project.npsScore}/10
+                    {project.npsResponse.npsScore}/10
                   </div>
                   <div className="text-muted-foreground">NPS Coletado</div>
                   <Button

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Analyst, Role, Project, Sprint, NPSResponse, CSATResponse } from '@/generated/prisma';
+import type { Analyst, Role, Project, Sprint, NPSResponse, CSATResponse, Retrospective, Task } from '@/generated/prisma';
 
 export type AllowedRoutes = { 
   GET?: Role[]
@@ -11,6 +11,8 @@ export type AllowedRoutes = {
 // Main application types for Poli Júnior project management
 export type SprintComplete = Sprint & {
   csatResponses: CSATResponse[];
+  retrospective: Retrospective | null;
+  tasks: Task[];
 }
 
 export type ProjectComplete = Project & {

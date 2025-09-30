@@ -103,7 +103,7 @@ model Project {
   sprints          Sprint[]
   npsResponse      NPSResponse? 
   coverImage       String?
-
+  handoffDocument  String?
   @@map("project")
 }
 
@@ -129,14 +129,38 @@ model NPSResponse {
 
 
 model Sprint {
-  id String @id @default(uuid()) @map("_id")
-  number Int
-  startDate DateTime
-  endDate DateTime
-  csatResponses CSATResponse[]
-  projectId String @unique
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id             String          @id @default(uuid()) @map("_id")
+  number         Int
+  startDate      DateTime
+  endDate        DateTime
+  csatResponses  CSATResponse[]
+  projectId      String
+  project        Project         @relation(fields: [projectId], references: [id])
+  retrospective  Retrospective?
+  goals          String[]
+  tasks          Task[]
 }
+
+model Task {
+  id        String  @id @default(uuid()) @map("_id")
+  sprintId  String
+  sprint    Sprint  @relation(fields: [sprintId], references: [id])
+  title     String
+  description String?
+  priority  Int?
+  type      String?
+  estimate  Int?
+  status    String?
+}
+
+model Retrospective {
+  id        String  @id @default(uuid()) @map("_id")
+  sprintId  String  @unique
+  sprint    Sprint  @relation(fields: [sprintId], references: [id])
+  date      DateTime
+  feedback  String
+}
+
 
 model CSATResponse {
   id String @id @default(uuid()) @map("_id")
