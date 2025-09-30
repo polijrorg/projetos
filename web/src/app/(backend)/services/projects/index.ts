@@ -33,7 +33,7 @@ export async function createProject(data: {
         analysts: {
           create: data.analysts.map(a => ({
             name: a.name,
-            role: a.role as any,
+            role: a.role,
           })),
         },
       },

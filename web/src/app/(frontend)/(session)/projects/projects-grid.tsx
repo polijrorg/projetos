@@ -1,31 +1,21 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 import { cn } from "@/lib/utils"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { format, differenceInDays } from "date-fns";
+import { format} from "date-fns";
 import type { ProjectComplete } from "@/types"
 import { ptBR } from "date-fns/locale";
 import { 
   Search, 
-  Plus, 
-  Filter, 
-  Calendar, 
-  Users, 
   TrendingUp,
   Clock,
   AlertTriangle,
   Star,
-  Eye,
-  Edit,
-  MoreHorizontal,
-  Pause,
-  Play,
   Snowflake,
   CheckCircle2
 } from "lucide-react";
-import { fi } from "date-fns/locale";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
 import { calculateProgress } from "@/utils/projects/project-metrics";
@@ -46,9 +36,6 @@ type ProjectsGridProps = {
 export default function ProjectsGrid({
   className,
   projects: projectsProp,
-  loadProjects,
-  onSelect,
-  ctaText = "Ver Projeto Completo",
 }: ProjectsGridProps){
 
   
@@ -227,7 +214,7 @@ const router = useRouter()
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">NPS</div>
                     <div className="font-semibold">
-                      {p.npsScore ? p.npsScore : '--'}
+                      {p.npsResponse?.npsScore ?? '--'}
                     </div>
                   </div>
                 </div>

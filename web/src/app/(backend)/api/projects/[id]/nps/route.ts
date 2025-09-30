@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/(backend)/api/projects/[id]/nps/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { idSchema } from "@/app/(backend)/schemas/base.schema";
