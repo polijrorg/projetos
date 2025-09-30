@@ -28,6 +28,10 @@
 //   const projectId = Array.isArray(params.id) ? params.id[0] : (params.id as string);
 //   const sprintNumber = Array.isArray(params.sprintId) ? params.sprintId[0] : (params.sprintId as string);
 //   const router = useRouter();
+
+export default function CSATPageWIP() {
+  return null; // TODO: implementar depois
+}
   
 //   const [form, setForm] = useState({
 //     clientName: "",
