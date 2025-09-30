@@ -1,61 +1,69 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, TrendingUp } from "lucide-react";
-import { mockProjects } from "@/data/mockData";
-import { NPSResponse } from "@/types";
 import { useRouter, useParams } from "next/navigation";
-import { loadProjects, saveNPSResponse } from ";
 import { toast } from "sonner";
 
+// --- UI helpers ---
 const ScoreButton = ({ score, selected, onClick }: { score: number; selected: boolean; onClick: () => void }) => (
   <Button
     type="button"
     variant={selected ? "hero" : "outline"}
     size="lg"
     onClick={onClick}
-    className={` cursor-pointer w-16 h-16 text-lg font-bold ${selected ? 'shadow-lg' : ''}`}
+    className={`cursor-pointer w-16 h-16 text-lg font-bold ${selected ? "shadow-lg" : ""}`}
   >
     {score}
   </Button>
 );
 
 const NPSButton = ({ score, selected, onClick }: { score: number; selected: boolean; onClick: () => void }) => {
-  const getColor = (score: number) => {
-    if (score <= 6) return "destructive"; // Detractors
-    if (score <= 8) return "npsNeutral"; // Neutrals
-    return "success"; // Promoters
+  const getColor = (s: number) => {
+    if (s <= 6) return "destructive"; // detratores
+    if (s <= 8) return "npsNeutral";  // neutros
+    return "success";                 // promotores
   };
-
   return (
     <Button
       type="button"
       variant={selected ? getColor(score) : "outline"}
       size="lg"
       onClick={onClick}
-      className={` cursor-pointer w-12 h-12 text-sm font-bold ${selected ? 'shadow-lg' : ''}`}
+      className={`cursor-pointer w-12 h-12 text-sm font-bold ${selected ? "shadow-lg" : ""}`}
     >
       {score}
     </Button>
   );
 };
 
+// --- Tipos mínimos locais para tipagem básica ---
+type ProjectLite = {
+  id: string;
+  name: string;
+  client: string;
+};
+
 export default function NPSForm() {
   const params = useParams();
   const projectId = Array.isArray(params.id) ? params.id[0] : (params.id as string);
   const router = useRouter();
-  
+
+  const [project, setProject] = useState<ProjectLite | null>(null);
+  const [loadingProject, setLoadingProject] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+
   const [form, setForm] = useState({
     clientName: "",
     clientNumber: "",
     accordanceScore: 0,
     accordanceFeedback: "",
     expectationsScore: 0,
-    expectationsFeedback: "", 
+    expectationsFeedback: "",
     qualityScore: 0,
     qualityFeedback: "",
     missingFeatures: "",
@@ -64,11 +72,93 @@ export default function NPSForm() {
     pmNotes: ""
   });
 
-  // Get project info
-  const storedProjects = loadProjects();
-  let project = storedProjects.find(p => p.id === projectId);
-  if (!project) {
-    project = mockProjects.find(p => p.id === projectId);
+  // --- Buscar projeto via API (REMOVE mock/localStorage) ---
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        setLoadingProject(true);
+        const res = await fetch(`/api/projects/${projectId}`, { method: "GET" });
+        if (!res.ok) throw new Error("Falha ao carregar projeto");
+        const data: ProjectLite = await res.json();
+        if (mounted) setProject(data);
+      } catch (err: any) {
+        toast.error("Erro ao carregar projeto", { description: err?.message ?? "Tente novamente." });
+      } finally {
+        if (mounted) setLoadingProject(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [projectId]);
+
+  // --- Submit NPS via API (estrutura parecida com o segundo código) ---
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      form.accordanceScore === 0 ||
+      form.expectationsScore === 0 ||
+      form.qualityScore === 0 ||
+      form.npsScore === 0
+    ) {
+      toast.error("Erro", {
+        description: "Por favor, preencha todas as avaliações obrigatórias.",
+      });
+      return;
+    }
+
+    try {
+      setLoadingSubmit(true);
+
+      // Monta o payload num formato simples e estável para o backend
+      const payload = {
+        projectId,
+        responseDate: new Date().toISOString(),
+        clientName: form.clientName || project?.client || "",
+        clientNumber: form.clientNumber || "",
+        accordanceScore: form.accordanceScore,
+        accordanceFeedback: form.accordanceFeedback || "",
+        expectationsScore: form.expectationsScore,
+        expectationsFeedback: form.expectationsFeedback || "",
+        qualityScore: form.qualityScore,
+        qualityFeedback: form.qualityFeedback || "",
+        missingFeatures: form.missingFeatures || "",
+        improvementSuggestions: form.improvementSuggestions || "",
+        npsScore: form.npsScore,
+        pmNotes: form.pmNotes || ""
+      };
+
+      const res = await fetch(`/api/projects/${projectId}/nps`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson?.message || "Falha ao enviar a pesquisa");
+      }
+
+      toast.success("NPS Coletado", {
+        description: "Pesquisa de satisfação registrada com sucesso!",
+      });
+
+      router.push(`/projects/${projectId}`);
+    } catch (err: any) {
+      toast.error("Erro ao enviar NPS", { description: err?.message ?? "Tente novamente." });
+    } finally {
+      setLoadingSubmit(false);
+    }
+  };
+
+  if (loadingProject) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Carregando projeto...</p>
+      </div>
+    );
   }
 
   if (!project) {
@@ -81,49 +171,6 @@ export default function NPSForm() {
       </div>
     );
   }
-
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-
-  if (
-    form.accordanceScore === 0 ||
-    form.expectationsScore === 0 ||
-    form.qualityScore === 0 ||
-    form.npsScore === 0
-  ) {
-    toast.error("Erro", {
-      description: "Por favor, preencha todas as avaliações obrigatórias.",
-    });
-    return;
-  }
-
-  const now = Date.now();
-
-  const npsResponse: NPSResponse = {
-    id: `nps-${now}`,
-    projectId: project.id,
-    responseDate: new Date(),
-    accordanceScore: form.accordanceScore,
-    accordanceFeedback: form.accordanceFeedback,
-    expectationsScore: form.expectationsScore,
-    expectationsFeedback: form.expectationsFeedback,
-    qualityScore: form.qualityScore,
-    qualityFeedback: form.qualityFeedback,
-    missingFeatures: form.missingFeatures,
-    improvementSuggestions: form.improvementSuggestions,
-    npsScore: form.npsScore,
-    pmNotes: form.pmNotes,
-    uniqueToken: `nps-${now}-${Math.random().toString(36).slice(2, 11)}`
-  };
-
-  saveNPSResponse(npsResponse);
-
-  toast.success("NPS Coletado", {
-    description: "Pesquisa de satisfação registrada com sucesso!",
-  });
-
-  router.push(`/projects/${projectId}`);
-};
 
   return (
     <div className="min-h-screen bg-background">
@@ -150,7 +197,7 @@ const handleSubmit = (e: React.FormEvent) => {
               Projeto: {project.name} • Cliente: {project.client}
             </p>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="bg-muted/30 p-6 rounded-lg">
@@ -162,9 +209,7 @@ const handleSubmit = (e: React.FormEvent) => {
                   <p>
                     Estou entrando em contato para coletar percepções a respeito da sua experiência com o {project.name}. Você teria 2 minutos agora para conversar?
                   </p>
-                  <p>
-                    Perfeito! Em primeiro lugar gostaria de ouvir suas percepções em relação ao projeto.
-                  </p>
+                  <p>Perfeito! Em primeiro lugar gostaria de ouvir suas percepções em relação ao projeto.</p>
                 </div>
               </div>
 
@@ -179,7 +224,7 @@ const handleSubmit = (e: React.FormEvent) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="clientName">Número do cliente</Label>
+                <Label htmlFor="clientNumber">Número do cliente</Label>
                 <Input
                   id="clientNumber"
                   value={form.clientNumber}
@@ -193,7 +238,6 @@ const handleSubmit = (e: React.FormEvent) => {
                   <h4 className="font-semibold mb-4">
                     1. Em uma escala de 1 a 5, o quanto a equipe do projeto atendeu o que foi acordado no processo comercial?
                   </h4>
-                  
                   <div className="flex gap-2 mb-4">
                     {[1, 2, 3, 4, 5].map((score) => (
                       <ScoreButton
@@ -204,7 +248,6 @@ const handleSubmit = (e: React.FormEvent) => {
                       />
                     ))}
                   </div>
-                  
                   <div className="space-y-2">
                     <Label htmlFor="accordanceFeedback">Por que? (opcional)</Label>
                     <Textarea
@@ -221,7 +264,6 @@ const handleSubmit = (e: React.FormEvent) => {
                   <h4 className="font-semibold mb-4">
                     2. De 1 a 5, o quanto a equipe da Poli Júnior atendeu suas expectativas e necessidades?
                   </h4>
-                  
                   <div className="flex gap-2 mb-4">
                     {[1, 2, 3, 4, 5].map((score) => (
                       <ScoreButton
@@ -232,7 +274,6 @@ const handleSubmit = (e: React.FormEvent) => {
                       />
                     ))}
                   </div>
-                  
                   <div className="space-y-2">
                     <Label htmlFor="expectationsFeedback">Por que? (opcional)</Label>
                     <Textarea
@@ -246,10 +287,7 @@ const handleSubmit = (e: React.FormEvent) => {
                 </div>
 
                 <div className="border rounded-lg p-6">
-                  <h4 className="font-semibold mb-4">
-                    3. De 1 a 5, como você avalia a qualidade das entregas feitas no projeto?
-                  </h4>
-                  
+                  <h4 className="font-semibold mb-4">3. De 1 a 5, como você avalia a qualidade das entregas feitas no projeto?</h4>
                   <div className="flex gap-2 mb-4">
                     {[1, 2, 3, 4, 5].map((score) => (
                       <ScoreButton
@@ -260,7 +298,6 @@ const handleSubmit = (e: React.FormEvent) => {
                       />
                     ))}
                   </div>
-                  
                   <div className="space-y-2">
                     <Label htmlFor="qualityFeedback">Por que? (opcional)</Label>
                     <Textarea
@@ -277,7 +314,6 @@ const handleSubmit = (e: React.FormEvent) => {
                   <h4 className="font-semibold mb-4">
                     4. Você sentiu falta de algo no projeto? Como você acredita que podemos melhorar nossa entrega de valor?
                   </h4>
-                  
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="missingFeatures">O que sentiu falta?</Label>
@@ -289,7 +325,6 @@ const handleSubmit = (e: React.FormEvent) => {
                         rows={3}
                       />
                     </div>
-                    
                     <div className="space-y-2">
                       <Label htmlFor="improvementSuggestions">Sugestões de melhoria</Label>
                       <Textarea
@@ -307,7 +342,6 @@ const handleSubmit = (e: React.FormEvent) => {
                   <h4 className="font-semibold mb-4">
                     5. Em uma escala de 0 a 10, o quanto você indicaria nossa empresa para um amigo ou colega?
                   </h4>
-                  
                   <div className="grid grid-cols-11 gap-1 mb-4">
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
                       <NPSButton
@@ -318,12 +352,10 @@ const handleSubmit = (e: React.FormEvent) => {
                       />
                     ))}
                   </div>
-                  
                   <div className="flex justify-between text-xs text-muted-foreground mb-4">
                     <span>Muito improvável</span>
                     <span>Muito provável</span>
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="pmNotes">Anotações PM (opcional)</Label>
                     <Textarea
@@ -349,11 +381,12 @@ const handleSubmit = (e: React.FormEvent) => {
                   variant="cancel"
                   onClick={() => router.push(`/projects/${projectId}`)}
                   className="cursor-pointer"
+                  disabled={loadingSubmit}
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" className="cursor-pointer" variant="hero">
-                  Enviar Pesquisa NPS
+                <Button type="submit" className="cursor-pointer" variant="hero" disabled={loadingSubmit}>
+                  {loadingSubmit ? "Enviando..." : "Enviar Pesquisa NPS"}
                 </Button>
               </div>
             </form>
