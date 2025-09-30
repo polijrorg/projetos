@@ -4,10 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, CheckCircle2, Target, Users } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { Project } from "@/types";
+import type { ProjectComplete } from "@/types";
 import { calculateDelay, calculateITIP, calculateRealITIP } from "@/utils/projects/project-metrics";
 
-export default function StatCards({ project }: { project: Project }) {
+export default function StatCards({ project }: { project: ProjectComplete }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <Card>
@@ -34,7 +34,7 @@ export default function StatCards({ project }: { project: Project }) {
         </CardContent>
       </Card>
 
-      {project.actualEndDate && (
+      {project.endDate && (
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
@@ -42,7 +42,7 @@ export default function StatCards({ project }: { project: Project }) {
               <span className="text-sm font-medium">Finalizado</span>
             </div>
             <p className="text-lg font-semibold">
-              {format(project.actualEndDate, "dd/MM/yyyy", { locale: ptBR })}
+              {format(project.endDate, "dd/MM/yyyy", { locale: ptBR })}
             </p>
           </CardContent>
         </Card>

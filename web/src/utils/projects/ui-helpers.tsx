@@ -1,7 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
-import type { TaskPriority } from "@/types";
 
-export const getPriorityVariant = (priority: TaskPriority) => {
+
+export const getPriorityVariant = (priority: string) => {
   switch (priority) {
     case "Alta": return "destructive";
     case "Média": return "secondary";
@@ -15,3 +15,5 @@ export const getTaskStatusIcon = (status: string) => {
   if (status === "doing") return <div className="h-2 w-2 rounded-full bg-yellow-500" />;
   return <div className="h-2 w-2 rounded-full bg-muted-foreground" />;
 };
+
+

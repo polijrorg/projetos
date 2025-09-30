@@ -2,9 +2,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
-import type { Project } from "@/types";
+import type { ProjectComplete } from "@/types";
 
-export default function TeamTab({ project }: { project: Project }) {
+export default function TeamTab({ project }: { project: ProjectComplete }) {
   return (
     <div className="space-y-6">
       <Card>

@@ -9,9 +9,9 @@ import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Project, MemberRole } from "@/types";
-import { saveProjects, loadProjects } from "@/utils/storage/storage";
+import { ProjectComplete} from "@/types";
 import { Calendar } from "../../../../components/ui/calendar";
+import { Analyst } from "@/generated/prisma";
 
 interface ProjectCreateModalProps {
   isOpen: boolean;
@@ -27,73 +27,78 @@ interface ProjectFormData {
   endDate: Date | undefined;
   price: string;
   sprintCount: string;
-  analysts: Array<{ name: string; role: MemberRole }>;
+  analysts: Omit<Analyst, "id" | "projectId">[];
 }
 
+const EMPTY_PROJECT: ProjectFormData = {
+  name: "",
+  client: "",
+  description: "",
+  startDate: undefined,
+  endDate: undefined,
+  price: "",
+  sprintCount: "",
+  analysts: []
+};
+
 export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: ProjectCreateModalProps) {
-  const [formData, setFormData] = useState<ProjectFormData>({
-    name: "",
-    client: "",
-    description: "",
-    startDate: undefined,
-    endDate: undefined,
-    price: "",
-    sprintCount: "",
-    analysts: [{ name: "", role: "Front" }]
+  const [formData, setFormData] = useState<ProjectFormData>(EMPTY_PROJECT);
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (!formData.name || !formData.client || !formData.startDate || !formData.endDate) {
+    alert("Preencha todos os campos obrigatórios");
+    return;
+  }
+  
+type Replace<T, R> = Omit<T, keyof R> & R;
+
+type ProjectAnalyst = Omit<ProjectComplete['analysts'][number], 'projectId'>;
+
+type Project = Replace<ProjectComplete, {
+  analysts: ProjectAnalyst[];
+}>;
+  const newProject: Project = {
+    id: `project-${Date.now()}`,
+    name: formData.name,
+    client: formData.client,
+    shortDescription: formData.description,
+    startDate: formData.startDate,
+    plannedEndDate: formData.endDate,
+    endDate: null,
+    status: "Normal",
+    sprintNumber: formData.sprintCount ? parseInt(formData.sprintCount) : 1,
+    price: formData.price ? parseFloat(formData.price) : 0,
+    analysts: formData?.analysts
+      .filter(analyst => analyst.name.trim())
+      .map((analyst, index) => ({
+        id: `analyst-${Date.now()}-${index}`,
+        name: analyst.name,
+        role: analyst.role
+      })),
+    delayDays: 0,
+    csatCollectionRate: 0,
+    averageCSAT: 0,
+    isENB: false,
+    sprints: [],
+    npsResponse: null,
+    coverImage: "https://i.imgur.com/87E7VI8.jpeg",
+    handoffDocument: null
+  };
+
+  await fetch('/api/projects', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newProject),
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.client || !formData.startDate || !formData.endDate) {
-      alert("Preencha todos os campos obrigatórios");
-      return;
-    }
+  // Reset form
+  setFormData(EMPTY_PROJECT);
 
-    const newProject: Project = {
-      id: `project-${Date.now()}`,
-      name: formData.name,
-      client: formData.client,
-      shortDescription: formData.description,
-      startDate: formData.startDate,
-      plannedEndDate: formData.endDate,
-      status: "Normal",
-      price: formData.price ? parseFloat(formData.price) : undefined,
-      isContracted: true,
-      analysts: formData.analysts
-        .filter(analyst => analyst.name.trim())
-        .map((analyst, index) => ({
-          id: `analyst-${Date.now()}-${index}`,
-          name: analyst.name,
-          role: analyst.role
-        })),
-      delayDays: 0,
-      csatCollectionRate: 0,
-      averageCSAT: 0,
-      isENBCandidate: false,
-      isENB: false,
-      sprints: []
-    };
-
-    const projects = loadProjects();
-    projects.push(newProject);
-    saveProjects(projects);
-
-    // Reset form
-    setFormData({
-      name: "",
-      client: "",
-      description: "",
-      startDate: undefined,
-      endDate: undefined,
-      price: "",
-      sprintCount: "",
-      analysts: [{ name: "", role: "Front" }]
-    });
-
-    onProjectCreated();
-    onClose();
-  };
+  onProjectCreated();
+  onClose();
+};
 
   const addAnalyst = () => {
     setFormData({
@@ -124,7 +129,7 @@ export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: Projec
           <DialogTitle>Criar Novo Projeto</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" >
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome do Projeto *</Label>
@@ -265,7 +270,7 @@ export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: Projec
                   <select
                     className="w-full h-10 px-3 border border-input bg-background rounded-md text-sm"
                     value={analyst.role}
-                    onChange={(e) => updateAnalyst(index, "role", e.target.value as MemberRole)}
+                    onChange={(e) => updateAnalyst(index, "role", e.target.value)}
                   >
                     <option value="Front">Front</option>
                     <option value="Back">Back</option>

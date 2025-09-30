@@ -14,21 +14,21 @@ import {
   Snowflake,
   Link,
 } from "lucide-react";
-import { Project, ProjectStatus } from "@/types";
-import { useState } from "react";
+import { ProjectComplete} from "@/types";
+import { useState, useTransition } from "react";
 import { ProjectStatusModal } from "./projectStatusModal";
-import { updateProjectStatus } from "@/utils/storage/storage";
 import { ca } from "date-fns/locale";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 
 type Props = {
-  project: Project;
+  project: ProjectComplete;
   onBack: () => void;
 };
 
-const getStatusIcon = (status: Project["status"]) => {
+const getStatusIcon = (status: ProjectComplete["status"]) => {
   switch (status) {
     case "Crítica":
       return <TriangleAlert className="h-4 w-4" />;
@@ -47,7 +47,7 @@ const getStatusIcon = (status: Project["status"]) => {
   }
 };
 
-const getStatusVariant = (status: Project["status"]) => {
+const getStatusVariant = (status: ProjectComplete["status"]) => {
   switch (status) {
     case "Crítica":
       return "critical";
@@ -68,15 +68,53 @@ const getStatusVariant = (status: Project["status"]) => {
 
 export default function Header({ project, onBack }: Props) {
 
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
-  const handleChangeStatus = () => setIsStatusModalOpen(true);
-   const handleStatusChange = (newStatus: ProjectStatus) => {
-    const updatedProject = updateProjectStatus(project.id, newStatus);
-    if (updatedProject) {
-      window.location.reload();
+    type Replace<T, R> = Omit<T, keyof R> & R;
+    type ProjectAnalyst = Omit<ProjectComplete['analysts'][number], 'projectId'>;
+
+    type Project = Replace<ProjectComplete, {
+      analysts: ProjectAnalyst[];
+    }>;
+
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const handleChangeStatus = () => setIsStatusModalOpen(true);
+    const [projectData, setProjectData] = useState<ProjectComplete>(project);
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+    const handleStatusChange = async (newStatus: ProjectComplete["status"]) => {
+    setProjectData(prev => ({ ...prev, status: newStatus }));
+    // Otimista: atualiza UI antes de bater na API (se você tiver setProject)
+    // setProject(p => p ? { ...p, status: newStatus } as Project : p);
+      try {
+    const res = await fetch(`/api/projects/${project.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!res.ok) {
+      setProjectData(prev => ({ ...prev, status: project.status }));
+      throw new Error(`Falha ao atualizar status (${res.status})`);
     }
-  };
-  const router = useRouter();
+
+
+
+    const updatedProject = await res.json();
+    setProjectData(updatedProject);
+    setIsStatusModalOpen(false);
+    toast.success("Status atualizado!");
+
+    startTransition(() => {
+      router.refresh(); // atualiza dados da página sem reload completo
+    });
+  } catch (err: unknown) {
+    // Se usou UI otimista acima, opcional: desfazer
+    // setProject(p => p ? { ...p, status: project.status } as Project : p);
+
+    
+    const msg = err instanceof Error ? err.message : "Erro ao atualizar status";
+    toast.error(msg);
+  }
+}
 
   return (
     <div className="border-b bg-card">
@@ -103,11 +141,11 @@ export default function Header({ project, onBack }: Props) {
 
             <div className="flex items-center gap-4 mb-4">
               <Badge
-                variant={getStatusVariant(project.status)}
+                variant={getStatusVariant(projectData.status)}
                 className="flex items-center gap-1"
               >
-                {getStatusIcon(project.status)}
-                {project.status}
+                {getStatusIcon(projectData.status)}
+                {projectData.status}
               </Badge>
             </div>
 
@@ -117,9 +155,13 @@ export default function Header({ project, onBack }: Props) {
                 variant="hero" 
                 size="sm"
                 className="cursor-pointer hover:[background-image:var(--gradient-primary)] hover:text-white hover:border-transparent transition-colors"
-                onClick={handleChangeStatus}>
+                onClick={handleChangeStatus}
+                disabled={isPending}
+                aria-disabled={isPending}
+                >
+
                 <Target className="h-4 w-4 mr-2" />
-                Alterar Status
+                {isPending ? "Atualizando..." : "Alterar Status"}
          </Button>
           </div>
 
@@ -127,7 +169,7 @@ export default function Header({ project, onBack }: Props) {
             <div className="w-full lg:w-64 h-48 bg-muted rounded-lg overflow-hidden">
               <img
                 src={project.coverImage}
-                alt={`Carlos Tavares é um gostoso`}
+                alt={`Imagem do projeto`}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -137,7 +179,7 @@ export default function Header({ project, onBack }: Props) {
         <ProjectStatusModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        currentStatus={project.status}
+        currentStatus={projectData.status}
         onStatusChange={handleStatusChange}
       />
     </div>

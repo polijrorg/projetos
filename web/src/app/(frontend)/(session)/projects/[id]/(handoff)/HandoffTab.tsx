@@ -3,9 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit, FileText } from "lucide-react";
-import type { Project } from "@/types";
+import type { ProjectComplete } from "@/types";
 
-export default function HandoffTab({ project }: { project: Project }) {
+export default function HandoffTab({ project }: { project: ProjectComplete }) {
   const doc = project.handoffDocument;
 
   return (

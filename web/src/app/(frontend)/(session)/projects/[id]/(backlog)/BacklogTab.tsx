@@ -1,6 +1,6 @@
 "use client";
 
-import type { Project } from "@/types";
+import type { ProjectComplete } from "@/types";
 
 const ProjectBacklog = ({ projectId, sprintCount }: { projectId: string; sprintCount: number }) => (
   <div className="p-4 border rounded-lg text-sm text-muted-foreground">
@@ -8,7 +8,7 @@ const ProjectBacklog = ({ projectId, sprintCount }: { projectId: string; sprintC
   </div>
 );
 
-export default function BacklogTab({ project }: { project: Project }) {
+export default function BacklogTab({ project }: { project: ProjectComplete }) {
   return (
     <div className="space-y-6">
       <div>

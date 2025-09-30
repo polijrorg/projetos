@@ -84,37 +84,89 @@ model Conteudo {
 }
 
 
-model Project{
-  id      String @id @default(uuid()) @map("_id")
-  name    String
-  client  String
+model Project {
+  id               String        @id @default(uuid()) @map("_id")
+  name             String
+  client           String
   shortDescription String
-  plannedEndDate DateTime
-  startDate DateTime
-  endDate DateTime
-  status String
-  price Float?
-  analysts Analyst[]
-  delayDays Int
-  csatCollectionRate Float
-  averageCSAT Float
-  isENB Boolean
-  sprintNumber Int
-  sprints Sprint[]
-  npsScore Float?
-  npsResponses NPSResponse[]
+  plannedEndDate   DateTime
+  startDate        DateTime
+  endDate          DateTime?
+  status           String        @default("Normal")
+  price            Float?
+  analysts         Analyst[]
+  delayDays        Int?          @default(0)
+  csatCollectionRate Float?
+  averageCSAT      Float?        @default(0)
+  isENB            Boolean       @default(false)
+  sprintNumber     Int
+  sprints          Sprint[]
+  npsResponse      NPSResponse? 
+  coverImage       String?
+  handoffDocument  handoffDocument?
   @@map("project")
 }
 
-model Sprint {
-  id String @id @default(uuid()) @map("_id")
-  number Int
-  startDate DateTime
-  endDate DateTime
-  csatResponses CSATResponse[]
-  projectId String @unique
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+model NPSResponse {
+  id                     String   @id @default(uuid()) @map("_id")
+  projectId              String   @unique              // ← garante 1:1
+  project                Project  @relation(fields: [projectId], references: [id])
+
+  clientName             String
+  clientNumber           String 
+  responseDate           DateTime
+  accordanceScore       Int?
+  accordanceFeedback     String?
+  expectationsScore      Int?
+  expectationsFeedback   String?
+  qualityScore           Int?
+  qualityFeedback        String?
+  missingFeatures        String?
+  improvementSuggestions String?
+  npsScore               Int?
+  pmNotes                String?
 }
+
+
+model Sprint {
+  id             String          @id @default(uuid()) @map("_id")
+  number         Int
+  startDate      DateTime
+  endDate        DateTime
+  csatResponses  CSATResponse[]
+  projectId      String
+  project        Project         @relation(fields: [projectId], references: [id])
+  retrospective  Retrospective?
+  goals          String[]
+  tasks          Task[]
+}
+
+model Task {
+  id        String  @id @default(uuid()) @map("_id")
+  sprintId  String
+  sprint    Sprint  @relation(fields: [sprintId], references: [id])
+  title     String
+  description String?
+  priority  TaskPriority?
+  type      String?
+  estimate  Int?
+  status    String?
+}
+
+enum TaskPriority {
+  Alta
+  Média
+  Baixa
+}
+
+model Retrospective {
+  id        String  @id @default(uuid()) @map("_id")
+  sprintId  String  @unique
+  sprint    Sprint  @relation(fields: [sprintId], references: [id])
+  date      DateTime
+  feedback  String
+}
+
 
 model CSATResponse {
   id String @id @default(uuid()) @map("_id")
@@ -129,32 +181,33 @@ model CSATResponse {
   averageScore Int
 }
 
+enum AnalystRole {
+  Front
+  Back
+  PM
+  Coord
+}
+
 model Analyst {
   id String @id @default(uuid()) @map("_id")
   name String
-  role String
+  role AnalystRole
   projectId String
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
-model NPSResponse {
+model handoffDocument {
   id String @id @default(uuid()) @map("_id")
-  projectId String
+  projectId String @unique
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  clientName String
-  clietNumber String
-  responseDate DateTime
-  accordanceScore Int
-  accordanceFeedback String
-  expectationsScore Int
-  expectationsFeedback String
-  qualityScore Int
-  qualityFeedback String
-  missingFeatures String
-  improvementSuggestions String
-  npsScore Int
-  pmNotes String
+  objectives String?
+  scope String?
+  clientAgreements String?
+  artifacts String[]
+  risks String[]
+  stakeholders String[]
 }
+
 
 
 

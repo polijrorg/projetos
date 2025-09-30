@@ -1,32 +1,21 @@
 "use client";
-import { loadProjects } from "@/utils/storage/storage";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 import { cn } from "@/lib/utils"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { format, differenceInDays } from "date-fns";
-import type { Project } from "@/types"
+import { format} from "date-fns";
+import type { ProjectComplete } from "@/types"
 import { ptBR } from "date-fns/locale";
 import { 
   Search, 
-  Plus, 
-  Filter, 
-  Calendar, 
-  Users, 
   TrendingUp,
   Clock,
   AlertTriangle,
   Star,
-  Eye,
-  Edit,
-  MoreHorizontal,
-  Pause,
-  Play,
   Snowflake,
   CheckCircle2
 } from "lucide-react";
-import { fi } from "date-fns/locale";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
 import { calculateProgress } from "@/utils/projects/project-metrics";
@@ -38,22 +27,19 @@ import { Input } from "@/components/ui/input";
 
 type ProjectsGridProps = {
   className?: string;
-  projects: Project[];
-  loadProjects?: () => Promise<Project[]> | Project[]
-  onSelect?: (project: Project) => void;
+  projects: ProjectComplete[];
+  loadProjects?: () => Promise<ProjectComplete[]> | ProjectComplete[]
+  onSelect?: (project: ProjectComplete) => void;
   ctaText?: string;
 }
 
 export default function ProjectsGrid({
   className,
   projects: projectsProp,
-  loadProjects,
-  onSelect,
-  ctaText = "Ver Projeto Completo",
 }: ProjectsGridProps){
 
   
-  const getStatusVariant = (status: Project['status']) => {
+  const getStatusVariant = (status: ProjectComplete['status']) => {
       switch (status) {
         case 'Crítica': return 'critical';
         case 'Ruim': return 'bad';
@@ -66,7 +52,7 @@ export default function ProjectsGrid({
   
     };
 
-  const getStatusIcon = (status: Project['status']) => {
+  const getStatusIcon = (status: ProjectComplete['status']) => {
     switch (status) {
       case 'Crítica': return <AlertTriangle className="h-4 w-4" />;
       case 'Ruim': return <TrendingUp className="h-4 w-4" />;
@@ -80,39 +66,27 @@ export default function ProjectsGrid({
 
 const router = useRouter()                  
 
-  const handleViewProject = (project: Project) => {
+  const handleViewProject = (project: ProjectComplete) => {
     router.push(`/projects/${project.id}`)     
   }
 
 
 
-  const [projects, setProjects] = useState<Project[]>(projectsProp || []);
+  const [projects, setProjects] = useState<ProjectComplete[]>(projectsProp || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | string>("all")
 
+
   useEffect(() => {
-    let active = true
-    async function run() {
-      if (projectsProp && active) return
-      if (!loadProjects) return
-      try {
-        setLoading(true)
-        const data = await Promise.resolve(loadProjects())
-        if (active) setProjects(data)
-      } catch (e) {
-        if (active) setError("Falha ao carregar projetos.")
-      } finally {
-        if (active) setLoading(false)
-      }
-    }
-    run()
-    return () => {
-      active = false
-    }
-  },[projectsProp, loadProjects])
+    fetch('/api/projects')
+      .then(response => response.json())
+      .then(data => setProjects(data))
+      .catch(error => console.error('Erro ao buscar projetos:', error));
+  }, []);
+
 
 
   const filteredProjects = projects.filter(project => {
@@ -235,12 +209,12 @@ const router = useRouter()
                  <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">CSAT Médio</div>
-                    <div className="font-semibold">{p.averageCSAT.toFixed(1)}/5.0</div>
+                    <div className="font-semibold">{p?.averageCSAT?.toFixed(1)}/5.0</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">NPS</div>
                     <div className="font-semibold">
-                      {p.npsScore ? p.npsScore : '--'}
+                      {p.npsResponse?.npsScore ?? '--'}
                     </div>
                   </div>
                 </div>

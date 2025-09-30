@@ -7,7 +7,7 @@ import { MessageSquare, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
-import type { Project, Sprint } from "@/types";
+import type { ProjectComplete, SprintComplete } from "@/types";
 import { getTaskStatusIcon, getPriorityVariant } from "@/utils/projects/ui-helpers";
 
 
@@ -15,8 +15,8 @@ export default function SprintList({
   project,
   onCreateTask,
 }: {
-  project: Project;
-  onCreateTask: (sprint: Sprint) => void;
+  project: ProjectComplete;
+  onCreateTask: (sprint: SprintComplete) => void;
 }) {
   const router = useRouter();
 
@@ -81,14 +81,14 @@ export default function SprintList({
                     {sprint.tasks.map((task) => (
                       <div key={task.id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex items-center gap-3">
-                          {getTaskStatusIcon(task.status)}
+                          {getTaskStatusIcon(task.status ?? "")}
                           <div>
                             <p className="font-medium">{task.title}</p>
                             <p className="text-sm text-muted-foreground">{task.description}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant={getPriorityVariant(task.priority)}>{task.priority}</Badge>
+                          <Badge variant={getPriorityVariant(task.priority ?? "")}>{task.priority ?? "—"}</Badge>
                           <Badge variant="outline">{task.type}</Badge>
                           <span className="text-sm text-muted-foreground">{task.estimate}pt</span>
                         </div>
