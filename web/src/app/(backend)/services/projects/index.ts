@@ -2,6 +2,7 @@ import prisma from "@/backend/services/db";
 
 
 
+
 export async function getAllProjects() {
   return await prisma.project.findMany({include: { analysts: true, sprints: true }
   });
@@ -16,7 +17,7 @@ export async function createProject(data: {
   sprintNumber: number;
   endDate?: Date | null;
   price?: number | null;
-  analysts: Array<{ name: string; role: 'front' | 'back' | 'pm' | 'coord' }>;
+  analysts: Array<{ name: string; role: 'Front' | 'Back' | 'PM' | 'Coord' }>;
 }) {
   try {
     const project = await prisma.project.create({

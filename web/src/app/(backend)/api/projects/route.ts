@@ -6,12 +6,14 @@ import { getAllProjects, createProject } from "../../services/projects";
 import { AllowedRoutes } from "@/types";
 import { auth } from "@/auth";
 import { toErrorMessage } from "@/utils/api/toErrorMessage";
+import { createProjectSchema } from "../../schemas/project.schema";
 
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
 
     const projects = await getAllProjects();
+    console.log(projects);
     return NextResponse.json(projects);
   } catch (error) {
     if (error instanceof NextResponse) {
@@ -26,7 +28,15 @@ export async function POST (request: NextRequest) {
   try {
     const body = await validBody(request);
 
-    const project = await createProject(body);
+    const validationResult = createProjectSchema.safeParse(body)
+       
+       if (!validationResult.success) {
+         return returnInvalidDataErrors(validationResult.error);
+       }
+   
+       const validatedData = validationResult.data
+   
+       const project = await createProject(validatedData)
 
     return NextResponse.json(project, { status: 201 })
   } catch (error) {

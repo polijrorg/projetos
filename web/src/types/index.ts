@@ -16,7 +16,7 @@ export type SprintComplete = Sprint & {
 export type ProjectComplete = Project & {
   analysts: Analyst[];
   sprints: SprintComplete[];
-  npsResponses: NPSResponse[];
+  npsResponse: NPSResponse | null;
 }
 
 // Utility types

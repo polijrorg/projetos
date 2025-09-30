@@ -52,11 +52,13 @@ const handleSubmit = async (e: React.FormEvent) => {
     return;
   }
   
-  type ChangeFields<T, R> = Omit<T, keyof R> & R;
-  type Project = ChangeFields<ProjectComplete, { 
-    analysts: Omit<ProjectComplete['analysts'], 'projectId'> 
-  }>;
-  
+type Replace<T, R> = Omit<T, keyof R> & R;
+
+type ProjectAnalyst = Omit<ProjectComplete['analysts'][number], 'projectId'>;
+
+type Project = Replace<ProjectComplete, {
+  analysts: ProjectAnalyst[];
+}>;
   const newProject: Project = {
     id: `project-${Date.now()}`,
     name: formData.name,
@@ -64,7 +66,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     shortDescription: formData.description,
     startDate: formData.startDate,
     plannedEndDate: formData.endDate,
+    endDate: null,
     status: "Normal",
+    sprintNumber: formData.sprintCount ? parseInt(formData.sprintCount) : 1,
     price: formData.price ? parseFloat(formData.price) : 0,
     analysts: formData?.analysts
       .filter(analyst => analyst.name.trim())
@@ -77,7 +81,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     csatCollectionRate: 0,
     averageCSAT: 0,
     isENB: false,
-    sprints: []
+    sprints: [],
+    npsResponse: null,
+    npsScore: null,
   };
 
   await fetch('/api/projects', {
