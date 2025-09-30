@@ -115,16 +115,16 @@ model NPSResponse {
   clientName             String
   clientNumber           String 
   responseDate           DateTime
-  accordanceScore?       Int
-  accordanceFeedback?     String
-  expectationsScore?      Int
-  expectationsFeedback?   String
-  qualityScore?           Int
-  qualityFeedback?        String
-  missingFeatures?        String
-  improvementSuggestions? String
-  npsScore?               Int
-  pmNotes?                String
+  accordanceScore       Int?
+  accordanceFeedback     String?
+  expectationsScore      Int?
+  expectationsFeedback   String?
+  qualityScore           Int?
+  qualityFeedback        String?
+  missingFeatures        String?
+  improvementSuggestions String?
+  npsScore               Int?
+  pmNotes                String?
 }
 
 
