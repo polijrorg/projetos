@@ -1,6 +1,6 @@
 "use client";
 
-import { Project, Sprint, TaskPriority, TaskType } from "@/types";
+import { ProjectComplete, SprintComplete} from "@/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -15,6 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+export type TaskPriority = "Alta" | "Média" | "Baixa";
+export type TaskType = "Front" | "Back";
+
 export type TaskInput = {
   title: string;
   description: string;
@@ -28,8 +31,8 @@ type TaskDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: TaskInput) => void;
-  project: Project;
-  sprint?: Sprint | null; // para exibir o número no título
+  project: ProjectComplete;
+  sprint?: SprintComplete | null; // para exibir o número no título
   initialValue?: Partial<TaskInput>;
 };
 

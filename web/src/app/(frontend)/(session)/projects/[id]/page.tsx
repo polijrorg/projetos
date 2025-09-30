@@ -4,7 +4,6 @@
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { mockProjects } from "@/data/mockData";
 import Header from "./pageheader";
 import PageContent from "./pagecontent";
 import { useEffect, useState } from "react";

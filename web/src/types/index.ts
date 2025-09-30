@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Analyst, Role, Project, Sprint, NPSResponse, CSATResponse, Retrospective, Task } from '@/generated/prisma';
+import type { Analyst, Role, Project, Sprint, NPSResponse, CSATResponse, Retrospective, Task, handoffDocument } from '@/generated/prisma';
 
 export type AllowedRoutes = { 
   GET?: Role[]
@@ -19,6 +19,7 @@ export type ProjectComplete = Project & {
   analysts: Analyst[];
   sprints: SprintComplete[];
   npsResponse: NPSResponse | null;
+  handoffDocument: handoffDocument | null;
 }
 
 // Utility types

@@ -103,7 +103,7 @@ model Project {
   sprints          Sprint[]
   npsResponse      NPSResponse? 
   coverImage       String?
-  handoffDocument  String?
+  handoffDocument  handoffDocument?
   @@map("project")
 }
 
@@ -147,10 +147,16 @@ model Task {
   sprint    Sprint  @relation(fields: [sprintId], references: [id])
   title     String
   description String?
-  priority  Int?
+  priority  TaskPriority?
   type      String?
   estimate  Int?
   status    String?
+}
+
+enum TaskPriority {
+  Alta
+  Média
+  Baixa
 }
 
 model Retrospective {
@@ -188,6 +194,18 @@ model Analyst {
   role AnalystRole
   projectId String
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model handoffDocument {
+  id String @id @default(uuid()) @map("_id")
+  projectId String @unique
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  objectives String?
+  scope String?
+  clientAgreements String?
+  artifacts String[]
+  risks String[]
+  stakeholders String[]
 }
 
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Project, Sprint, TaskPriority, TaskType } from "@/types";
+import type { ProjectComplete } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BacklogTab from "./(backlog)/BacklogTab";
 import MetricsTab from "./(metrics)/MetricsTab";
@@ -11,7 +11,7 @@ import SprintsTab from "./(sprintTab)/SprintTab";
 import TeamTab from "./(team)/TeamTab";
 import HandoffTab from "./(handoff)/HandoffTab";
 
-type Props = { project: Project };
+type Props = { project: ProjectComplete };
 
 export default function PageContent({ project }: Props) {
   const [activeTab, setActiveTab] = useState("overview");

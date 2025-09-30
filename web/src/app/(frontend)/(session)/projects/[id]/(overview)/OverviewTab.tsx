@@ -1,11 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, CheckCircle2, Target, Users } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import type { ProjectComplete } from "@/types";
 import StatCards from "./StatCards";
 import ProgressPanel from "./ProgressPanel";
