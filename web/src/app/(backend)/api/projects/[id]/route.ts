@@ -6,11 +6,10 @@ import { deleteProject, getProjectById, updateProject } from "@/app/(backend)/se
 import { patchProjectSchema } from "@/app/(backend)/schemas/project.schema";
 
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+request: NextRequest, { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const validationResult = idSchema.safeParse(id);
     if (!validationResult.success) {
@@ -30,11 +29,10 @@ export async function GET(
 }
 
 export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
+request: NextRequest, { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const validationResult = idSchema.safeParse(id);
     if (!validationResult.success) {
