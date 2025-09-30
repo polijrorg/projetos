@@ -88,7 +88,7 @@ export default function SprintList({
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant={getPriorityVariant(task.priority)}>{task.priority}</Badge>
+                          <Badge variant={getPriorityVariant(task.priority ?? "")}>{task.priority ?? "—"}</Badge>
                           <Badge variant="outline">{task.type}</Badge>
                           <span className="text-sm text-muted-foreground">{task.estimate}pt</span>
                         </div>

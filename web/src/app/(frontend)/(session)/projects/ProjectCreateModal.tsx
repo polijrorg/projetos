@@ -83,7 +83,8 @@ type Project = Replace<ProjectComplete, {
     isENB: false,
     sprints: [],
     npsResponse: null,
-    coverImage: `https://i.imgur.com/87E7VI8.jpeg`
+    coverImage: "https://i.imgur.com/87E7VI8.jpeg",
+    handoffDocument: null
   };
 
   await fetch('/api/projects', {

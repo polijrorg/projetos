@@ -1,7 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
-import type { TaskPriority } from "@/types";
 
-export const getPriorityVariant = (priority: TaskPriority) => {
+
+export const getPriorityVariant = (priority: string) => {
   switch (priority) {
     case "Alta": return "destructive";
     case "Média": return "secondary";
