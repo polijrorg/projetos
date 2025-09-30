@@ -48,11 +48,10 @@ request: NextRequest, { params }: { params: Promise<{ id: string }> }
 }
 
 export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest, { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // valida ID
     const idResult = idSchema.safeParse(id);
