@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import type { Project, Sprint, TaskPriority, TaskType } from "@/types";
+import type { ProjectComplete} from "@/types";
 import SprintList from "./SprintList";
 import SprintDialog, { SprintInput } from "./SprintDialog";
 import TaskDialog, { TaskInput } from "./TaskDialog";
 
-export default function SprintsTab({ project }: { project: Project }) {
+export default function SprintsTab({ project }: { project: ProjectComplete }) {
   const [isSprintDialogOpen, setIsSprintDialogOpen] = useState(false);
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [selectedSprint, setSelectedSprint] = useState<Sprint | null>(null);

@@ -1,5 +1,6 @@
 import prisma from "@/backend/services/db";
-
+import { z } from "zod";
+import { patchProjectSchema } from "../../schemas/project.schema";
 
 
 
@@ -66,6 +67,13 @@ export async function deleteProject(id: string) {
   } catch (error) {
     throw new Error((error as Error)?.message || 'Falha ao deletar projeto');
   }
+}
+
+export async function updateProject(id: string, data: z.infer<typeof patchProjectSchema>) {
+  return await prisma.project.update({
+    where: { id },
+    data
+  })
 }
 
 

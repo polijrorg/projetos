@@ -103,6 +103,7 @@ model Project {
   sprints          Sprint[]
   npsScore         Float?
   npsResponse      NPSResponse? 
+  coverImage       String?
 
   @@map("project")
 }

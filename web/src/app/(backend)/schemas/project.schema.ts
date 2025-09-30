@@ -1,19 +1,14 @@
-import { SprayCan } from "lucide-react";
 import z from "zod";
 
 export const patchProjectDTO = z.object({
-  name: z.string(),
-  client: z.string(),
-  shortDescription: z.string(),
-  plannedEndDate: z.date(),
-  startDate: z.date(),
-  status: z.string(),
-  price: z.number().optional(),
-  sprintNumber: z.number(),
-  analysts: z.array(z.object({
-    name: z.string(),
-    role: z.enum(["front", "back", "pm", "coord"])
-  })),
+  name: z.string().optional(),
+  client: z.string().optional(),
+  shortDescription: z.string().optional(),
+  plannedEndDate: z.coerce.date().optional(),
+  startDate: z.coerce.date().optional(),
+  status: z.string().optional(),
+  price: z.number().optional().nullable(),
+  sprintNumber: z.number().optional(),
 })
 
 export const createProjectSchema= z.object({

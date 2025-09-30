@@ -4,16 +4,16 @@ import { useEffect, useState, useCallback } from "react";
 import PageTop from "./pagetop";
 import { ProjectCreateModal } from "@/app/(frontend)/(session)/projects/ProjectCreateModal";
 import ProjectsGrid from "./projects-grid";
-import type { Project } from "@/types";
+import type { ProjectComplete } from "@/types";
 
 export default function ProjectsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectComplete[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Busca projetos da API
-  const fetchProjects = useCallback(async (): Promise<Project[]> => {
+  const fetchProjects = useCallback(async (): Promise<ProjectComplete[]> => {
     try {
       setError(null);
       setLoading(true);
@@ -33,7 +33,7 @@ export default function ProjectsPage() {
         throw new Error(text || `Falha ao carregar projetos (status ${res.status})`);
       }
 
-      const data: Project[] = await res.json();
+      const data: ProjectComplete[] = await res.json();
       setProjects(data);
       return data;
     } catch (err: any) {
@@ -87,7 +87,7 @@ export default function ProjectsPage() {
         {!loading && !error && (
           <ProjectsGrid
             loadProjects={fetchProjects} 
-            onSelect={(p: Project) => console.log(p)}
+            onSelect={(p: ProjectComplete) => console.log(p)}
             projects={projects}
           />
         )}

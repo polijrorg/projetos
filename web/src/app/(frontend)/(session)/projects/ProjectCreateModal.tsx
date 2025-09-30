@@ -84,6 +84,7 @@ type Project = Replace<ProjectComplete, {
     sprints: [],
     npsResponse: null,
     npsScore: null,
+    coverImage: `https://i.imgur.com/87E7VI8.jpeg`
   };
 
   await fetch('/api/projects', {
@@ -269,6 +270,7 @@ type Project = Replace<ProjectComplete, {
                   <select
                     className="w-full h-10 px-3 border border-input bg-background rounded-md text-sm"
                     value={analyst.role}
+                    onChange={(e) => updateAnalyst(index, "role", e.target.value)}
                   >
                     <option value="Front">Front</option>
                     <option value="Back">Back</option>
