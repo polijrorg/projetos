@@ -54,7 +54,7 @@ export default function CSATForm() {
     qualityScore: 0,
     qualityFeedback: "",
     overallSatisfactionScore: 0,
-    suggestions: "", // só para copy/roteiro, não vai para o backend
+    improvementSuggestions: "",
   });
 
   // Carrega projeto + sprint e verifica se já existe CSAT para a sprint
@@ -129,6 +129,7 @@ export default function CSATForm() {
         qualityScore: form.qualityScore,
         qualityFeedback: form.qualityFeedback || "",
         overallSatisfactionScore: form.overallSatisfactionScore,
+        improvementSuggestions: form.improvementSuggestions || "",
       };
 
       const res = await fetch(`/api/projects/${projectId}/sprint/${sprintNumber}/csat`, {
@@ -147,7 +148,7 @@ export default function CSATForm() {
       setCsat(created);
 
       toast.success("CSAT coletado", { description: "Avaliação registrada com sucesso!" });
-      // Não redireciona agora; botão muda para "Ver CSAT" (vai para a página da sprint)
+      router.replace(`/projects/${projectId}/sprint/${sprintNumber}/response`);
     } catch (err: any) {
       toast.error("Erro ao enviar CSAT", { description: err?.message ?? "Tente novamente." });
     } finally {
@@ -305,8 +306,8 @@ export default function CSATForm() {
               <div className="border rounded-lg p-6">
                 <h4 className="font-semibold mb-4">4. Sugestões para a equipe (opcional)</h4>
                 <Textarea
-                  value={form.suggestions}
-                  onChange={(e) => setForm({ ...form, suggestions: e.target.value })}
+                  value={form.improvementSuggestions}
+                  onChange={(e) => setForm({ ...form, improvementSuggestions: e.target.value })}
                   placeholder="Sugestões de melhoria ou comentários adicionais..."
                   rows={4}
                   disabled={hasCSAT}
@@ -323,21 +324,10 @@ export default function CSATForm() {
                 >
                   Cancelar
                 </Button>
-
-                {hasCSAT ? (
-                  <Button
-                    type="button"
-                    className="cursor-pointer"
-                    variant="hero"
-                    onClick={() => router.push(`/projects/${projectId}/sprint/${sprintNumber}`)}
-                  >
-                    Ver CSAT
-                  </Button>
-                ) : (
                   <Button type="submit" className="cursor-pointer" variant="hero" disabled={loadingSubmit}>
                     {loadingSubmit ? "Enviando..." : "Enviar Avaliação CSAT"}
                   </Button>
-                )}
+                
               </div>
             </form>
           </CardContent>

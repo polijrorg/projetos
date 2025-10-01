@@ -67,10 +67,11 @@ export async function POST(
       sprintId: sprint.id,
       responseDate: validated.responseDate,
       teamCommunicationScore: validated.teamCommunicationScore,
-      teamCommunicationFeedback: validated.teamCommunicationFeedback,
+      teamCommunicationFeedback: validated.teamCommunicationFeedback || "",
       qualityScore: validated.qualityScore,
-      qualityFeedback: validated.qualityFeedback,
+      qualityFeedback: validated.qualityFeedback || "",
       overallSatisfactionScore: validated.overallSatisfactionScore,
+      improvementSuggestions: validated.improvementSuggestions || "",
     });
 
     return NextResponse.json(created, { status: 201 });

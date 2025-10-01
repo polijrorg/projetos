@@ -21,13 +21,6 @@ export default function SatisfactionTab({ project }: { project: ProjectComplete 
   const npsScore = project.npsResponse?.npsScore;
   const collected = hasNPS(project);
 
-  useEffect(() => {
-  console.log("[SatisfactionTab] project.id =", project?.id);
-  console.log("[SatisfactionTab] npsResponse =", project?.npsResponse);
-  console.log("[SatisfactionTab] npsScore =", project?.npsResponse?.npsScore);
-  console.log("[SatisfactionTab] collected =", collected);
-}, [project, collected]);
-
 
 
   return (

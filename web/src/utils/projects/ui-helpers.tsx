@@ -29,7 +29,7 @@ export const getScoreVariant5 = (score: number | null | undefined) => {
   if (typeof score !== "number") return "secondary";
   const pct = (score / 5) * 100;
   if (pct >= 80) return "done";
-  if (pct >= 60) return "secondary";
+  if (pct >= 60) return "yellow";
   return "destructive";
 };
 

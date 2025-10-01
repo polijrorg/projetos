@@ -175,11 +175,12 @@ model CSATResponse {
   sprint Sprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
   responseDate DateTime
   teamCommunicationScore Int
-  teamCommunicationFeedback String
+  teamCommunicationFeedback String?
   qualityScore Int
-  qualityFeedback String
+  qualityFeedback String?
   overallSatisfactionScore Int
   averageScore Int
+  improvementSuggestions String?
 }
 
 enum AnalystRole {

@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   MessageSquare,
   Plus,
-  Target
+  Target,
 } from "lucide-react";
 import type { ProjectComplete, SprintComplete } from "@/types";
 
@@ -24,14 +25,24 @@ type Props = {
 type SprintWithExtras = SprintComplete & {
   capacityHours?: number | null;
   goals?: string[];
-  // se no futuro voltar a mostrar métricas, dá pra expandir aqui
 };
+
+type CSATState = Record<
+  number,
+  {
+    exists: boolean;
+    average?: number;
+  }
+>;
 
 export default function SprintList({ project, onCreateTask }: Props) {
   const router = useRouter();
   const [sprints, setSprints] = useState<SprintWithExtras[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+
+  // mapa sprintNumber -> { exists, average }
+  const [csat, setCsat] = useState<CSATState>({});
 
   useEffect(() => {
     let mounted = true;
@@ -55,6 +66,51 @@ export default function SprintList({ project, onCreateTask }: Props) {
     })();
     return () => { mounted = false; };
   }, [project.id]);
+
+  // Busca existência/média de CSAT por sprint (1 CSAT por sprint)
+  useEffect(() => {
+    if (!sprints.length) {
+      setCsat({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const entries = await Promise.all(
+        sprints.map(async (s) => {
+          try {
+            const res = await fetch(
+              `/api/projects/${project.id}/sprint/${s.number}/csat`,
+              { cache: "no-store" }
+            );
+            if (!res.ok) {
+              return [s.number, { exists: false }] as const;
+            }
+            const data = await res.json();
+            const avg =
+              typeof data?.averageScore === "number"
+                ? data.averageScore
+                : typeof data?.teamCommunicationScore === "number" &&
+                  typeof data?.qualityScore === "number" &&
+                  typeof data?.overallSatisfactionScore === "number"
+                ? (data.teamCommunicationScore +
+                    data.qualityScore +
+                    data.overallSatisfactionScore) / 3
+                : undefined;
+
+            return [s.number, { exists: true, average: avg }] as const;
+          } catch {
+            return [s.number, { exists: false }] as const;
+          }
+        })
+      );
+
+      if (!cancelled) setCsat(Object.fromEntries(entries));
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [project.id, sprints]);
 
   if (loading) {
     return (
@@ -99,6 +155,9 @@ export default function SprintList({ project, onCreateTask }: Props) {
           const goals = Array.isArray(s.goals) ? s.goals.filter(Boolean) : [];
           const capacity = typeof s.capacityHours === "number" ? s.capacityHours : null;
 
+          const hasCSAT = csat[s.number]?.exists === true;
+          const avg = csat[s.number]?.average;
+
           return (
             <Card key={s.id}>
               <CardHeader>
@@ -121,6 +180,7 @@ export default function SprintList({ project, onCreateTask }: Props) {
                   </div>
 
                   <div className="flex items-center gap-2">
+                    {/* Ver sprint */}
                     <Button
                       variant="outline"
                       size="sm"
@@ -129,14 +189,39 @@ export default function SprintList({ project, onCreateTask }: Props) {
                     >
                       Ver Sprint
                     </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => router.push(`/projects/${project.id}/sprint/${s.number}/csat`)}
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    CSAT
-                  </Button>
+
+                    {/* CSAT: coletar ou ver detalhes */}
+                    {hasCSAT ? (
+                      <>
+                        {typeof avg === "number" && (
+                          <Badge variant="secondary">CSAT: {avg.toFixed(1)}</Badge>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            router.push(`/projects/${project.id}/sprint/${s.number}/response`)
+                          }
+                          className="cursor-pointer"
+                        >
+                          Ver CSAT
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          router.push(`/projects/${project.id}/sprint/${s.number}/csat`)
+                        }
+                        className="cursor-pointer"
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Coletar CSAT
+                      </Button>
+                    )}
+
+                    {/* Nova task */}
                     <Button
                       variant="outline"
                       size="sm"
@@ -146,12 +231,8 @@ export default function SprintList({ project, onCreateTask }: Props) {
                       <Plus className="h-4 w-4 mr-2" />
                       Nova Task
                     </Button>
-
-                
                   </div>
-                  
                 </div>
-                
               </CardHeader>
 
               <CardContent>
@@ -168,9 +249,6 @@ export default function SprintList({ project, onCreateTask }: Props) {
                     </ul>
                   </div>
                 )}
-
-
-
               </CardContent>
             </Card>
           );

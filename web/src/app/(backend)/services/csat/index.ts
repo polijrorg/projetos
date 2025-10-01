@@ -18,10 +18,11 @@ type CreateCSATInput = {
   sprintId: string;
   responseDate?: Date;
   teamCommunicationScore: number;
-  teamCommunicationFeedback: string;
+  teamCommunicationFeedback?: string;
   qualityScore: number;
-  qualityFeedback: string;
+  qualityFeedback?: string;
   overallSatisfactionScore: number;
+  improvementSuggestions? : string;
 };
 
 export async function createCSATForSprint(input: CreateCSATInput) {
@@ -38,6 +39,7 @@ export async function createCSATForSprint(input: CreateCSATInput) {
       qualityScore: input.qualityScore,
       qualityFeedback: input.qualityFeedback,
       overallSatisfactionScore: input.overallSatisfactionScore,
+      improvementSuggestions: input.improvementSuggestions,
       averageScore,
     },
   });

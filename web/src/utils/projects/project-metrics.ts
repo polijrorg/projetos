@@ -1,5 +1,6 @@
 import { differenceInDays, differenceInWeeks, isAfter } from "date-fns";
-import type { ProjectComplete } from "@/types";
+import type { ProjectComplete, SprintComplete } from "@/types";
+import { Sprint } from "@/generated/prisma";
 
 export const calculateDelay = (project: ProjectComplete) => {
   if (project.status === 'Congelado') return 0;
@@ -41,4 +42,8 @@ export const hasNPS = (project: ProjectComplete) => {
   return typeof score === "number" && Number.isFinite(score);
   // Se quiser ser mais rígido: && score >= 0 && score <= 10
 };
+
+export function hasCSATForSprint(sprint: Pick<SprintComplete, "csatResponses">) {
+  return Array.isArray(sprint.csatResponses) && sprint.csatResponses.length > 0;
+}
 
