@@ -113,7 +113,7 @@ export default function NPSForm() {
 
     if (hasNPS) {
       // Se já existe, apenas navega para detalhes
-      router.push(`/projects/${projectId}/nps`);
+      router.push(`/projects/${projectId}/response`);
       return;
     }
 
