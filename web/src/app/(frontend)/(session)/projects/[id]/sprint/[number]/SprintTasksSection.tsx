@@ -20,7 +20,7 @@ type Task = {
   priority?: "Alta" | "Média" | "Baixa" | null;
   type?: string | null; // "Front" | "Back"
   estimate?: number | null;
-  status?: "ToDo" | "InProgress" | "Review" | "Done" | string | null;
+  status?: "TODO" | "DOING" | "DONE" | string | null;
 };
 
 type Props = {
@@ -34,18 +34,18 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const frontTasks = useMemo(() => tasks.filter((t) => (t.type ?? "Front") === "Front"), [tasks]);
-  const backTasks = useMemo(() => tasks.filter((t) => (t.type ?? "Back") === "Back"), [tasks]);
+  const frontTasks = useMemo(() => tasks.filter((t) => (t.type ?? "Front-end") === "Front-end"), [tasks]);
+  const backTasks = useMemo(() => tasks.filter((t) => (t.type ?? "Back-end") === "Back-end"), [tasks]);
 
   const calcProgress = (list: Task[]) => {
     const total = list.length;
-    const done = list.filter((t) => (t.status ?? "ToDo") === "Done").length;
+    const done = list.filter((t) => (t.status ?? "TODO") === "DONE").length;
     return percent(done, total);
   };
 
   // CRUD handlers
   const handleCreate = async (payload: Omit<Task, "id" | "sprintId">) => {
-    const res = await fetch(`/api/projects/${projectId}/sprint/${sprint.id}/tasks`, {
+    const res = await fetch(`/api/projects/${projectId}/sprint/${sprint.number}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -56,7 +56,7 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
   };
 
   const handleUpdate = async (taskId: string, changes: Partial<Task>) => {
-    const res = await fetch(`/api/projects/${projectId}/sprint/${sprint.id}/tasks/${taskId}`, {
+    const res = await fetch(`/api/projects/${projectId}/sprint/${sprint.number}/tasks/${taskId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(changes),
@@ -67,14 +67,14 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
   };
 
   const handleDelete = async (taskId: string) => {
-    const res = await fetch(`/api/projects/${projectId}/sprint/${sprint.id}/tasks/${taskId}`, { method: "DELETE" });
+    const res = await fetch(`/api/projects/${projectId}/sprint/${sprint.number}/tasks/${taskId}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Falha ao deletar task");
     onTasksChange(tasks.filter((t) => t.id !== taskId));
   };
 
   const toggleStatus = async (task: Task) => {
-    const order = ["ToDo", "InProgress", "Review", "Done"];
-    const current = (task.status ?? "ToDo") as string;
+    const order = ["TODO", "DOING", "DONE"];
+    const current = (task.status ?? "TODO") as string;
     const idx = order.indexOf(current);
     const next = order[(idx + 1) % order.length];
     await handleUpdate(task.id, { status: next as any });
@@ -123,7 +123,7 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
                     <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                       {typeof task.estimate === "number" && <span>⏱️ {task.estimate}h</span>}
                       <Badge variant="outline" className="text-xs">
-                        {task.status ?? "ToDo"}
+                        {task.status ?? "TODO"}
                       </Badge>
                     </div>
                   </div>
@@ -176,9 +176,9 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
           title: editingTask.title,
           description: editingTask.description ?? undefined, // <-- normaliza null -> undefined
           priority: (editingTask.priority as "Alta" | "Média" | "Baixa") ?? "Média",
-          type: (editingTask.type as "Front" | "Back") ?? "Front",
+          type: (editingTask.type as "Front-end" | "Back-end") ?? "Front-end",
           estimate: editingTask.estimate ?? 1,
-          status: (editingTask.status as "ToDo" | "InProgress" | "Review" | "Done") ?? "ToDo",
+          status: (editingTask.status as "TODO" | "DOING" | "DONE") ?? "TODO",
         }
       : undefined
   }

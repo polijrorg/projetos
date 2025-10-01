@@ -63,7 +63,7 @@ export default function SprintDetailsPage() {
 
         // 3) Tasks (se tiver sprint)
         if (found) {
-          const tRes = await fetch(`/api/projects/${projectId}/sprint/${found.number}/tasks`, { cache: "no-store" });
+          const tRes = await fetch(`/api/projects/${projectId}/sprint/${sprintNumber}/tasks`, { cache: "no-store" });
           if (!tRes.ok) throw new Error(`Falha ao carregar tasks (HTTP ${tRes.status})`);
           const tData: Task[] = await tRes.json();
           if (!mounted) return;

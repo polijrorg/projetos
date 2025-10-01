@@ -16,6 +16,7 @@ import {
   Target,
 } from "lucide-react";
 import type { ProjectComplete, SprintComplete } from "@/types";
+import { getScoreVariant5 } from "@/utils/projects/ui-helpers";
 
 type Props = {
   project: ProjectComplete;
@@ -27,11 +28,12 @@ type SprintWithExtras = SprintComplete & {
   goals?: string[];
 };
 
+/** guarda se existe CSAT e o overallSatisfactionScore daquela sprint */
 type CSATState = Record<
   number,
   {
     exists: boolean;
-    average?: number;
+    overall?: number; // <- usamos o overall (não a média)
   }
 >;
 
@@ -41,7 +43,6 @@ export default function SprintList({ project, onCreateTask }: Props) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
-  // mapa sprintNumber -> { exists, average }
   const [csat, setCsat] = useState<CSATState>({});
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export default function SprintList({ project, onCreateTask }: Props) {
     return () => { mounted = false; };
   }, [project.id]);
 
-  // Busca existência/média de CSAT por sprint (1 CSAT por sprint)
+  // busca 1 CSAT por sprint e guarda o overallSatisfactionScore
   useEffect(() => {
     if (!sprints.length) {
       setCsat({});
@@ -86,18 +87,12 @@ export default function SprintList({ project, onCreateTask }: Props) {
               return [s.number, { exists: false }] as const;
             }
             const data = await res.json();
-            const avg =
-              typeof data?.averageScore === "number"
-                ? data.averageScore
-                : typeof data?.teamCommunicationScore === "number" &&
-                  typeof data?.qualityScore === "number" &&
-                  typeof data?.overallSatisfactionScore === "number"
-                ? (data.teamCommunicationScore +
-                    data.qualityScore +
-                    data.overallSatisfactionScore) / 3
+            const overall =
+              typeof data?.overallSatisfactionScore === "number"
+                ? data.overallSatisfactionScore
                 : undefined;
 
-            return [s.number, { exists: true, average: avg }] as const;
+            return [s.number, { exists: true, overall }] as const;
           } catch {
             return [s.number, { exists: false }] as const;
           }
@@ -156,14 +151,21 @@ export default function SprintList({ project, onCreateTask }: Props) {
           const capacity = typeof s.capacityHours === "number" ? s.capacityHours : null;
 
           const hasCSAT = csat[s.number]?.exists === true;
-          const avg = csat[s.number]?.average;
+          const overall = csat[s.number]?.overall;
 
           return (
             <Card key={s.id}>
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle>Sprint {s.number}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="whitespace-nowrap">Sprint {s.number}</CardTitle>
+                      {/* badge AO LADO do título, mostrando o OVERALL */}
+                      {hasCSAT && typeof overall === "number" && (
+                        <Badge variant={getScoreVariant5(overall)} className="ml-1">CSAT: {overall}</Badge>
+                      )}
+                    </div>
+
                     <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                       <CalendarIcon className="h-4 w-4" />
                       <span>
@@ -192,21 +194,16 @@ export default function SprintList({ project, onCreateTask }: Props) {
 
                     {/* CSAT: coletar ou ver detalhes */}
                     {hasCSAT ? (
-                      <>
-                        {typeof avg === "number" && (
-                          <Badge variant="secondary">CSAT: {avg.toFixed(1)}</Badge>
-                        )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            router.push(`/projects/${project.id}/sprint/${s.number}/response`)
-                          }
-                          className="cursor-pointer"
-                        >
-                          Ver CSAT
-                        </Button>
-                      </>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          router.push(`/projects/${project.id}/sprint/${s.number}/response`)
+                        }
+                        className="cursor-pointer"
+                      >
+                        Ver CSAT
+                      </Button>
                     ) : (
                       <Button
                         variant="outline"
@@ -221,16 +218,7 @@ export default function SprintList({ project, onCreateTask }: Props) {
                       </Button>
                     )}
 
-                    {/* Nova task */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="cursor-pointer"
-                      onClick={() => onCreateTask(s)}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Nova Task
-                    </Button>
+                    
                   </div>
                 </div>
               </CardHeader>

@@ -14,9 +14,9 @@ type TaskForm = {
   title: string;
   description?: string;
   priority?: "Alta" | "Média" | "Baixa";
-  type?: "Front" | "Back";
+  type?: "Front-end" | "Back-end";
   estimate?: number;
-  status?: "ToDo" | "InProgress" | "Review" | "Done";
+  status?: "TODO" | "DOING" | "DONE";
 };
 
 type Props = {
@@ -31,9 +31,9 @@ export default function TaskDialog({ open, onOpenChange, initialTask, onConfirm 
     title: "",
     description: "",
     priority: "Média",
-    type: "Front",
+    type: "Front-end",
     estimate: 1,
-    status: "ToDo",
+    status: "TODO",
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -43,9 +43,9 @@ export default function TaskDialog({ open, onOpenChange, initialTask, onConfirm 
         title: initialTask?.title ?? "",
         description: initialTask?.description ?? "",
         priority: (initialTask?.priority as any) ?? "Média",
-        type: (initialTask?.type as any) ?? "Front",
+        type: (initialTask?.type as any) ?? "Front-end",
         estimate: (initialTask?.estimate as any) ?? 1,
-        status: (initialTask?.status as any) ?? "ToDo",
+        status: (initialTask?.status as any) ?? "TODO",
       });
     }
   }, [open, initialTask]);
@@ -114,14 +114,14 @@ export default function TaskDialog({ open, onOpenChange, initialTask, onConfirm 
               <Label htmlFor="task-type">Tipo</Label>
               <Select
                 value={form.type}
-                onValueChange={(v: "Front" | "Back") => setForm((f) => ({ ...f, type: v }))}
+                onValueChange={(v: "Front-end" | "Back-end") => setForm((f) => ({ ...f, type: v }))}
               >
                 <SelectTrigger disabled={submitting}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Front">Front-end</SelectItem>
-                  <SelectItem value="Back">Back-end</SelectItem>
+                  <SelectItem value="Front-end">Front-end</SelectItem>
+                  <SelectItem value="Back-end">Back-end</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -144,16 +144,15 @@ export default function TaskDialog({ open, onOpenChange, initialTask, onConfirm 
               <Label htmlFor="task-status">Status</Label>
               <Select
                 value={form.status}
-                onValueChange={(v: "ToDo" | "InProgress" | "Review" | "Done") => setForm((f) => ({ ...f, status: v }))}
+                onValueChange={(v: "TODO" | "DOING" | "DONE") => setForm((f) => ({ ...f, status: v }))}
               >
                 <SelectTrigger disabled={submitting}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ToDo">ToDo</SelectItem>
-                  <SelectItem value="InProgress">InProgress</SelectItem>
-                  <SelectItem value="Review">Review</SelectItem>
-                  <SelectItem value="Done">Done</SelectItem>
+                  <SelectItem value="TODO">ToDo</SelectItem>
+                  <SelectItem value="DOING">InProgress</SelectItem>
+                  <SelectItem value="DONE">Done</SelectItem>
                 </SelectContent>
               </Select>
             </div>
