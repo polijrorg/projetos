@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CheckCircle2, Circle, PlayCircle } from "lucide-react";
 
 
@@ -41,7 +43,7 @@ export const percent = (done: number, total: number) => {
 export const safeDate = (d?: string | Date | null) => {
   if (!d) return null;
   try {
-    return new Date(d as any);
+    return new Date(d);
   } catch {
     return null;
   }

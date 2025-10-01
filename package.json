@@ -2,6 +2,7 @@
   "name": "noctiluz-monorepo",
   "private": true,
   "devDependencies": {
+    "eslint-plugin-react-hooks": "^5.2.0",
     "husky": "^9.1.7"
   },
   "scripts": {
@@ -9,7 +10,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-        "@prisma/client"
+      "@prisma/client"
     ]
   }
 }
