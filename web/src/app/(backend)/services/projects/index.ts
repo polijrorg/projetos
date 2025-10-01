@@ -50,7 +50,7 @@ export async function getProjectById(id: string) {
   try {
     const project = await prisma.project.findUnique({
       where: { id },
-      include: { analysts: true, sprints: true },
+      include: { analysts: true, sprints: true, npsResponse: true, handoffDocument: true },
     });
     return project;
   } catch (error) {

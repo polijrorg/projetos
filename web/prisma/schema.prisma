@@ -139,6 +139,7 @@ model Sprint {
   retrospective  Retrospective?
   goals          String[]
   tasks          Task[]
+  capacityHours String? 
 }
 
 model Task {

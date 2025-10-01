@@ -1,3 +1,7 @@
+export default function noop(): void {
+  // no-op
+}
+
 // "use client";
 // import React, { useState } from "react";
 // import { Button } from "@/components/ui/button";
@@ -6,8 +10,7 @@
 // import { Textarea } from "@/components/ui/textarea";
 // import { Label } from "@/components/ui/label";
 // import { ArrowLeft, Star } from "lucide-react";
-// import { mockProjects } from "@/data/mockData";
-// import { useParams, useRouter, useSearchParams } from "next/navigation";
+// import { useParams, useRouter} from "next/navigation";
 // import { toast } from "sonner";
 
 
@@ -29,10 +32,6 @@
 //   const sprintNumber = Array.isArray(params.sprintId) ? params.sprintId[0] : (params.sprintId as string);
 //   const router = useRouter();
 
-export default function CSATPageWIP() {
-  return null; // TODO: implementar depois
-}
-  
 //   const [form, setForm] = useState({
 //     clientName: "",
 //     teamCommunicationScore: 0,

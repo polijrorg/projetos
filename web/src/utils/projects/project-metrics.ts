@@ -25,7 +25,6 @@ export const calculateCSATCollectionRate = (project: ProjectComplete) => {
 
 export const calculateITIP = (project: ProjectComplete) => {
   if (!project.analysts.length || !project.price) return 0;
-  console.log(project.price, project.analysts.length, project.sprintNumber);
   const itip = project.price /(project.analysts.length * project.sprintNumber * 2);
   return Number(itip.toFixed(2));
 }
@@ -37,4 +36,9 @@ export const calculateRealITIP = (project: ProjectComplete) => {
 }
 
 
+export const hasNPS = (project: ProjectComplete) => {
+  const score = project?.npsResponse?.npsScore;
+  return typeof score === "number" && Number.isFinite(score);
+  // Se quiser ser mais rígido: && score >= 0 && score <= 10
+};
 

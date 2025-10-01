@@ -42,12 +42,9 @@ const NPSButton = ({ score, selected, onClick }: { score: number; selected: bool
   );
 };
 
-// --- Tipos mínimos locais para tipagem básica ---
-type ProjectLite = {
-  id: string;
-  name: string;
-  client: string;
-};
+// --- Tipagens mínimas ---
+type ProjectLite = { id: string; name: string; client: string };
+type NPSLite = { id: string };
 
 export default function NPSForm() {
   const params = useParams();
@@ -57,6 +54,9 @@ export default function NPSForm() {
   const [project, setProject] = useState<ProjectLite | null>(null);
   const [loadingProject, setLoadingProject] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const [hasNPS, setHasNPS] = useState(false);
+  const [nps, setNps] = useState<NPSLite | null>(null);
 
   const [form, setForm] = useState({
     clientName: "",
@@ -73,30 +73,49 @@ export default function NPSForm() {
     pmNotes: ""
   });
 
-  // --- Buscar projeto via API (REMOVE mock/localStorage) ---
+  // Carrega projeto e verifica se já existe NPS
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         setLoadingProject(true);
-        const res = await fetch(`/api/projects/${projectId}`, { method: "GET" });
-        if (!res.ok) throw new Error("Falha ao carregar projeto");
-        const data: ProjectLite = await res.json();
-        if (mounted) setProject(data);
+
+        // Projeto
+        const projRes = await fetch(`/api/projects/${projectId}`, { method: "GET" });
+        if (!projRes.ok) throw new Error("Falha ao carregar projeto");
+        const projData: ProjectLite = await projRes.json();
+        if (!mounted) return;
+        setProject(projData);
+
+        // NPS existente
+        const npsRes = await fetch(`/api/projects/${projectId}/nps`, { method: "GET" });
+        if (npsRes.ok) {
+          const npsData: NPSLite = await npsRes.json();
+          if (!mounted) return;
+          setHasNPS(true);
+          setNps(npsData);
+        } else if (npsRes.status !== 404) {
+          // 404 = não existe NPS; outros códigos: erro
+          const errJson = await npsRes.json().catch(() => ({}));
+          toast.error("Erro ao verificar NPS", { description: errJson?.message ?? "Tente novamente." });
+        }
       } catch (err: any) {
-        toast.error("Erro ao carregar projeto", { description: err?.message ?? "Tente novamente." });
+        toast.error("Erro ao carregar dados", { description: err?.message ?? "Tente novamente." });
       } finally {
         if (mounted) setLoadingProject(false);
       }
     })();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [projectId]);
 
-  // --- Submit NPS via API (estrutura parecida com o segundo código) ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (hasNPS) {
+      // Se já existe, apenas navega para detalhes
+      router.push(`/projects/${projectId}/nps`);
+      return;
+    }
 
     if (
       form.accordanceScore === 0 ||
@@ -104,16 +123,13 @@ export default function NPSForm() {
       form.qualityScore === 0 ||
       form.npsScore === 0
     ) {
-      toast.error("Erro", {
-        description: "Por favor, preencha todas as avaliações obrigatórias.",
-      });
+      toast.error("Erro", { description: "Por favor, preencha todas as avaliações obrigatórias." });
       return;
     }
 
     try {
       setLoadingSubmit(true);
 
-      // Monta o payload num formato simples e estável para o backend
       const payload = {
         projectId,
         responseDate: new Date().toISOString(),
@@ -142,11 +158,12 @@ export default function NPSForm() {
         throw new Error(errJson?.message || "Falha ao enviar a pesquisa");
       }
 
-      toast.success("NPS Coletado", {
-        description: "Pesquisa de satisfação registrada com sucesso!",
-      });
+      const created: NPSLite = await res.json();
+      setHasNPS(true);
+      setNps(created);
 
-      router.push(`/projects/${projectId}`);
+      toast.success("NPS coletado", { description: "Pesquisa registrada com sucesso!" });
+      // Não redireciona agora; muda o botão para "Ver NPS"
     } catch (err: any) {
       toast.error("Erro ao enviar NPS", { description: err?.message ?? "Tente novamente." });
     } finally {
@@ -192,15 +209,21 @@ export default function NPSForm() {
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2">
               <TrendingUp className="h-6 w-6 text-primary" />
-              Coleta de NPS
+              {hasNPS ? "NPS já coletado" : "Coleta de NPS"}
             </CardTitle>
             <p className="text-muted-foreground">
               Projeto: {project.name} • Cliente: {project.client}
             </p>
+            {hasNPS && (
+              <p className="text-sm text-muted-foreground">
+                Já existe uma resposta de NPS para este projeto.
+              </p>
+            )}
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Roteiro */}
               <div className="bg-muted/30 p-6 rounded-lg">
                 <h3 className="font-semibold text-lg mb-4">Roteiro de Coleta</h3>
                 <div className="space-y-3 text-muted-foreground">
@@ -214,6 +237,7 @@ export default function NPSForm() {
                 </div>
               </div>
 
+              {/* Campos */}
               <div className="space-y-2">
                 <Label htmlFor="clientName">Nome do Cliente</Label>
                 <Input
@@ -221,6 +245,7 @@ export default function NPSForm() {
                   value={form.clientName}
                   onChange={(e) => setForm({ ...form, clientName: e.target.value })}
                   placeholder="Nome do contato"
+                  disabled={hasNPS}
                 />
               </div>
 
@@ -231,6 +256,7 @@ export default function NPSForm() {
                   value={form.clientNumber}
                   onChange={(e) => setForm({ ...form, clientNumber: e.target.value })}
                   placeholder="Número do contato"
+                  disabled={hasNPS}
                 />
               </div>
 
@@ -257,6 +283,7 @@ export default function NPSForm() {
                       onChange={(e) => setForm({ ...form, accordanceFeedback: e.target.value })}
                       placeholder="Descreva como foi o atendimento ao acordado..."
                       rows={3}
+                      disabled={hasNPS}
                     />
                   </div>
                 </div>
@@ -283,6 +310,7 @@ export default function NPSForm() {
                       onChange={(e) => setForm({ ...form, expectationsFeedback: e.target.value })}
                       placeholder="Descreva como suas expectativas foram atendidas..."
                       rows={3}
+                      disabled={hasNPS}
                     />
                   </div>
                 </div>
@@ -307,6 +335,7 @@ export default function NPSForm() {
                       onChange={(e) => setForm({ ...form, qualityFeedback: e.target.value })}
                       placeholder="Descreva a qualidade das entregas..."
                       rows={3}
+                      disabled={hasNPS}
                     />
                   </div>
                 </div>
@@ -324,6 +353,7 @@ export default function NPSForm() {
                         onChange={(e) => setForm({ ...form, missingFeatures: e.target.value })}
                         placeholder="Descreva o que sentiu falta no projeto..."
                         rows={3}
+                        disabled={hasNPS}
                       />
                     </div>
                     <div className="space-y-2">
@@ -334,6 +364,7 @@ export default function NPSForm() {
                         onChange={(e) => setForm({ ...form, improvementSuggestions: e.target.value })}
                         placeholder="Como podemos melhorar nossa entrega de valor..."
                         rows={3}
+                        disabled={hasNPS}
                       />
                     </div>
                   </div>
@@ -365,6 +396,7 @@ export default function NPSForm() {
                       onChange={(e) => setForm({ ...form, pmNotes: e.target.value })}
                       placeholder="Há alguma dificuldade que você está passando na sua empresa com a qual conseguimos auxiliar? Gostaria de conhecer nossa carta de serviços?"
                       rows={3}
+                      disabled={hasNPS}
                     />
                   </div>
                 </div>
@@ -386,9 +418,21 @@ export default function NPSForm() {
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" className="cursor-pointer" variant="hero" disabled={loadingSubmit}>
-                  {loadingSubmit ? "Enviando..." : "Enviar Pesquisa NPS"}
-                </Button>
+
+                {hasNPS ? (
+                  <Button
+                    type="button"
+                    className="cursor-pointer"
+                    variant="hero"
+                    onClick={() => router.push(`/projects/${projectId}/nps`)}
+                  >
+                    Ver NPS
+                  </Button>
+                ) : (
+                  <Button type="submit" className="cursor-pointer" variant="hero" disabled={loadingSubmit}>
+                    {loadingSubmit ? "Enviando..." : "Enviar Pesquisa NPS"}
+                  </Button>
+                )}
               </div>
             </form>
           </CardContent>

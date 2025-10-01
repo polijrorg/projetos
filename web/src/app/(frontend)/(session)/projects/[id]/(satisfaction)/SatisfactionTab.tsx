@@ -8,25 +8,55 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { ProjectComplete } from "@/types";
 import { useRouter } from "next/navigation";
+import { hasNPS } from "@/utils/projects/project-metrics";
+import { useEffect } from "react";
+
+
 
 export default function SatisfactionTab({ project }: { project: ProjectComplete }) {
   const router = useRouter();
+
+
+
+  const npsScore = project.npsResponse?.npsScore;
+  const collected = hasNPS(project);
+
+  useEffect(() => {
+  console.log("[SatisfactionTab] project.id =", project?.id);
+  console.log("[SatisfactionTab] npsResponse =", project?.npsResponse);
+  console.log("[SatisfactionTab] npsScore =", project?.npsResponse?.npsScore);
+  console.log("[SatisfactionTab] collected =", collected);
+}, [project, collected]);
+
+
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Coleta de Satisfação</h2>
         <div className="flex gap-2">
+          {collected ? (
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/projects/${project.id}/response`)}
+              className="flex items-center gap-2 cursor-pointer hover:bg-poli-yellow"
+            >
+              <TrendingUp className="h-4 w-4" />
+              Ver Detalhes
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/projects/${project.id}/nps`)}
+              className="flex items-center gap-2 cursor-pointer hover:bg-poli-yellow"
+            >
+              <TrendingUp className="h-4 w-4" />
+              Coletar NPS 
+            </Button>
+          )}
+
           <Button
-            variant="outline"
-            onClick={() => router.push(`/projects/${project.id}/nps`)}
-            className="flex items-center gap-2 cursor-pointer hover:bg-poli-yellow"
-          >
-            <TrendingUp className="h-4 w-4" />
-            Coletar NPS
-          </Button>
-          <Button
-            onClick={() => router.push(`/projects/${project.id}/satisfacao`)}
+            onClick={() => router.push(`/projects/${project.id}/response`)}
             className="flex items-center gap-2 cursor-pointer"
             variant="hero"
           >
@@ -87,17 +117,17 @@ export default function SatisfactionTab({ project }: { project: ProjectComplete 
           </CardHeader>
           <CardContent>
             <div className="text-center p-6">
-              {typeof project.npsResponse?.npsScore === "number" ? (
+              {collected ? (
                 <div>
                   <div className="text-4xl font-bold text-foreground mb-2">
-                    {project.npsResponse.npsScore}/10
+                    {npsScore}/10
                   </div>
-                  <div className="text-muted-foreground">NPS Coletado</div>
+                  <div className="text-muted-foreground">NPS coletado</div>
                   <Button
                     variant="outline"
                     size="sm"
                     className="mt-4 cursor-pointer"
-                    onClick={() => router.push(`/projects/${project.id}/satisfacao`)}
+                    onClick={() => router.push(`/projects/${project.id}/response`)}
                   >
                     Ver Detalhes
                   </Button>
@@ -107,7 +137,10 @@ export default function SatisfactionTab({ project }: { project: ProjectComplete 
                   <div className="text-muted-foreground mb-4">
                     NPS ainda não coletado
                   </div>
-                  <Button className="cursor-pointer hover:bg-poli-yellow" onClick={() => router.push(`/projects/${project.id}/nps`)}>
+                  <Button
+                    className="cursor-pointer hover:bg-poli-yellow"
+                    onClick={() => router.push(`/projects/${project.id}/nps`)}
+                  >
                     Coletar NPS
                   </Button>
                 </div>
