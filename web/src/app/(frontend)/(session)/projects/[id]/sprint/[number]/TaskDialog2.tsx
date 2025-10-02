@@ -160,10 +160,10 @@ export default function TaskDialog({ open, onOpenChange, initialTask, onConfirm 
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>
+          <Button variant="cancel" onClick={() => onOpenChange(false)} disabled={submitting}>
             Cancelar
           </Button>
-          <Button onClick={handleConfirm} disabled={submitting}>
+          <Button onClick={handleConfirm} disabled={submitting} variant="hero">
             {initialTask?.title ? "Atualizar" : "Criar"} Task
           </Button>
         </div>
