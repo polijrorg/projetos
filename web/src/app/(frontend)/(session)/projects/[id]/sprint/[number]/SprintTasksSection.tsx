@@ -10,7 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { Edit, Trash2 } from "lucide-react";
 import type { SprintComplete } from "@/types";
 import TaskDialog2 from "./TaskDialog2";
-import { getPriorityVariant, getStatusIcon, percent } from "@/utils/projects/ui-helpers";
+import { getPriorityVariant, getStatusIcon, getStatusVariant, getTaskStatusString, getTaskStatusVariant, percent } from "@/utils/projects/ui-helpers";
+import { get } from "http";
 
 type Task = {
   id: string;
@@ -23,12 +24,14 @@ type Task = {
   status?: "TODO" | "DOING" | "DONE" | string | null;
 };
 
+
 type Props = {
   projectId: string;
   sprint: SprintComplete;
   tasks: Task[];
   onTasksChange: (tasks: Task[]) => void;
 };
+
 
 export default function SprintTasksSection({ projectId, sprint, tasks, onTasksChange }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -80,20 +83,22 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
     await handleUpdate(task.id, { status: next as any });
   };
 
+
   const TaskList = ({ list, title, badgeTone }: { list: Task[]; title: string; badgeTone: "secondary" | "outline" }) => (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <div className={`w-3 h-3 ${badgeTone === "secondary" ? "bg-primary" : "bg-secondary"} rounded-full`} />
+            <div className={`w-3 h-3 ${badgeTone === "secondary" ? "bg-poli-blue" : "bg-poli-yellow"} rounded-full`} />
             {title}
-            <Badge variant="secondary">{list.length}</Badge>
+            <Badge variant={getTaskStatusVariant(title)}>{list.length}</Badge>
           </CardTitle>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">{Math.round(calcProgress(list))}% concluído</span>
             <Progress value={calcProgress(list)} className="w-24" />
           </div>
         </div>
+        
       </CardHeader>
       <CardContent>
         {list.length === 0 ? (
@@ -122,8 +127,8 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
                     {task.description && <p className="text-sm text-muted-foreground">{task.description}</p>}
                     <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                       {typeof task.estimate === "number" && <span>⏱️ {task.estimate}h</span>}
-                      <Badge variant="outline" className="text-xs">
-                        {task.status ?? "TODO"}
+                      <Badge variant={getTaskStatusVariant(task.status ?? "Done")} className="text-xs">
+                        {getTaskStatusString(task.status ?? "Pendente")}
                       </Badge>
                     </div>
                   </div>
@@ -151,6 +156,8 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
       </CardContent>
     </Card>
   );
+
+  
 
   return (
     <div className="space-y-6">

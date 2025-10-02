@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { ProjectComplete } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BacklogTab from "./(backlog)/BacklogTab";
-import MetricsTab from "./(metrics)/MetricsTab";
 import OverviewTab from "./(overview)/OverviewTab";
 import SatisfactionTab from "./(satisfaction)/SatisfactionTab";
 import SprintsTab from "./(sprintTab)/SprintTab";
@@ -25,7 +24,6 @@ export default function PageContent({ project }: Props) {
           <TabsTrigger value="sprints">Sprints & Tasks</TabsTrigger>
           <TabsTrigger value="team">Equipe</TabsTrigger>
           <TabsTrigger value="handoff">Handoff</TabsTrigger>
-          <TabsTrigger value="metrics">Métricas</TabsTrigger>
           <TabsTrigger value="satisfaction">Satisfação</TabsTrigger>
         </TabsList>
 
@@ -47,10 +45,6 @@ export default function PageContent({ project }: Props) {
 
         <TabsContent value="handoff">
           <HandoffTab project={project} />
-        </TabsContent>
-
-        <TabsContent value="metrics">
-          <MetricsTab project={project} />
         </TabsContent>
 
         <TabsContent value="satisfaction">

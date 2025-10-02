@@ -89,6 +89,7 @@ export function SprintCreateModal({
     // reset do form
     setFormData(EMPTY_SPRINT);
 
+
     onSprintCreated();
     onClose();
   };

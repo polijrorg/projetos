@@ -12,7 +12,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { ProjectComplete, SprintComplete } from "@/types";
 import SprintTasksSection from "./SprintTasksSection";
-import { percent, safeDate} from "@/utils/projects/ui-helpers";
+import { percent, safeDate } from "@/utils/projects/ui-helpers";
 
 type Task = {
   id: string;
@@ -20,9 +20,9 @@ type Task = {
   title: string;
   description?: string | null;
   priority?: "Alta" | "Média" | "Baixa" | null;
-  type?: string | null; // "Front" | "Back" (livre no schema)
+  type?: string | null; // "Front-end" | "Back-end" (string livre no schema)
   estimate?: number | null;
-  status?: "ToDo" | "InProgress" | "Review" | "Done" | string | null;
+  status?: "TODO" | "DOING" | "DONE" | string | null;
 };
 
 export default function SprintDetailsPage() {
@@ -36,7 +36,6 @@ export default function SprintDetailsPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-  console.log(sprint);
 
   // fetch project + sprint + tasks
   useEffect(() => {
@@ -65,9 +64,10 @@ export default function SprintDetailsPage() {
         if (found) {
           const tRes = await fetch(`/api/projects/${projectId}/sprint/${sprintNumber}/tasks`, { cache: "no-store" });
           if (!tRes.ok) throw new Error(`Falha ao carregar tasks (HTTP ${tRes.status})`);
-          const tData: Task[] = await tRes.json();
+          const tJson = await tRes.json() as { tasks?: Task[]; buckets?: any };
+          const list = Array.isArray(tJson?.tasks) ? tJson.tasks : [];
           if (!mounted) return;
-          setTasks(Array.isArray(tData) ? tData : []);
+          setTasks(list);
         } else {
           setTasks([]);
         }
@@ -88,7 +88,7 @@ export default function SprintDetailsPage() {
 
   const totals = useMemo(() => {
     const total = tasks.length;
-    const done = tasks.filter((t) => (t.status ?? "ToDo") === "Done").length;
+    const done = tasks.filter((t) => (t.status ?? "TODO") === "DONE").length;
     const progress = percent(done, total);
     return { total, done, progress };
   }, [tasks]);
@@ -106,6 +106,8 @@ export default function SprintDetailsPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Sprint não encontrada</h1>
+        </div>
+        <div className="mt-4">
           <Button onClick={() => router.push(`/projects/${projectId}`)}>Voltar para Projeto</Button>
         </div>
       </div>
@@ -117,17 +119,17 @@ export default function SprintDetailsPage() {
       {/* Header */}
       <div className="container mx-auto px-4 py-6 pt-20">
         <div className="flex items-center gap-4 mb-6">
-
           <div>
-            <div className="pb-5"> 
+            <div className="pb-5">
               <Button
-            variant="hero"
-            size="sm"
-            onClick={() => router.push(`/projects/${projectId}`)}
-            className="flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Voltar
-          </Button>
+                variant="hero"
+                size="sm"
+                onClick={() => router.push(`/projects/${projectId}`)}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Voltar
+              </Button>
             </div>
 
             <h1 className="text-3xl font-bold text-foreground">

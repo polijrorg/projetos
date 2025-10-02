@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import type { ProjectComplete, SprintComplete } from "@/types";
 import { SprintCreateModal } from "./SprintDialog";
+import SprintList from "./SprintList";
 
 export default function SprintsTab({ project }: { project: ProjectComplete }) {
   const [isSprintDialogOpen, setIsSprintDialogOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function SprintsTab({ project }: { project: ProjectComplete }) {
       </div>
 
       {/* Use key to force remount when refreshToken changes (no need to change SprintList props) */}
-
+    <SprintList key={refreshToken} project={project}  />
 
       <SprintCreateModal
         projectId={project.id}

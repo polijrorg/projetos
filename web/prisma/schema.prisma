@@ -110,7 +110,7 @@ model Project {
 model NPSResponse {
   id                     String   @id @default(uuid()) @map("_id")
   projectId              String   @unique              // ← garante 1:1
-  project                Project  @relation(fields: [projectId], references: [id])
+  project                Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   clientName             String
   clientNumber           String 
@@ -135,7 +135,7 @@ model Sprint {
   endDate        DateTime
   csatResponses  CSATResponse[]
   projectId      String
-  project        Project         @relation(fields: [projectId], references: [id])
+  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)  
   retrospective  Retrospective?
   goals          String[]
   tasks          Task[]
@@ -145,7 +145,7 @@ model Sprint {
 model Task {
   id        String  @id @default(uuid()) @map("_id")
   sprintId  String
-  sprint    Sprint  @relation(fields: [sprintId], references: [id])
+  sprint    Sprint  @relation(fields: [sprintId], references: [id], onDelete: Cascade)
   title     String
   description String?
   priority  TaskPriority?
@@ -163,7 +163,7 @@ enum TaskPriority {
 model Retrospective {
   id        String  @id @default(uuid()) @map("_id")
   sprintId  String  @unique
-  sprint    Sprint  @relation(fields: [sprintId], references: [id])
+  sprint    Sprint  @relation(fields: [sprintId], references: [id], onDelete: Cascade)
   date      DateTime
   feedback  String
 }

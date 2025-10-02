@@ -5,10 +5,10 @@ import { CheckCircle2, Circle, PlayCircle } from "lucide-react";
 
 export const getPriorityVariant = (priority: string) => {
   switch (priority) {
-    case "Alta": return "destructive";
-    case "Média": return "secondary";
-    case "Baixa": return "outline";
-    default: return "outline";
+    case "Alta": return "destructive"; 
+    case "Média": return "bad";
+    case "Baixa": return "frozen";
+    default: return "bad";
   }
 };
 
@@ -49,17 +49,15 @@ export const safeDate = (d?: string | Date | null) => {
   }
 };
 
-export const statusOrder = ["ToDo", "InProgress", "Review", "Done"] as const;
+export const statusOrder = ["TODO", "DOING", "DONE"];
 
 export const getStatusIcon = (status?: string | null) => {
-  const s = status ?? "ToDo";
+  const s = status ?? "TODO";
   switch (s) {
-    case "Done":
+    case "DONE":
       return <CheckCircle2 className="h-4 w-4 text-success" />;
-    case "InProgress":
-    case "Review":
-      return <PlayCircle className="h-4 w-4 text-primary" />;
-    case "ToDo":
+    case "DOING":
+    case "TODO":
     default:
       return <Circle className="h-4 w-4 text-muted-foreground" />;
   }
@@ -80,6 +78,36 @@ export const getStatusVariant = (status: string) => {
       return "outline";
     default:
       return "normal";
+  }
+};
+
+export const getTaskStatusString = (status: string) => {
+  switch (status) {
+    case "DONE":
+      return "Finalizado";
+    case "DOING":
+      return "Em Progresso";
+    case "TODO":
+      return "Pendente";
+    default:
+      return "Pendente";
+  }
+};
+
+export const getTaskStatusVariant = (status: string) => {
+  switch (status) {
+    case "DONE":
+      return "done";
+    case "DOING":
+      return "enb";
+    case "TODO":
+      return "normal";
+    case "Front-end":
+      return "hero";
+    case "Back-end":
+      return "poliyellow";
+    default:
+      return "enb";
   }
 };
 

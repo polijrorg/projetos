@@ -20,7 +20,6 @@ import { getScoreVariant5 } from "@/utils/projects/ui-helpers";
 
 type Props = {
   project: ProjectComplete;
-  onCreateTask: (sprint: SprintComplete) => void;
 };
 
 type SprintWithExtras = SprintComplete & {
@@ -37,7 +36,7 @@ type CSATState = Record<
   }
 >;
 
-export default function SprintList({ project, onCreateTask }: Props) {
+export default function SprintList({ project }: Props) {
   const router = useRouter();
   const [sprints, setSprints] = useState<SprintWithExtras[]>([]);
   const [loading, setLoading] = useState(true);
