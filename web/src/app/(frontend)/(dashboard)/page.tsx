@@ -67,7 +67,7 @@ export default function DashboardPage() {
   const getFilteredProjects = () => {
     switch (selectedTab) {
       case "active":
-        return projects.filter(p => !p.endDate);
+        return projects.filter(p => p.status !== "Finalizado");
       case "critical":
         return projects.filter(p => p.status === "Crítica" || p.status === "Ruim");
       case "enb":

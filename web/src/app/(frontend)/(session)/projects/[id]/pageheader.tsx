@@ -20,6 +20,7 @@ import { ProjectStatusModal } from "./projectStatusModal";
 import { ca } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { getStatusVariant } from "@/utils/projects/ui-helpers";
 
 
 
@@ -47,24 +48,6 @@ const getStatusIcon = (status: ProjectComplete["status"]) => {
   }
 };
 
-const getStatusVariant = (status: ProjectComplete["status"]) => {
-  switch (status) {
-    case "Crítica":
-      return "critical";
-    case "Ruim":
-      return "bad";
-    case "Normal":
-      return "normal";
-    case "Possível ENB":
-      return "enb";
-    case "Congelado":
-      return "frozen";
-    case "Finalizado":
-      return "done";
-    default:
-      return "normal";
-  }
-};
 
 export default function Header({ project, onBack }: Props) {
 

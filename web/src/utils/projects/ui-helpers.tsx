@@ -76,6 +76,8 @@ export const getStatusVariant = (status: string) => {
       return "enb";
     case "Congelado":
       return "outline";
+    case "Finalizado":
+      return "done";
     default:
       return "normal";
   }

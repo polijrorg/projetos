@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation"
 import { calcAverageCSATFromSprints, calculateProgress } from "@/utils/projects/project-metrics";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { getStatusVariant } from "@/utils/projects/ui-helpers";
 
 
 
@@ -39,18 +40,6 @@ export default function ProjectsGrid({
 }: ProjectsGridProps){
 
   
-  const getStatusVariant = (status: ProjectComplete['status']) => {
-      switch (status) {
-        case 'Crítica': return 'critical';
-        case 'Ruim': return 'bad';
-        case 'Normal': return 'normal';
-        case 'Possível ENB': return 'enb';
-        case 'Congelado': return 'frozen';
-        case 'Finalizado': return 'done';
-        default: return 'normal';
-      }
-  
-    };
 
   const getStatusIcon = (status: ProjectComplete['status']) => {
     switch (status) {
