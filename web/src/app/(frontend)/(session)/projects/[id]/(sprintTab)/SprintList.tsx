@@ -12,7 +12,6 @@ import { ptBR } from "date-fns/locale";
 import {
   Calendar as CalendarIcon,
   MessageSquare,
-  Plus,
   Target,
 } from "lucide-react";
 import type { ProjectComplete, SprintComplete } from "@/types";
@@ -27,12 +26,11 @@ type SprintWithExtras = SprintComplete & {
   goals?: string[];
 };
 
-/** guarda se existe CSAT e o overallSatisfactionScore daquela sprint */
 type CSATState = Record<
   number,
   {
     exists: boolean;
-    overall?: number; // <- usamos o overall (não a média)
+    overall?: number;
   }
 >;
 
@@ -42,8 +40,13 @@ export default function SprintList({ project }: Props) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
+  // estado com cache do que já descobrimos sobre CSAT por sprint
   const [csat, setCsat] = useState<CSATState>({});
 
+  // loading por sprint no clique do botão (evita duplo clique)
+  const [checking, setChecking] = useState<Record<number, boolean>>({});
+
+  // carrega sprints
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -67,7 +70,7 @@ export default function SprintList({ project }: Props) {
     return () => { mounted = false; };
   }, [project.id]);
 
-  // busca 1 CSAT por sprint e guarda o overallSatisfactionScore
+  // pré-checa CSAT por sprint (para já renderizar “Ver CSAT” quando possível)
   useEffect(() => {
     if (!sprints.length) {
       setCsat({});
@@ -78,10 +81,7 @@ export default function SprintList({ project }: Props) {
       const entries = await Promise.all(
         sprints.map(async (s) => {
           try {
-            const res = await fetch(
-              `/api/projects/${project.id}/sprint/${s.number}/csat`,
-              { cache: "no-store" }
-            );
+            const res = await fetch(`/api/projects/${project.id}/sprint/${s.number}/csat`, { cache: "no-store" });
             if (!res.ok) {
               return [s.number, { exists: false }] as const;
             }
@@ -90,21 +90,31 @@ export default function SprintList({ project }: Props) {
               typeof data?.overallSatisfactionScore === "number"
                 ? data.overallSatisfactionScore
                 : undefined;
-
             return [s.number, { exists: true, overall }] as const;
           } catch {
             return [s.number, { exists: false }] as const;
           }
         })
       );
-
       if (!cancelled) setCsat(Object.fromEntries(entries));
     })();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [project.id, sprints]);
+
+  // GUARD: decide para onde ir no clique, em tempo real (conserta “clique rápido”)
+  const goToCsat = async (sprintNumber: number) => {
+    try {
+      setChecking((m) => ({ ...m, [sprintNumber]: true }));
+      const res = await fetch(`/api/projects/${project.id}/sprint/${sprintNumber}/csat`, { cache: "no-store" });
+      if (res.ok) {
+        router.push(`/projects/${project.id}/sprint/${sprintNumber}/response`);
+      } else {
+        router.push(`/projects/${project.id}/sprint/${sprintNumber}/csat`);
+      }
+    } finally {
+      setChecking((m) => ({ ...m, [sprintNumber]: false }));
+    }
+  };
 
   if (loading) {
     return (
@@ -151,6 +161,7 @@ export default function SprintList({ project }: Props) {
 
           const hasCSAT = csat[s.number]?.exists === true;
           const overall = csat[s.number]?.overall;
+          const isChecking = !!checking[s.number];
 
           return (
             <Card key={s.id}>
@@ -159,7 +170,6 @@ export default function SprintList({ project }: Props) {
                   <div>
                     <div className="flex items-center gap-2">
                       <CardTitle className="whitespace-nowrap">Sprint {s.number}</CardTitle>
-                      {/* badge AO LADO do título, mostrando o OVERALL */}
                       {hasCSAT && typeof overall === "number" && (
                         <Badge variant={getScoreVariant5(overall)} className="ml-1">CSAT: {overall}</Badge>
                       )}
@@ -181,7 +191,6 @@ export default function SprintList({ project }: Props) {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {/* Ver sprint */}
                     <Button
                       variant="outline"
                       size="sm"
@@ -191,33 +200,20 @@ export default function SprintList({ project }: Props) {
                       Ver Sprint
                     </Button>
 
-                    {/* CSAT: coletar ou ver detalhes */}
-                    {hasCSAT ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          router.push(`/projects/${project.id}/sprint/${s.number}/response`)
-                        }
-                        className="cursor-pointer"
-                      >
-                        Ver CSAT
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          router.push(`/projects/${project.id}/sprint/${s.number}/csat`)
-                        }
-                        className="cursor-pointer"
-                      >
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Coletar CSAT
-                      </Button>
-                    )}
-
-                    
+                    {/* Botão único com guard no clique */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => goToCsat(s.number)}
+                      className="cursor-pointer"
+                      disabled={isChecking}
+                    >
+                      {isChecking
+                        ? "Abrindo..."
+                        : hasCSAT
+                        ? "Ver CSAT"
+                        : (<><MessageSquare className="h-4 w-4 mr-2" /> Coletar CSAT</>)}
+                    </Button>
                   </div>
                 </div>
               </CardHeader>

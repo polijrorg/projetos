@@ -150,9 +150,9 @@ export default function TaskDialog({ open, onOpenChange, initialTask, onConfirm 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="TODO">ToDo</SelectItem>
-                  <SelectItem value="DOING">InProgress</SelectItem>
-                  <SelectItem value="DONE">Done</SelectItem>
+                  <SelectItem value="TODO">Pendente</SelectItem>
+                  <SelectItem value="DOING">Em Progresso</SelectItem>
+                  <SelectItem value="DONE">Finalizado</SelectItem>
                 </SelectContent>
               </Select>
             </div>

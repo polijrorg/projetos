@@ -9,19 +9,13 @@ import { ptBR } from "date-fns/locale";
 import type { ProjectComplete } from "@/types";
 import { useRouter } from "next/navigation";
 import { hasNPS } from "@/utils/projects/project-metrics";
-import { useEffect } from "react";
-
-
+import { getScoreVariant5 } from "@/utils/projects/ui-helpers";
 
 export default function SatisfactionTab({ project }: { project: ProjectComplete }) {
   const router = useRouter();
 
-
-
   const npsScore = project.npsResponse?.npsScore;
   const collected = hasNPS(project);
-
-
 
   return (
     <div className="space-y-6">
@@ -44,7 +38,7 @@ export default function SatisfactionTab({ project }: { project: ProjectComplete 
               className="flex items-center gap-2 cursor-pointer hover:bg-poli-yellow"
             >
               <TrendingUp className="h-4 w-4" />
-              Coletar NPS 
+              Coletar NPS
             </Button>
           )}
 
@@ -69,34 +63,48 @@ export default function SatisfactionTab({ project }: { project: ProjectComplete 
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {project.sprints.map((sprint) => (
-                <div key={sprint.id} className="flex justify-between items-center p-3 border rounded-lg">
-                  <div>
-                    <span className="font-medium">Sprint {sprint.number}</span>
-                    <p className="text-sm text-muted-foreground">
-                      {format(sprint.startDate, "dd/MM", { locale: ptBR })} -{" "}
-                      {format(sprint.endDate, "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
-                  </div>
+              {project.sprints.map((sprint) => {
+                const hasCSAT = (sprint.csatResponses?.length ?? 0) > 0;
+                const csat = hasCSAT ? sprint.csatResponses![0] : null;
 
-                  <div className="flex items-center gap-2">
-                    {sprint.csatResponses?.length ? (
-                      <Badge variant="secondary">
-                        CSAT: {sprint.csatResponses[0].averageScore.toFixed(1)}
-                      </Badge>
-                    ) : (
+                return (
+                  <div
+                    key={sprint.id}
+                    className="flex justify-between items-center p-3 border rounded-lg"
+                  >
+                    <div>
+                      <span className="font-medium">Sprint {sprint.number}</span>
+                      <p className="text-sm text-muted-foreground">
+                        {format(sprint.startDate, "dd/MM", { locale: ptBR })} -{" "}
+                        {format(sprint.endDate, "dd/MM/yyyy", { locale: ptBR })}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {hasCSAT && (
+                        <Badge variant={getScoreVariant5(csat?.overallSatisfactionScore)}>
+                          CSAT: {Number(csat?.overallSatisfactionScore ?? 0).toFixed(1)}
+                        </Badge>
+                      )}
+
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => router.push(`/projects/${project.id}/sprint/${sprint.number}/csat`)}
+                        onClick={() =>
+                          router.push(
+                            hasCSAT
+                              ? `/projects/${project.id}/sprint/${sprint.number}/response`
+                              : `/projects/${project.id}/sprint/${sprint.number}/csat`
+                          )
+                        }
                         className="cursor-pointer hover:bg-poli-blue hover:text-white"
                       >
-                        Coletar CSAT
+                        {hasCSAT ? "Ver CSAT" : "Coletar CSAT"}
                       </Button>
-                    )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>

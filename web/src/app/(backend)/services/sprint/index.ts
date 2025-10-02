@@ -15,9 +15,14 @@ export async function listSprintsByProject(projectId: string) {
     const progress = totalTasks ? Math.round((done / totalTasks) * 100) : 0;
     const plannedHours = s.tasks.reduce((acc, t) => acc + (t.estimate ?? 0), 0);
 
+    const csatExists = s.csatResponses.length > 0;
+    const csatOverall = csatExists ? s.csatResponses[0].overallSatisfactionScore : null;
+
     return {
       ...s,
       metrics: {
+        csatExists,
+        csatOverall,
         totalTasks,
         done,
         progress,

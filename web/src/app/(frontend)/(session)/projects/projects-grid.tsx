@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
-import { calculateProgress } from "@/utils/projects/project-metrics";
+import { calcAverageCSATFromSprints, calculateProgress } from "@/utils/projects/project-metrics";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
@@ -71,6 +71,8 @@ const router = useRouter()
   }
 
 
+  
+
 
   const [projects, setProjects] = useState<ProjectComplete[]>(projectsProp || []);
   const [loading, setLoading] = useState(false);
@@ -93,6 +95,7 @@ const router = useRouter()
     const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.client.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+
     return matchesSearch && matchesStatus;
   });
 
@@ -209,7 +212,7 @@ const router = useRouter()
                  <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">CSAT Médio</div>
-                    <div className="font-semibold">{p?.averageCSAT?.toFixed(1)}/5.0</div>
+                    <div className="font-semibold">{calcAverageCSATFromSprints(p.sprints)?.toFixed(1) ?? '--'}/5.0</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground">NPS</div>
