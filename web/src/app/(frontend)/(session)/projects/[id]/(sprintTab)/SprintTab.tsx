@@ -3,32 +3,28 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import type { ProjectComplete, SprintComplete} from "@/types";
+import type { ProjectComplete, SprintComplete } from "@/types";
+import { SprintCreateModal } from "./SprintDialog";
 import SprintList from "./SprintList";
-import SprintDialog, { SprintInput } from "./SprintDialog";
-import TaskDialog, { TaskInput } from "./TaskDialog";
 
 export default function SprintsTab({ project }: { project: ProjectComplete }) {
   const [isSprintDialogOpen, setIsSprintDialogOpen] = useState(false);
-  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [selectedSprint, setSelectedSprint] = useState<SprintComplete | null>(null);
 
+  // dispara refetch no SprintList quando muda
+  const [refreshToken, setRefreshToken] = useState(0);
+
   const handleCreateSprint = () => setIsSprintDialogOpen(true);
-  const handleCreateTask = (sprint: SprintComplete) => {
-    setSelectedSprint(sprint);
-    setIsTaskDialogOpen(true);
+
+  const onSprintCreated = () => {
+    // fecha o modal e força o SprintList a buscar novamente
+    setIsSprintDialogOpen(false);
+    setRefreshToken((t) => t + 1);
   };
 
-   const onSubmitSprint = (data: SprintInput) => {
 
-    console.log("Sprint criada:", data);
-  };
 
-  const onSubmitTask = (data: TaskInput) => {
-    if (!selectedSprint) return;
-
-    console.log(`Task criada na sprint ${selectedSprint.number}:`, data);
-  };
+  
 
   return (
     <div className="space-y-6">
@@ -40,20 +36,15 @@ export default function SprintsTab({ project }: { project: ProjectComplete }) {
         </Button>
       </div>
 
-      <SprintList project={project} onCreateTask={handleCreateTask} />
+      {/* Use key to force remount when refreshToken changes (no need to change SprintList props) */}
+    <SprintList key={refreshToken} project={project}  />
 
-            <SprintDialog
-        open={isSprintDialogOpen}
-        onOpenChange={setIsSprintDialogOpen}
-        onSubmit={onSubmitSprint}
-      />
-
-      <TaskDialog
-        open={isTaskDialogOpen}
-        onOpenChange={setIsTaskDialogOpen}
-        onSubmit={onSubmitTask}
-        project={project}
-        sprint={selectedSprint}
+      <SprintCreateModal
+        projectId={project.id}
+        isOpen={isSprintDialogOpen}
+        onClose={() => setIsSprintDialogOpen(false)}
+        onSprintCreated={onSprintCreated}
+        title="Nova Sprint"
       />
     </div>
   );

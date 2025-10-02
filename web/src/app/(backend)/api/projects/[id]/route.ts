@@ -4,6 +4,7 @@ import { zodErrorHandler } from "@/utils";
 import { toErrorMessage } from "@/utils/api/toErrorMessage";
 import { deleteProject, getProjectById, updateProject } from "@/app/(backend)/services/projects";
 import { patchProjectSchema } from "@/app/(backend)/schemas/project.schema";
+import prisma from "@/app/(backend)/services/db";
 
 export async function GET(
 request: NextRequest, { params }: { params: Promise<{ id: string }> }
@@ -83,3 +84,4 @@ export async function PATCH(
     return zodErrorHandler(error);
   }
 }
+

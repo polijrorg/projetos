@@ -5,8 +5,27 @@ import { patchProjectSchema } from "../../schemas/project.schema";
 
 
 export async function getAllProjects() {
-  return await prisma.project.findMany({include: { analysts: true, sprints: true }
+  const projects = await prisma.project.findMany({
+    include: {
+      analysts: true,
+      handoffDocument: true,
+      npsResponse: true,
+      sprints: {
+        include: {
+          csatResponses: {
+            select: {
+              id: true,
+              responseDate: true,
+              overallSatisfactionScore: true,
+            },
+          },
+        },
+      },
+    },
   });
+
+
+  return projects;
 }
 
 export async function createProject(data: {
@@ -50,7 +69,22 @@ export async function getProjectById(id: string) {
   try {
     const project = await prisma.project.findUnique({
       where: { id },
-      include: { analysts: true, sprints: true },
+          include: {
+      analysts: true,
+      handoffDocument: true,
+      npsResponse: true,
+      sprints: {
+        include: {
+          csatResponses: {
+            select: {
+              id: true,
+              responseDate: true,
+              overallSatisfactionScore: true,
+            },
+          },
+        },
+      },
+    },
     });
     return project;
   } catch (error) {
