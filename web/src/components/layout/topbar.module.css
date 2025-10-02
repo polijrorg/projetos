@@ -57,10 +57,9 @@
 }
 
 .link:hover {
-  
-  background-image: var(--gradient-secondary-glass);
+  background-color: hsl(var(--poli-yellow));
 }
 
 .active {
-  background-image: var(--gradient-secondary-glass);
+  background-color: hsl(var(--poli-yellow));
 }
