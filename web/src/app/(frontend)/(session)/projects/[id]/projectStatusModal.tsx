@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { ProjectComplete } from "@/types";
 import { AlertTriangle, BarChart3, Clock, Star, Snowflake, CheckCircle2 } from "lucide-react";
+import { getStatusVariant } from "@/utils/projects/ui-helpers";
 
 interface ProjectStatusModalProps {
   isOpen: boolean;
@@ -27,18 +28,7 @@ export function ProjectStatusModal({ isOpen, onClose, currentStatus, onStatusCha
     onClose();
   };
 
-    const getStatusVariant = (status: ProjectComplete['status']) => {
-        switch (status) {
-          case 'Crítica': return 'critical';
-          case 'Ruim': return 'bad';
-          case 'Normal': return 'normal';
-          case 'Possível ENB': return 'enb';
-          case 'Congelado': return 'frozen';
-          case 'Finalizado': return 'done';
-          default: return 'normal';
-        }
-    
-      };
+
   
 
   return (

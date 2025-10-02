@@ -2,9 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, TrendingUp, AlertTriangle, Clock, Star } from "lucide-react";
+import { Calendar, Users, TrendingUp, AlertTriangle, Clock, Star, CheckCircle2, Snowflake, TriangleAlert } from "lucide-react";
 import { ProjectComplete } from "@/types";
 import { differenceInDays } from "date-fns";
+import { getStatusVariant } from "@/utils/projects/ui-helpers";
+import { calculateProgress } from "@/utils/projects/project-metrics";
 
 interface ProjectCardProps {
   project: ProjectComplete;
@@ -12,31 +14,25 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onViewProject }: ProjectCardProps) {
-  const getStatusVariant = (status: ProjectComplete['status']) => {
-    switch (status) {
-      case 'Crítica': return 'critical';
-      case 'Ruim': return 'bad';
-      case 'Normal': return 'normal';
-      case 'Possível ENB': return 'enb';
-      default: return 'normal';
-    }
-  };
 
-  const getStatusIcon = (status: ProjectComplete['status']) => {
-    switch (status) {
-      case 'Crítica': return <AlertTriangle className="h-4 w-4" />;
-      case 'Ruim': return <TrendingUp className="h-4 w-4" />;
-      case 'Normal': return <Clock className="h-4 w-4" />;
-      case 'Possível ENB': return <Star className="h-4 w-4" />;
-      default: return <Clock className="h-4 w-4" />;
-    }
-  };
-
-  const calculateProgress = () => {
-    const total = differenceInDays(project.plannedEndDate, project.startDate);
-    const elapsed = differenceInDays(new Date(), project.startDate);
-    return Math.min(Math.max((elapsed / total) * 100, 0), 100);
-  };
+const getStatusIcon = (status: ProjectComplete["status"]) => {
+  switch (status) {
+    case "Crítica":
+      return <TriangleAlert className="h-4 w-4" />;
+    case "Ruim":
+      return <TrendingUp className="h-4 w-4" />;
+    case "Normal":
+      return <Clock className="h-4 w-4" />;
+    case "Possível ENB":
+      return <Star className="h-4 w-4" />;
+    case "Congelado":
+      return <Snowflake className="h-4 w-4" />;
+      case "Finalizado":
+      return <CheckCircle2 className="h-4 w-4" />;
+    default:
+      return <Clock className="h-4 w-4" />;
+  }
+};
 
   const daysRemaining = differenceInDays(project.plannedEndDate, new Date());
 
@@ -73,9 +69,9 @@ export function ProjectCard({ project, onViewProject }: ProjectCardProps) {
         <div className="mb-4">
           <div className="flex justify-between text-sm mb-2">
             <span className="text-muted-foreground">Progresso</span>
-            <span className="font-medium">{Math.round(calculateProgress())}%</span>
+            <span className="font-medium">{Math.round(calculateProgress(project))}%</span>
           </div>
-          <Progress value={calculateProgress()} className="h-2" />
+          <Progress value={calculateProgress(project)} className="h-2" />
         </div>
 
         {/* Key Metrics */}
@@ -118,7 +114,7 @@ export function ProjectCard({ project, onViewProject }: ProjectCardProps) {
         {/* Actions */}
         <div className="flex gap-2 mt-4">
           <Button 
-            variant="default" 
+            variant="hero" 
             size="sm" 
             className="flex-1"
             onClick={(e) => {
