@@ -15,8 +15,9 @@ import { computeRevenue, computeENBPercent, computeNPS } from "./(parts)/metrics
 import { ProjectWithNPS } from "./(parts)/types";
 import { MetricsFilters } from "./MetricsFilter";
 import { getStatusVariant } from "@/utils/projects/ui-helpers";
+import { formatBRL, getMetaTarget } from "@/utils/projects/metas";
 
-
+// ⬇️ IMPORTANTE: metas por período
 
 export default function MetricsPage() {
   const [tab, setTab] = useState("overview");
@@ -53,10 +54,32 @@ export default function MetricsPage() {
 
   const { start, end } = useMemo(() => buildPeriod(year, periodKey), [year, periodKey]);
 
-  // métricas principais
+  // métricas principais (no período)
   const revenue = useMemo(() => computeRevenue(projects, start, end), [projects, start, end]);
   const enb = useMemo(() => computeENBPercent(projects, start, end), [projects, start, end]);
   const npsValue = useMemo(() => computeNPS(projects, start, end), [projects, start, end]);
+
+  // meta do período selecionado
+  const revenueTarget = useMemo(() => getMetaTarget(year, periodKey), [year, periodKey]);
+// % REAL do faturamento (pode passar de 100)
+const revenueRawProgress =
+  revenueTarget > 0 ? (revenue / revenueTarget) * 100 : undefined;
+
+// Valor só para a barra (0..100), tratando NaN/infinito
+const revenueBarValue =
+  revenueRawProgress === undefined
+    ? undefined
+    : Math.max(
+        0,
+        Math.min(100, Number.isFinite(revenueRawProgress) ? revenueRawProgress : 0)
+      );
+
+// Rótulo com a % real
+const revenuePercentLabel =
+  revenueRawProgress === undefined
+    ? "Sem meta"
+    : `${Math.round(revenueRawProgress)}%`;
+
 
   const totalProjects = projects.length;
   const activeNow = projects.filter(p => !p.endDate).length;
@@ -86,6 +109,9 @@ export default function MetricsPage() {
     );
   }
 
+  const rangeLabel = `${new Intl.DateTimeFormat("pt-BR").format(start)} — ${new Intl.DateTimeFormat("pt-BR").format(end)}`;
+  const targetLabel = formatBRL(revenueTarget);
+
   return (
     <div className="min-h-screen bg-background p-6 pt-15">
       <div className="max-w-7xl mx-auto">
@@ -109,9 +135,10 @@ export default function MetricsPage() {
           <MetricsCard
             title="Faturamento (período)"
             value={`R$ ${Math.round(revenue / 1000).toLocaleString()}k`}
-            subtitle={`${new Intl.DateTimeFormat("pt-BR").format(start)} — ${new Intl.DateTimeFormat("pt-BR").format(end)}`}
-            progress={0} // opcional: compare com meta se tiver
-            trend="neutral"
+            subtitle={`${rangeLabel} • Meta: ${targetLabel}`}
+            target={revenueTarget}
+            targetLabel={targetLabel}
+            progress={revenueRawProgress}
             variant="revenue"
           />
 
@@ -152,28 +179,40 @@ export default function MetricsPage() {
 
           <TabsContent value="overview" className="mt-6 space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Faturamento no período */}
+              {/* Faturamento no período (detalhado) */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5" />
-                    Faturamento no Período
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-semibold">
-                        R$ {revenue.toLocaleString()}
-                      </span>
-                      <Badge variant="secondary">
-                        {new Intl.DateTimeFormat("pt-BR").format(start)} - {new Intl.DateTimeFormat("pt-BR").format(end)}
-                      </Badge>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Faturamento no Período
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold">
+                          R$ {revenue.toLocaleString()}
+                        </span>
+                        <Badge variant="secondary">{rangeLabel}</Badge>
+                      </div>
+
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Meta</span>
+                        <span className="font-medium">{targetLabel}</span>
+                      </div>
+
+                      <Progress value={revenueBarValue ?? 0} className="h-3" />
+
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Realizado</span>
+                        <span>
+                          {revenueTarget > 0 ? `${revenuePercentLabel} da meta` : "Sem meta"}
+                        </span>
+                      </div>
                     </div>
-                    <Progress value={0} />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
 
               {/* Distribuição de status (snapshot) */}
               <Card>
@@ -224,6 +263,7 @@ export default function MetricsPage() {
                     <p><b>Ano:</b> {year}</p>
                     <p><b>Início:</b> {start.toLocaleDateString("pt-BR")}</p>
                     <p><b>Fim:</b> {end.toLocaleDateString("pt-BR")}</p>
+                    <p><b>Meta:</b> {targetLabel}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -254,12 +294,12 @@ export default function MetricsPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-sm text-muted-foreground mb-3">
-                  Faturamento considera <b>saleDate</b>. ENB considera <b>endDate</b>.
+                  Faturamento considera a <b>Data de Venda</b>. ENB considera <b>Data de Finalização</b>.
                 </div>
                 <ul className="space-y-2">
                   {projects.map(p => {
                     const saleIn = p.saleDate ? inPeriod(new Date(p.saleDate), start, end) : false;
-                    const endIn = p.endDate ? inPeriod(new Date(p.endDate), start, end) : false;
+                    const enbIn = p.endDate ? inPeriod(new Date(p.endDate), start, end) && p.isENB : false;
                     return (
                       <li key={p.id} className="flex items-center justify-between border rounded-md p-2">
                         <div>
@@ -269,8 +309,8 @@ export default function MetricsPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 text-xs">
-                          <Badge variant={saleIn ? "done" : "outline"}>saleDate</Badge>
-                          <Badge variant={endIn ? "enb" : "outline"}>endDate</Badge>
+                          <Badge variant={saleIn ? "done" : "outline"}>{saleIn ? <p> Vendido no período </p> : <p>Fora do período</p>}</Badge>
+                          <Badge variant={enbIn ? "enb" : "outline"}>{enbIn ? <p> ENB no período </p> : <p>Fora do período</p>}</Badge>
                           {p.isENB && <Badge variant="enb">ENB</Badge>}
                           {p.npsResponse && inPeriod(new Date(p.npsResponse.responseDate), start, end) && (
                             <Badge variant="secondary">NPS: {p.npsResponse.npsScore}</Badge>
@@ -290,9 +330,8 @@ export default function MetricsPage() {
                 <CardTitle>Detalhe NPS no período</CardTitle>
               </CardHeader>
               <CardContent>
-                {/* Você pode expandir com uma tabela de respostas NPS por projeto */}
                 <p className="text-sm text-muted-foreground">
-                  Promotores (9–10) menos Detratores (0–6), considerando apenas respostas coletadas no período selecionado.
+                  % Promotores (9–10) menos % Detratores (0–6), considerando apenas respostas coletadas no período selecionado.
                 </p>
               </CardContent>
             </Card>
