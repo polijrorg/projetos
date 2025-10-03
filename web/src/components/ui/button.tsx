@@ -22,7 +22,7 @@ const buttonVariants = cva(
         link: "cursor-pointer text-primary underline-offset-4 hover:underline",
         hero: "cursor-pointer bg-gradient-primary text-white hover:opacity-90 shadow-elevated border-0",
         success: "cursor-pointer bg-status-done text-white hover:opacity-90 shadow-elevated border-0",
-        cancel: "cursor-pointer border border-input bg-background hover:bg-destructive/90 hover:text-accent-foreground hover:text-white",
+        cancel: "cursor-pointer border border-input bg-background hover:bg-destructive/90 hover:text-white",
         npsNeutral: "cursor-pointer bg-yellow-500 text-white hover:opacity-90 shadow-xs hover:bg-neutral-foreground/80",
       },
       size: {

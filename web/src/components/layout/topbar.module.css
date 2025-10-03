@@ -1,41 +1,17 @@
-:root {
-  --topbar-h: 84px;           /* desktop padrão */
-}
-
-@media (max-width: 1024px) {
-  :root { --topbar-h: 76px; } /* tablet */
-}
-
-@media (max-width: 768px) {
-  :root { --topbar-h: 112px; } 
-}
 
 .header {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: var(--topbar-h);    
+  height: var(--topbar-h);
   z-index: 50;
   border-bottom: 1px solid rgb(229 231 235);
   background: #f3f4f6;
   backdrop-filter: blur(6px);
 }
-
 @media (max-width: 768px) {
-  .header {
-    min-height: var(--topbar-h);
-  }
+  .header { min-height: var(--topbar-h); }
 }
 
-
-.header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 84px;
-  z-index: 50;
-  border-bottom: 1px solid rgb(229 231 235);
-  background: #f3f4f6;
-  backdrop-filter: blur(6px);
-}
 
 .container {
   max-width: 80rem;
