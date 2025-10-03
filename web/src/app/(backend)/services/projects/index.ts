@@ -1,6 +1,7 @@
 import prisma from "@/backend/services/db";
 import { z } from "zod";
 import { patchProjectSchema } from "../../schemas/project.schema";
+import { Prisma } from "@/generated/prisma";
 
 
 
@@ -38,6 +39,7 @@ export async function createProject(data: {
   endDate?: Date | null;
   price?: number | null;
   analysts: Array<{ name: string; role: 'Front' | 'Back' | 'PM' | 'Coord' }>;
+  saleDate: Date;
 }) {
   try {
     const project = await prisma.project.create({
@@ -49,6 +51,7 @@ export async function createProject(data: {
         startDate: data.startDate,
         price: data.price ?? null,
         sprintNumber: data.sprintNumber,
+        saleDate: data.saleDate,
         analysts: {
           create: data.analysts.map(a => ({
             name: a.name,
@@ -103,11 +106,51 @@ export async function deleteProject(id: string) {
   }
 }
 
-export async function updateProject(id: string, data: z.infer<typeof patchProjectSchema>) {
-  return await prisma.project.update({
+export async function updateProject(
+  id: string,
+  data: z.infer<typeof patchProjectSchema>
+) {
+  const updateData: Prisma.ProjectUpdateInput = {};
+
+  if (typeof data.name === "string") updateData.name = data.name;
+  if (typeof data.client === "string") updateData.client = data.client;
+  if (typeof data.shortDescription === "string") updateData.shortDescription = data.shortDescription;
+  if (data.plannedEndDate instanceof Date) updateData.plannedEndDate = data.plannedEndDate;
+  if (data.startDate instanceof Date) updateData.startDate = data.startDate;
+  if (typeof data.status === "string") updateData.status = data.status;
+  if (typeof data.price !== "undefined") updateData.price = data.price; // pode ser number ou null
+  if (typeof data.sprintNumber === "number") updateData.sprintNumber = data.sprintNumber;
+
+  // ⬇️ Só seta endDate se A CHAVE EXISTIR no payload:
+  if ("endDate" in data) {
+    // aqui pode ser Date OU null; Prisma entende null para limpar o campo
+    updateData.endDate = data.endDate as Date | null;
+  }
+
+  if ("saleDate" in data && data.saleDate instanceof Date) {
+    updateData.saleDate = data.saleDate;
+  }
+
+  // Analysts: só inclua esse bloco se 'analysts' veio no payload
+  if (Array.isArray(data.analysts)) {
+    updateData.analysts = {
+      update: data.analysts.map(a => ({
+        where: { id: a.id },
+        data: { name: a.name, role: a.role },
+      })),
+    };
+  }
+
+  return prisma.project.update({
     where: { id },
-    data
-  })
+    data: updateData,
+    include: {
+      analysts: true,
+      sprints: true,
+      npsResponse: true,
+      handoffDocument: true,
+    },
+  });
 }
 
 

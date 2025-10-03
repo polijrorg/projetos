@@ -169,6 +169,7 @@ export default function SprintTasksSection({ projectId, sprint, tasks, onTasksCh
             setDialogOpen(true);
           }}
           className="flex items-center gap-2"
+          variant= "hero"
         >
           Nova Task
         </Button>

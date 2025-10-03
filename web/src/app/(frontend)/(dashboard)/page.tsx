@@ -19,6 +19,7 @@ import { ProjectCard } from "./ProjectCard";
 import { DashboardHeader } from "./DashboardHeader";
 import { MetricsCard } from "./MetricsCard";
 
+
  async function fetchProjects(): Promise<ProjectComplete[]> {
   const res = await fetch("/api/projects", { cache: "no-store" });
   if (!res.ok) {
@@ -35,6 +36,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
+ const metaFaturamento25dot3 = 400000;
+const metaENB25dot3 = 35;
   // carregar projetos do backend
   useEffect(() => {
     let mounted = true;
@@ -79,8 +82,7 @@ export default function DashboardPage() {
 
   const filtered = getFilteredProjects();
 
-  const metaFaturamento = 400000;
-  const metaENB = 50;
+
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -99,10 +101,10 @@ export default function DashboardPage() {
           <MetricsCard
             title="Faturamento do ciclo"
             value={`R$ ${(metrics.totalRevenue / 1000).toFixed(1)}k`}
-            subtitle={"R$ "+ (metaFaturamento / 1000).toFixed(1) + "k" }
-            target = {metaFaturamento}
-            targetLabel={"R$ "+ (metaFaturamento / 1000).toFixed(1) + "k" }
-            progress={(metrics.totalRevenue / metaFaturamento) * 100}
+            subtitle={"R$ "+ (metaFaturamento25dot3 / 1000).toFixed(1) + "k" }
+            target = {metaFaturamento25dot3}
+            targetLabel={"R$ "+ (metaFaturamento25dot3 / 1000).toFixed(1) + "k" }
+            progress={(metrics.totalRevenue / metaFaturamento25dot3) * 100}
             trend="up"
             variant="revenue"
           />
@@ -111,8 +113,8 @@ export default function DashboardPage() {
             value={`${metrics.enbPercentage.toFixed(1)}%`}
             subtitle="Excelente Não Basta"
             progress={metrics.enbPercentage}
-            target = {metaENB}
-            targetLabel={metaENB + "%"}
+            target = {metaENB25dot3}
+            targetLabel={metaENB25dot3 + "%"}
             trend="up"
             variant="enb"
           />

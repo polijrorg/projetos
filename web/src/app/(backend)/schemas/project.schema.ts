@@ -1,3 +1,4 @@
+import { id } from "date-fns/locale";
 import z from "zod";
 
 export const patchProjectDTO = z.object({
@@ -9,6 +10,13 @@ export const patchProjectDTO = z.object({
   status: z.string().optional(),
   price: z.number().optional().nullable(),
   sprintNumber: z.number().optional(),
+  endDate: z.union([z.coerce.date(), z.null()]).optional(),
+  analysts: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    role: z.enum(["Front", "Back", "PM", "Coord"], {error: (issue) => issue.input === undefined ? "Cargo é obrigatório" : "Cargo deve ser Front, Back, PM ou Coord"})
+  })).optional(),
+  saleDate: z.coerce.date().optional(), 
 })
 
 export const createProjectSchema= z.object({
@@ -23,6 +31,7 @@ export const createProjectSchema= z.object({
     name: z.string(),
     role: z.enum(["Front", "Back", "PM", "Coord"], {error: (issue) => issue.input === undefined ? "Cargo é obrigatório" : "Cargo deve ser Front, Back, PM ou Coord"})
   })),
+  saleDate: z.coerce.date(),
 })
 
 export const patchProjectSchema = patchProjectDTO

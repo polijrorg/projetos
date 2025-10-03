@@ -80,13 +80,21 @@ const router = useRouter()
 
 
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.client.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+      const filteredProjects = projects.filter(project => {
+        const matchesSearch =
+          project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.client.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return matchesSearch && matchesStatus;
-  });
+        const isActive = (status: string) => status !== "Finalizado" && status !== "Congelado";
+
+        const matchesStatus =
+          statusFilter === "all"
+            ? isActive(project.status)                   // “Todos” = ativos (não finalizados nem congelados)
+            : project.status === statusFilter;           // demais filtros: match exato
+
+        return matchesSearch && matchesStatus;
+      });
+
 
   if (loading && !projects) {
     return (
@@ -119,7 +127,7 @@ const router = useRouter()
 
        <Tabs className="mb-6" value={statusFilter} onValueChange={setStatusFilter}>
             <TabsList>
-              <TabsTrigger value="all">Todos</TabsTrigger>
+              <TabsTrigger value="all">Ativos</TabsTrigger>
               <TabsTrigger value="Normal">Normal</TabsTrigger>
               <TabsTrigger value="Crítica">Crítica</TabsTrigger>
               <TabsTrigger value="Ruim">Ruim</TabsTrigger>
@@ -189,6 +197,11 @@ const router = useRouter()
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Equipe:</span>
                     <span>{p.analysts.length} membros</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Data da Venda:</span>
+                    <span>{format(p.saleDate, "dd/MM/yyyy", { locale: ptBR })}</span>
                   </div>
                   {p.price && (
                     <div className="flex items-center justify-between text-sm">

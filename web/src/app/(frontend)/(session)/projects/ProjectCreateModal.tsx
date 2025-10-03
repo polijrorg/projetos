@@ -24,10 +24,11 @@ interface ProjectFormData {
   client: string;
   description: string;
   startDate: Date | undefined;
-  endDate: Date | undefined;
+  plannedEndDate: Date | undefined;
   price: string;
   sprintCount: string;
   analysts: Omit<Analyst, "id" | "projectId">[];
+  saleDate: Date | undefined;
 }
 
 const EMPTY_PROJECT: ProjectFormData = {
@@ -35,10 +36,11 @@ const EMPTY_PROJECT: ProjectFormData = {
   client: "",
   description: "",
   startDate: undefined,
-  endDate: undefined,
+  plannedEndDate: undefined,
   price: "",
   sprintCount: "",
-  analysts: []
+  analysts: [],
+  saleDate: undefined,
 };
 
 export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: ProjectCreateModalProps) {
@@ -47,7 +49,7 @@ export function ProjectCreateModal({ isOpen, onClose, onProjectCreated }: Projec
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   
-  if (!formData.name || !formData.client || !formData.startDate || !formData.endDate) {
+  if (!formData.name || !formData.client || !formData.startDate || !formData.plannedEndDate || !formData.saleDate) {
     alert("Preencha todos os campos obrigatórios");
     return;
   }
@@ -65,7 +67,7 @@ type Project = Replace<ProjectComplete, {
     client: formData.client,
     shortDescription: formData.description,
     startDate: formData.startDate,
-    plannedEndDate: formData.endDate,
+    plannedEndDate: formData.plannedEndDate,
     endDate: null,
     status: "Normal",
     sprintNumber: formData.sprintCount ? parseInt(formData.sprintCount) : 1,
@@ -82,6 +84,7 @@ type Project = Replace<ProjectComplete, {
     averageCSAT: 0,
     isENB: false,
     sprints: [],
+    saleDate: formData.saleDate,
     npsResponse: null,
     coverImage: "https://i.imgur.com/87E7VI8.jpeg",
     handoffDocument: null
@@ -201,18 +204,18 @@ type Project = Replace<ProjectComplete, {
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !formData.endDate && "text-muted-foreground"
+                      !formData.plannedEndDate && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.endDate ? format(formData.endDate, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+                    {formData.plannedEndDate ? format(formData.plannedEndDate, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.endDate}
-                    onSelect={(date) => setFormData({ ...formData, endDate: date })}
+                    selected={formData.plannedEndDate}
+                    onSelect={(date) => setFormData({ ...formData, plannedEndDate: date })}
                     initialFocus
                     className="pointer-events-auto"
                   />
@@ -245,6 +248,33 @@ type Project = Replace<ProjectComplete, {
                 placeholder="4"
                 min="1"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Data de Venda *</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !formData.saleDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formData.saleDate ? format(formData.saleDate, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.saleDate}
+                    onSelect={(date) => setFormData({ ...formData, saleDate: date })}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 
@@ -291,6 +321,7 @@ type Project = Replace<ProjectComplete, {
               </div>
             ))}
           </div>
+          
 
           <div className="flex gap-2 pt-4">
             <Button type="button" variant="cancel" onClick={onClose} className="flex-1">
