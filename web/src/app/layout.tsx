@@ -19,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${rubik.variable} antialiased`}>
+      <body className={`${rubik.variable} antialiased pt-[var(--topbar-h)]`}>
         {}
         <TopBar />
         {}

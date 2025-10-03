@@ -20,11 +20,11 @@ export default function PageTop({
 }: PageTopProps) {
   return (
     <div className={cn("flex items-center justify-between mb-8", className)}>
-      <div>
-        <h1 className="font-poppins text-3xl font-bold text-foreground mb-2 pl-8">
+      <div >
+        <h1 className="font-poppins text-3xl font-bold text-foreground mb-2">
           {title}
         </h1>
-        <p className="text-muted-foreground font-poppins pl-8">
+        <p className="text-muted-foreground font-poppins">
           {subtitle}
         </p>
       </div>

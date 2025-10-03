@@ -178,7 +178,7 @@ export default function CSATForm() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <div className="flex items-center gap-4 mb-6 pt-10">
+        <div className="flex items-center gap-4 mb-6">
           <Button
             variant="hero"
             size="sm"

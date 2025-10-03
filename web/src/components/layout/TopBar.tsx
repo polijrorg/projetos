@@ -15,8 +15,9 @@ export default function TopBar() {
   return (
     <header className={s.header}>
       <div className={s.container}>
-        {/* corrigido: Tailwind válido */}
-        <img src="/logo.png" alt="logo" className="h-[100px] w-[100px]" />
+        {/* mudou: usei classe do CSS module para controlar tamanho responsivo */}
+        <img src="/logo.png" alt="logo" className={s.logo} />
+
         <div className={s.pj}>
           <Link href="/" className={s.brand}>Poli Júnior</Link>
           <h1 className={s.subtext}>NTEC - Gestão de Projetos</h1>
@@ -29,7 +30,7 @@ export default function TopBar() {
             aria-current={isActive("/") ? "page" : undefined}
           >
             <Home className="h-6 w-6" />
-            Dashboard
+            <span className={s.linkText}>Dashboard</span>
           </Link>
 
           <Link
@@ -38,7 +39,7 @@ export default function TopBar() {
             aria-current={isActive("/projects") ? "page" : undefined}
           >
             <FolderKanban className="h-6 w-6" />
-            Projetos
+            <span className={s.linkText}>Projetos</span>
           </Link>
 
           <Link
@@ -47,7 +48,7 @@ export default function TopBar() {
             aria-current={isActive("/okrs") ? "page" : undefined}
           >
             <Target className="h-6 w-6" />
-            OKRs
+            <span className={s.linkText}>OKRs</span>
           </Link>
 
           <Link
@@ -56,7 +57,7 @@ export default function TopBar() {
             aria-current={isActive("/metrics") ? "page" : undefined}
           >
             <BarChart3 className="h-6 w-6" />
-            Métricas
+            <span className={s.linkText}>Métricas</span>
           </Link>
 
           <Link
@@ -65,7 +66,7 @@ export default function TopBar() {
             aria-current={isActive("/settings") ? "page" : undefined}
           >
             <Settings className="h-6 w-6" />
-            Configurações
+            <span className={s.linkText}>Configurações</span>
           </Link>
         </nav>
       </div>
