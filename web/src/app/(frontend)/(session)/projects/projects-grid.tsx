@@ -191,9 +191,14 @@ const router = useRouter()
                     <span>{format(p.startDate, "dd/MM/yyyy", { locale: ptBR })}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Término:</span>
+                    <span className="text-muted-foreground">Término Planejado:</span>
                     <span>{format(p.plannedEndDate, "dd/MM/yyyy", { locale: ptBR })}</span>
-                  </div>
+                </div>
+                  {p.endDate ? (  
+                    <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Término Real:</span>
+                    <span>{format(p.endDate, "dd/MM/yyyy", { locale: ptBR })}</span>
+                  </div>) : null}
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Equipe:</span>
                     <span>{p.analysts.length} membros</span>
