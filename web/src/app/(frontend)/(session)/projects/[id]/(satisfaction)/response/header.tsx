@@ -15,7 +15,7 @@ export default function NPSHeader({ projectId, projectName, client, hasNPS }: Pr
   const router = useRouter();
 
   return (
-    <div className="mb-6 pt-6">
+    <div className="mb-6">
       <div className="flex items-center gap-4 mb-4">
         <Button
           variant="hero"

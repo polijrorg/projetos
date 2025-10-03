@@ -24,7 +24,7 @@ export function DashboardHeader({
   const today = format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR });
 
   return (
-    <div className="mb-8 pt-10">
+    <div className="mb-8">
       {/* Header with greeting and date */}
       <div className="flex items-center justify-between mb-6">
         <div>

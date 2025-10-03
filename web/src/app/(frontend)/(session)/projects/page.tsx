@@ -61,7 +61,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-20">
+    <div className="min-h-screen bg-background p-10">
       <div className="max-w-7xl mx-auto">
         <PageTop onNewProject={handleCreateProject} />
       </div>

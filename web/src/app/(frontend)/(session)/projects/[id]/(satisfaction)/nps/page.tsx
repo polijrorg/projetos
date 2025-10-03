@@ -163,7 +163,7 @@ export default function NPSForm() {
       setNps(created);
 
       toast.success("NPS coletado", { description: "Pesquisa registrada com sucesso!" });
-      // Não redireciona agora; muda o botão para "Ver NPS"
+      router.replace(`/projects/${projectId}/response`);
     } catch (err: any) {
       toast.error("Erro ao enviar NPS", { description: err?.message ?? "Tente novamente." });
     } finally {
@@ -193,7 +193,7 @@ export default function NPSForm() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <div className="flex items-center gap-4 mb-6 pt-10">
+        <div className="flex items-center gap-4 mb-6">
           <Button
             variant="hero"
             size="sm"
@@ -408,7 +408,7 @@ export default function NPSForm() {
                 </p>
               </div>
 
-              <div className="flex gap-4 pt-6">
+              <div className="flex gap-4">
                 <Button
                   type="button"
                   variant="cancel"
