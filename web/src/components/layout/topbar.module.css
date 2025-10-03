@@ -4,7 +4,7 @@
   height: 84px;
   z-index: 50;
   border-bottom: 1px solid rgb(229 231 235);
-  background: rgba(255, 255, 255, 0.9);
+  background: #f3f4f6;
   backdrop-filter: blur(6px);
 }
 
@@ -57,10 +57,9 @@
 }
 
 .link:hover {
-  
-  background-image: var(--gradient-secondary-glass);
+  background-color: hsl(var(--poli-yellow));
 }
 
 .active {
-  background-image: var(--gradient-secondary-glass);
+  background-color: hsl(var(--poli-yellow));
 }
