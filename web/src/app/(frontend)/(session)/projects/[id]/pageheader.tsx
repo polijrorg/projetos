@@ -1,3 +1,4 @@
+// Header.tsx
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ import {
   TrendingUp,
   Target,
   CheckCircle2,
+  Pencil, // <- novo ícone
 } from "lucide-react";
 import { ProjectComplete } from "@/types";
 import { useState, useTransition } from "react";
@@ -18,6 +20,7 @@ import { ProjectStatusModal } from "./projectStatusModal";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getStatusVariant } from "@/utils/projects/ui-helpers";
+import { ProjectEditModal } from "./ProjectEditModal";
 
 type Props = {
   project: ProjectComplete;
@@ -36,8 +39,9 @@ const getStatusIcon = (status: ProjectComplete["status"]) => {
   }
 };
 
-export default function Header({ project, onBack }: Props) {
+export default function Header({ project}: Props) {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // <- novo
   const [projectData, setProjectData] = useState<ProjectComplete>(project);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -46,7 +50,6 @@ export default function Header({ project, onBack }: Props) {
     newStatus: ProjectComplete["status"],
     newEndDate?: Date | null
   ) => {
-    // UI otimista
     const prev = projectData;
     const optimistic: ProjectComplete = {
       ...prev,
@@ -66,16 +69,11 @@ export default function Header({ project, onBack }: Props) {
       });
 
       if (!res.ok) {
-        setProjectData(prev); // rollback
+        setProjectData(prev);
         throw new Error(`Falha ao atualizar status (${res.status})`);
       }
 
-      // IMPORTANTE: backend deve retornar o projeto completo já com endDate atualizado
       const updatedProject: ProjectComplete = await res.json();
-
-      // Se vier string ISO, e você precisa como Date, converta aqui (opcional):
-      // updatedProject.endDate = updatedProject.endDate ? new Date(updatedProject.endDate as any) : null;
-
       setProjectData(updatedProject);
       setIsStatusModalOpen(false);
       toast.success("Status atualizado!");
@@ -84,7 +82,7 @@ export default function Header({ project, onBack }: Props) {
         router.refresh();
       });
     } catch (err) {
-      setProjectData(prev); // rollback
+      setProjectData(prev);
       const msg = err instanceof Error ? err.message : "Erro ao atualizar status";
       toast.error(msg);
     }
@@ -107,7 +105,7 @@ export default function Header({ project, onBack }: Props) {
 
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
           <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-2 mb-2">
               <h1 className="text-3xl font-bold text-foreground">{projectData.name}</h1>
             </div>
 
@@ -121,10 +119,6 @@ export default function Header({ project, onBack }: Props) {
                 {getStatusIcon(projectData.status)}
                 {projectData.status}
               </Badge>
-              {/* Se quiser visualizar endDate aqui para checar: */}
-              {/* <span className="text-xs text-muted-foreground">
-                endDate: {projectData.endDate ? new Date(projectData.endDate as any).toLocaleDateString() : "—"}
-              </span> */}
             </div>
 
             <p className="pb-3 text-muted-foreground">{projectData.shortDescription}</p>
@@ -140,7 +134,20 @@ export default function Header({ project, onBack }: Props) {
               <Target className="h-4 w-4 mr-2" />
               {isPending ? "Atualizando..." : "Alterar Status"}
             </Button>
+
+
           </div>
+          
+            <Button
+                variant="hero"
+                size="icon"
+                className="h-8 w-8 cursor-pointer"
+                onClick={() => setIsEditModalOpen(true)}
+                aria-label="Editar projeto"
+                title="Editar projeto"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button> 
 
           {projectData.coverImage && (
             <div className="w-full lg:w-64 h-48 bg-muted rounded-lg overflow-hidden">
@@ -151,14 +158,27 @@ export default function Header({ project, onBack }: Props) {
               />
             </div>
           )}
+          
         </div>
       </div>
 
+      {/* Modais */}
       <ProjectStatusModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
         currentStatus={projectData.status}
-        onStatusChange={handleStatusChange} // (status, endDate?)
+        onStatusChange={handleStatusChange}
+      />
+
+      <ProjectEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        project={projectData}
+        onProjectUpdated={(updated) => {
+          setProjectData(updated);
+          toast.success("Projeto atualizado!");
+          router.refresh();
+        }}
       />
     </div>
   );
