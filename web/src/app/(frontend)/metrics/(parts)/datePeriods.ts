@@ -61,7 +61,7 @@ export function getYearsFromData(projects: ProjectWithNPS[]) {
   for (const p of projects) {
     for (const d of [p.saleDate, p.endDate, p.npsResponse?.responseDate]) {
       if (!d) continue;
-      const dd = new Date(d as any);
+      const dd = new Date(d);
       if (!isNaN(dd.getTime())) years.add(dd.getFullYear());
     }
   }

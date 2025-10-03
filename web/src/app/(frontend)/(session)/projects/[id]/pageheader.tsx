@@ -56,7 +56,7 @@ export default function Header({ project, onBack }: Props) {
     setProjectData(optimistic);
 
     try {
-      const body: Record<string, any> = { status: newStatus };
+      const body: Record<string, Date | null | string> = { status: newStatus };
       if (newEndDate !== undefined) body.endDate = newEndDate;
 
       const res = await fetch(`/api/projects/${project.id}`, {
