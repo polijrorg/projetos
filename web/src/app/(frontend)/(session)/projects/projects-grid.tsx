@@ -87,8 +87,8 @@ export default function ProjectsGrid({
         return matchesSearch && matchesStatus;
       })
       .sort((a, b) => {
-        const ta = a?.startDate ? new Date(a.startDate as any).getTime() : 0;
-        const tb = b?.startDate ? new Date(b.startDate as any).getTime() : 0;
+        const ta = a?.startDate ? new Date(a.startDate).getTime() : 0;
+        const tb = b?.startDate ? new Date(b.startDate).getTime() : 0;
         return tb - ta; // mais recentes primeiro
       });
   }, [projects, searchTerm, statusFilter]);
