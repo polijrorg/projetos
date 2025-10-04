@@ -121,9 +121,7 @@ export async function updateProject(
   if (typeof data.price !== "undefined") updateData.price = data.price; // pode ser number ou null
   if (typeof data.sprintNumber === "number") updateData.sprintNumber = data.sprintNumber;
 
-  // ⬇️ Só seta endDate se A CHAVE EXISTIR no payload:
   if ("endDate" in data) {
-    // aqui pode ser Date OU null; Prisma entende null para limpar o campo
     updateData.endDate = data.endDate as Date | null;
   }
 
@@ -133,14 +131,36 @@ export async function updateProject(
 
   // Analysts: só inclua esse bloco se 'analysts' veio no payload
   if (Array.isArray(data.analysts)) {
+    // 1) Busca atuais
+    const current = await prisma.analyst.findMany({
+      where: { projectId: id },
+      select: { id: true },
+    });
+    const currentIds = new Set(current.map(a => a.id));
+
+    // 2) Separa incoming em create/update
+    const toCreate = data.analysts.filter(a => !a.id);
+    const toUpdate = data.analysts.filter(a => a.id);
+
+    // 3) Descobre quem remover (atuais que não vieram no payload)
+    const incomingIds = new Set(toUpdate.map(a => a.id!));
+    const toDeleteIds = [...currentIds].filter(curId => !incomingIds.has(curId));
+
     updateData.analysts = {
-      update: data.analysts.map(a => ({
-        where: { id: a.id },
+      // cria novos (sem id)
+      create: toCreate.map(a => ({
+        name: a.name,
+        role: a.role,
+      })),
+      // atualiza os que vieram com id
+      update: toUpdate.map(a => ({
+        where: { id: a.id! },
         data: { name: a.name, role: a.role },
       })),
+      // remove os que sumiram do payload
+      deleteMany: toDeleteIds.length ? { id: { in: toDeleteIds } } : undefined,
     };
   }
-
   return prisma.project.update({
     where: { id },
     data: updateData,

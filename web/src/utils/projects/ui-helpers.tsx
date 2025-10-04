@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import { CheckCircle2, Circle, DollarSign, PlayCircle, Star, Target, TrendingDown, TrendingUp, Users } from "lucide-react";
 

@@ -164,7 +164,7 @@ export default function NPSForm() {
 
       toast.success("NPS coletado", { description: "Pesquisa registrada com sucesso!" });
       router.replace(`/projects/${projectId}/response`);
-    } catch (err: any) {
+    } catch (err: any) {  
       toast.error("Erro ao enviar NPS", { description: err?.message ?? "Tente novamente." });
     } finally {
       setLoadingSubmit(false);

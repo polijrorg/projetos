@@ -13,7 +13,6 @@ export async function GET() {
   try {
 
     const projects = await getAllProjects();
-    console.log(projects);
     return NextResponse.json(projects);
   } catch (error) {
     if (error instanceof NextResponse) {
