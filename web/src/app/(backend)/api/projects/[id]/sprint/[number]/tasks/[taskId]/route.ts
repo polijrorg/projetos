@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { NextRequest, NextResponse } from "next/server";
 import { idSchema } from "@/app/(backend)/schemas/base.schema";
 import { taskUpdateSchema } from "@/backend/schemas/sprint.schema";
