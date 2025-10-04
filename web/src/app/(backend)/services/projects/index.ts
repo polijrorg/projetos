@@ -29,6 +29,8 @@ export async function getAllProjects() {
   return projects;
 }
 
+type CreateProjectData = Omit<Prisma.ProjectCreateInput, "analysts"> & { analysts: Prisma.ProjectCreateInput["analysts"][] };
+
 export async function createProject(data: {
   name: string;
   client: string;
@@ -38,7 +40,7 @@ export async function createProject(data: {
   sprintNumber: number;
   endDate?: Date | null;
   price?: number | null;
-  analysts: Array<{ name: string; role: 'Front' | 'Back' | 'PM' | 'Coord' }>;
+  analysts: Array<{ id?: string; name: string; role: 'Front' | 'Back' | 'PM' | 'Coord' }>;
   saleDate: Date;
 }) {
   try {
