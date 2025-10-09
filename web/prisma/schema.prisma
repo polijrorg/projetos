@@ -16,18 +16,18 @@ enum Role {
 
 model User {
   // nao mexer >
-  id            String    @id @default(uuid()) @map("_id")
+  id            String   @id @default(uuid()) @map("_id")
   name          String
-  email         String    @unique
+  email         String   @unique
   emailVerified Boolean?
   image         String?
-  role          Role      @default(USER)
+  role          Role     @default(USER)
   // < nao mexer 
 
-  createdAt  DateTime
-  updatedAt  DateTime
-  sessions   Session[]
-  accounts   Account[]
+  createdAt DateTime
+  updatedAt DateTime
+  sessions  Session[]
+  accounts  Account[]
 
   @@map("user")
 }
@@ -68,7 +68,7 @@ model Licao {
   descricao String
   archived  Boolean? @default(false)
 
-  conteudo     Conteudo[]
+  conteudo Conteudo[]
 }
 
 model Conteudo {
@@ -83,39 +83,39 @@ model Conteudo {
   licaoId String?
 }
 
-
 model Project {
-  id               String        @id @default(uuid()) @map("_id")
-  name             String
-  client           String
-  shortDescription String
-  plannedEndDate   DateTime
-  startDate        DateTime
-  endDate          DateTime?
-  status           String        @default("Normal")
-  price            Float?
-  analysts         Analyst[]
-  delayDays        Int?          @default(0)
+  id                 String           @id @default(uuid()) @map("_id")
+  name               String
+  client             String
+  shortDescription   String
+  plannedEndDate     DateTime
+  startDate          DateTime
+  endDate            DateTime?
+  status             String           @default("Normal")
+  price              Float?
+  analysts           Analyst[]
+  delayDays          Int?             @default(0)
   csatCollectionRate Float?
-  averageCSAT      Float?        @default(0)
-  isENB            Boolean       @default(false)
-  sprintNumber     Int
-  sprints          Sprint[]
-  npsResponse      NPSResponse? 
-  coverImage       String?
-  handoffDocument  handoffDocument?
+  averageCSAT        Float?           @default(0)
+  isENB              Boolean          @default(false)
+  sprintNumber       Int
+  sprints            Sprint[]
+  npsResponse        NPSResponse?
+  coverImage         String?
+  handoffDocument    handoffDocument?
+
   @@map("project")
 }
 
 model NPSResponse {
-  id                     String   @id @default(uuid()) @map("_id")
-  projectId              String   @unique              // ← garante 1:1
-  project                Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id        String  @id @default(uuid()) @map("_id")
+  projectId String  @unique // ← garante 1:1
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   clientName             String
-  clientNumber           String 
+  clientNumber           String
   responseDate           DateTime
-  accordanceScore       Int?
+  accordanceScore        Int?
   accordanceFeedback     String?
   expectationsScore      Int?
   expectationsFeedback   String?
@@ -127,31 +127,30 @@ model NPSResponse {
   pmNotes                String?
 }
 
-
 model Sprint {
-  id             String          @id @default(uuid()) @map("_id")
-  number         Int
-  startDate      DateTime
-  endDate        DateTime
-  csatResponses  CSATResponse[]
-  projectId      String
-  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)  
-  retrospective  Retrospective?
-  goals          String[]
-  tasks          Task[]
-  capacityHours String? 
+  id            String         @id @default(uuid()) @map("_id")
+  number        Int
+  startDate     DateTime
+  endDate       DateTime
+  csatResponses CSATResponse[]
+  projectId     String
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  retrospective Retrospective?
+  goals         String[]
+  tasks         Task[]
+  capacityHours String?
 }
 
 model Task {
-  id        String  @id @default(uuid()) @map("_id")
-  sprintId  String
-  sprint    Sprint  @relation(fields: [sprintId], references: [id], onDelete: Cascade)
-  title     String
+  id          String        @id @default(uuid()) @map("_id")
+  sprintId    String
+  sprint      Sprint        @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  title       String
   description String?
-  priority  TaskPriority?
-  type      String?
-  estimate  Int?
-  status    String?
+  priority    TaskPriority?
+  type        String?
+  estimate    Int?
+  status      String?
 }
 
 enum TaskPriority {
@@ -161,26 +160,25 @@ enum TaskPriority {
 }
 
 model Retrospective {
-  id        String  @id @default(uuid()) @map("_id")
-  sprintId  String  @unique
-  sprint    Sprint  @relation(fields: [sprintId], references: [id], onDelete: Cascade)
-  date      DateTime
-  feedback  String
+  id       String   @id @default(uuid()) @map("_id")
+  sprintId String   @unique
+  sprint   Sprint   @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  date     DateTime
+  feedback String
 }
 
-
 model CSATResponse {
-  id String @id @default(uuid()) @map("_id")
-  sprintId String
-  sprint Sprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
-  responseDate DateTime
-  teamCommunicationScore Int
+  id                        String   @id @default(uuid()) @map("_id")
+  sprintId                  String
+  sprint                    Sprint   @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  responseDate              DateTime
+  teamCommunicationScore    Int
   teamCommunicationFeedback String?
-  qualityScore Int
-  qualityFeedback String?
-  overallSatisfactionScore Int
-  averageScore Int
-  improvementSuggestions String?
+  qualityScore              Int
+  qualityFeedback           String?
+  overallSatisfactionScore  Int
+  averageScore              Int
+  improvementSuggestions    String?
 }
 
 enum AnalystRole {
@@ -191,27 +189,44 @@ enum AnalystRole {
 }
 
 model Analyst {
-  id String @id @default(uuid()) @map("_id")
-  name String
-  role AnalystRole
+  id        String      @id @default(uuid()) @map("_id")
+  name      String
+  role      AnalystRole
   projectId String
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model handoffDocument {
-  id String @id @default(uuid()) @map("_id")
-  projectId String @unique
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  objectives String?
-  scope String?
+  id               String   @id @default(uuid()) @map("_id")
+  projectId        String   @unique
+  project          Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  objectives       String?
+  scope            String?
   clientAgreements String?
-  artifacts String[]
-  risks String[]
-  stakeholders String[]
+  artifacts        String[]
+  risks            String[]
+  stakeholders     String[]
 }
 
+model Okr {
+  id              String      @id @default(uuid()) @map("_id")
+  goalDescription String
+  period          String
+  keyResult       KeyResult[]
+  startDate       DateTime    @default(now())
+  endDate         DateTime    @default(now())
+}
 
-
+model KeyResult {
+  id           String  @id @default(uuid()) @map("_id")
+  name         String
+  metric       String? @default("")
+  currentValue Float?  @default(0)
+  goal         Float?  @default(0)
+  actionPlan   String? @default("")
+  Okr          Okr?    @relation(fields: [okrId], references: [id], onDelete: Cascade)
+  okrId        String?
+}
 
 // evitar mexer daqui pra baixo:
 model Session {
@@ -228,8 +243,6 @@ model Session {
   @@unique([token])
   @@map("session")
 }
-
-
 
 model Account {
   id                    String    @id @map("_id")
@@ -250,9 +263,6 @@ model Account {
   @@map("account")
 }
 
-
-
-
 model Verification {
   id         String    @id @map("_id")
   identifier String
@@ -263,4 +273,3 @@ model Verification {
 
   @@map("verification")
 }
-

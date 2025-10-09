@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import { registerSchema } from "@/backend/schemas";
-import { blockForbiddenRequests, returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
-import { getAllProjects, createProject } from "../../services/projects";
-import { AllowedRoutes } from "@/types";
-import { auth } from "@/auth";
+import { returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
 import { toErrorMessage } from "@/utils/api/toErrorMessage";
-import { createProjectSchema } from "../../schemas/project.schema";
-
+import { createOkrSchema } from "../../schemas/okr.schema";
+import { createOkr, getAllOkrs } from "../../services/okr";
 
 export async function GET() {
   try {
-
-    const projects = await getAllProjects();
-    console.log(projects);
-    return NextResponse.json(projects);
+    const okrs = await getAllOkrs();
+    console.log(okrs);
+    return NextResponse.json(okrs);
   } catch (error) {
     if (error instanceof NextResponse) {
       return error;
@@ -24,11 +18,11 @@ export async function GET() {
   }
 }
 
-export async function POST (request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const body = await validBody(request);
 
-    const validationResult = createProjectSchema.safeParse(body)
+    const validationResult = createOkrSchema.safeParse(body)
        
     if (!validationResult.success) {
       return returnInvalidDataErrors(validationResult.error);
@@ -36,11 +30,11 @@ export async function POST (request: NextRequest) {
 
     const validatedData = validationResult.data
 
-    const project = await createProject(validatedData)
+    const okr = await createOkr(validatedData)
 
-    return NextResponse.json(project, { status: 201 })
+    return NextResponse.json(okr, { status: 201 })
   } catch (error) {
-    if (error instanceof NextResponse) {
+    if (error instanceof NextResponse) {  
       return error;
     }
     
