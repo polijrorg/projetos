@@ -24,7 +24,7 @@ export const createOkrSchema= z.object({
   endDate: z.coerce.date(),
 })
 
-export const patchOkrtSchema = patchOkrDTO
+export const patchOkrSchema = patchOkrDTO
   .partial()                               
   .refine((obj) => Object.keys(obj).length > 0, {
     message: "Pelo menos um campo precisa ser fornecido para atualização",

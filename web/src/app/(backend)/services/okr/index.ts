@@ -1,4 +1,5 @@
 import z from "zod";
+import { patchOkrSchema } from "../../schemas/okr.schema";
 import prisma from "../db";
 
 export async function getAllOkrs() {
@@ -57,4 +58,11 @@ export async function createOkr(data: {
   } catch (error) {
     throw new Error(String(error) || 'Falha ao criar Okr')
   }
+}
+
+export async function updateOkr(id: string, data: z.infer<typeof patchOkrSchema>) {
+  return await prisma.project.update({
+    where: { id },
+    data
+  })
 }

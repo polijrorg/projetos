@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
 import { toErrorMessage } from "@/utils/api/toErrorMessage";
 import { createOkrSchema } from "../../schemas/okr.schema";
-import { createOkr, getAllOkrs } from "../../services/okr";
+import { createOkr, getAllOkrs, updateOkr } from "../../services/okr";
 
 export async function GET() {
   try {
@@ -39,13 +39,11 @@ export async function POST(request: NextRequest) {
     }
     
     if (error instanceof Error) {
-      if (error instanceof Error) {
-        if (error.message.includes('Prisma')) {
-          return NextResponse.json(
-            toErrorMessage('Erro no banco de dados - Verifique os dados fornecidos'),
-            { status: 400 }
-          )
-        }
+      if (error.message.includes('Prisma')) {
+        return NextResponse.json(
+          toErrorMessage('Erro no banco de dados - Verifique os dados fornecidos'),
+          { status: 400 }
+        )
       }
     }
 
