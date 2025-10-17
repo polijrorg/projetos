@@ -16,8 +16,6 @@ export function DashboardHeader({
   totalProjects,
   activeProjects,
   enbCandidates,
-  onCreateProject,
-  onCreateSprint,
   onViewMetrics
 }: DashboardHeaderProps) {
   const today = format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR });

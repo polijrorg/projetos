@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, TrendingUp, AlertTriangle, Clock, Star, CheckCircle2, Snowflake, TriangleAlert } from "lucide-react";
+import { Calendar, Users, TrendingUp, Clock, Star, CheckCircle2, Snowflake, TriangleAlert } from "lucide-react";
 import { ProjectComplete } from "@/types";
 import { differenceInDays } from "date-fns";
 import { getStatusVariant } from "@/utils/projects/ui-helpers";

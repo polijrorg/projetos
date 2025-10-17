@@ -41,8 +41,7 @@ function normalizeAnalysts(raw: unknown): Array<{ name: string; role: "Front" }>
     .filter(Boolean) as Array<{ name: string; role: "Front" }>;
 }
 
-// Schema do bulk = array do seu schema atual
-const bulkSchema = z.array(createProjectSchema);
+
 
 // ---- rota ----
 export async function POST(req: NextRequest) {

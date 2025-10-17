@@ -1,6 +1,6 @@
  
 
-import { CheckCircle2, Circle, DollarSign, PlayCircle, Star, Target, TrendingDown, TrendingUp, Users } from "lucide-react";
+import { CheckCircle2, Circle } from "lucide-react";
 
 
 export const getPriorityVariant = (priority: string) => {

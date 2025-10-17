@@ -87,7 +87,8 @@ type Project = Replace<ProjectComplete, {
     saleDate: formData.saleDate,
     npsResponse: null,
     coverImage: "https://i.imgur.com/87E7VI8.jpeg",
-    handoffDocument: null
+    handoffDocument: null,
+    weeksOff: 0,
   };
 
   await fetch('/api/projects', {

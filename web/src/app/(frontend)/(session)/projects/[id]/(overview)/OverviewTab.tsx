@@ -36,6 +36,7 @@ export default function OverviewTab({ project }: { project: ProjectComplete }) {
         </Card>
       </div>
       <StatCards project={project} />
+      <p>* O ITIP Real é calculado com base no número de sprints criadas na aba sprints.</p>
     </div>
   );
 }

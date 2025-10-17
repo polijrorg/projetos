@@ -29,7 +29,6 @@ export async function getAllProjects() {
   return projects;
 }
 
-type CreateProjectData = Omit<Prisma.ProjectCreateInput, "analysts"> & { analysts: Prisma.ProjectCreateInput["analysts"][] };
 
 export async function createProject(data: {
   name: string;
@@ -122,6 +121,7 @@ export async function updateProject(
   if (typeof data.status === "string") updateData.status = data.status;
   if (typeof data.price !== "undefined") updateData.price = data.price; // pode ser number ou null
   if (typeof data.sprintNumber === "number") updateData.sprintNumber = data.sprintNumber;
+  if (typeof data.weeksOff === "number") updateData.weeksOff = data.weeksOff;
 
   if ("endDate" in data) {
     updateData.endDate = data.endDate as Date | null;
