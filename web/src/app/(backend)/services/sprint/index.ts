@@ -1,5 +1,5 @@
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import prisma from "@/backend/services/db";
 
 export async function listSprintsByProject(projectId: string) {

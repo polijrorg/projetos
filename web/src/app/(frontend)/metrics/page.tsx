@@ -50,7 +50,7 @@ export default function MetricsPage() {
         setLoading(false);
       }
     })();
-  }, []); // carrega 1x
+  }); // carrega 1x
 
   const { start, end } = useMemo(() => buildPeriod(year, periodKey), [year, periodKey]);
 

@@ -19,7 +19,6 @@ export type CSATResponseLite = {
 };
 
 export default function CSATResponseCard({ response }: { response: CSATResponseLite }) {
-  const npsVariant = getNPSVariant(response.overallSatisfactionScore ?? null);
 
   return (
     <Card>
