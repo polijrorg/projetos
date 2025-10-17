@@ -184,6 +184,7 @@ body {
 }
 
 :root {
+  --topbar-h: 84px;           /* desktop padrão */
   --radius: 0.625rem;
   --card: #f3f4f6;
   --card-foreground: oklch(0.145 0 0);
@@ -232,6 +233,16 @@ body {
     hsl(var(--poli-yellow) / 0.98) 55%,
     hsl(var(--poli-yellow-dark) / 1) 100%
   );
+
+  @media (max-width: 1024px) {
+  :root { --topbar-h: 76px; }
+}
+@media (max-width: 768px) {
+  :root { --topbar-h: 112px; }
+}
+
+/* empurra o conteúdo para baixo da topbar fixa */
+body { padding-top: var(--topbar-h); }
 
   --gradient-secondary-glass: linear-gradient(
     135deg,

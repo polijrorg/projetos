@@ -113,7 +113,7 @@ const revenuePercentLabel =
   const targetLabel = formatBRL(revenueTarget);
 
   return (
-    <div className="min-h-screen bg-background p-6 pt-15">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         {/* Cabeçalho + Filtros */}
         <div className="flex items-center justify-between gap-4 mb-8">

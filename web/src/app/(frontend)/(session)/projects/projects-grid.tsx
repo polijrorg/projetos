@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect} from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { format} from "date-fns";
+import { format } from "date-fns";
 import type { ProjectComplete } from "@/types"
 import { ptBR } from "date-fns/locale";
 import { 
@@ -23,9 +23,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { getStatusVariant } from "@/utils/projects/ui-helpers";
 
-
-
-
 type ProjectsGridProps = {
   className?: string;
   projects: ProjectComplete[];
@@ -39,8 +36,6 @@ export default function ProjectsGrid({
   projects: projectsProp,
 }: ProjectsGridProps){
 
-  
-
   const getStatusIcon = (status: ProjectComplete['status']) => {
     switch (status) {
       case 'Crítica': return <AlertTriangle className="h-4 w-4" />;
@@ -53,15 +48,11 @@ export default function ProjectsGrid({
     }
   };
 
-const router = useRouter()                  
+  const router = useRouter();
 
   const handleViewProject = (project: ProjectComplete) => {
-    router.push(`/projects/${project.id}`)     
+    router.push(`/projects/${project.id}`)
   }
-
-
-  
-
 
   const [projects, setProjects] = useState<ProjectComplete[]>(projectsProp || []);
   const [loading, setLoading] = useState(false);
@@ -70,7 +61,6 @@ const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | string>("all")
 
-
   useEffect(() => {
     fetch('/api/projects')
       .then(response => response.json())
@@ -78,23 +68,30 @@ const router = useRouter()
       .catch(error => console.error('Erro ao buscar projetos:', error));
   }, []);
 
+  // ⬇️ Filtra e ORDENA por startDate (mais recentes primeiro)
+  const filteredProjects = useMemo(() => {
+    const term = searchTerm.toLowerCase().trim();
+    const isActive = (status: string) => status !== "Finalizado" && status !== "Congelado";
 
-
-      const filteredProjects = projects.filter(project => {
+    return projects
+      .filter(project => {
         const matchesSearch =
-          project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          project.client.toLowerCase().includes(searchTerm.toLowerCase());
-
-        const isActive = (status: string) => status !== "Finalizado" && status !== "Congelado";
+          project.name.toLowerCase().includes(term) ||
+          project.client.toLowerCase().includes(term);
 
         const matchesStatus =
           statusFilter === "all"
-            ? isActive(project.status)                   // “Todos” = ativos (não finalizados nem congelados)
-            : project.status === statusFilter;           // demais filtros: match exato
+            ? isActive(project.status)                  // “Ativos” = não finalizados nem congelados
+            : project.status === statusFilter;          // demais filtros: match exato
 
         return matchesSearch && matchesStatus;
+      })
+      .sort((a, b) => {
+        const ta = a?.startDate ? new Date(a.startDate).getTime() : 0;
+        const tb = b?.startDate ? new Date(b.startDate).getTime() : 0;
+        return tb - ta; // mais recentes primeiro
       });
-
+  }, [projects, searchTerm, statusFilter]);
 
   if (loading && !projects) {
     return (
@@ -120,22 +117,21 @@ const router = useRouter()
     )
   }
 
-
   return (
-<div>
+    <div>
       <div>
+        <Tabs className="mb-6" value={statusFilter} onValueChange={setStatusFilter}>
+          <TabsList>
+            <TabsTrigger value="all">Ativos</TabsTrigger>
+            <TabsTrigger value="Normal">Normal</TabsTrigger>
+            <TabsTrigger value="Crítica">Crítica</TabsTrigger>
+            <TabsTrigger value="Ruim">Ruim</TabsTrigger>
+            <TabsTrigger value="Possível ENB">Possível ENB</TabsTrigger>
+            <TabsTrigger value="Congelado">Congelados</TabsTrigger>
+            <TabsTrigger value="Finalizado">Finalizados</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-       <Tabs className="mb-6" value={statusFilter} onValueChange={setStatusFilter}>
-            <TabsList>
-              <TabsTrigger value="all">Ativos</TabsTrigger>
-              <TabsTrigger value="Normal">Normal</TabsTrigger>
-              <TabsTrigger value="Crítica">Crítica</TabsTrigger>
-              <TabsTrigger value="Ruim">Ruim</TabsTrigger>
-              <TabsTrigger value="Possível ENB">Possível ENB</TabsTrigger>
-              <TabsTrigger value="Congelado">Congelados</TabsTrigger>
-              <TabsTrigger value="Finalizado">Finalizados</TabsTrigger>
-            </TabsList>
-          </Tabs>
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -146,103 +142,97 @@ const router = useRouter()
               className="pl-9"
             />
           </div>
-          
-
-          </div>
         </div>
-    <div
-      className={cn(
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
-        className
-      )}
-    >
-      {filteredProjects.map((p) => (
-        <Card key={p.id} className="rounded-2xl bg-gradient-card shadow-card transition-all hover:shadow-elevated">
-          <CardHeader className="pb-3">
-            <div className="flex items-start justify-between gap-2">
-              <CardTitle className="text-lg font-semibold mb-1">{p.name}</CardTitle>
-                    <Badge variant={getStatusVariant(p.status)} className="flex items-center gap-1">
-                      {getStatusIcon(p.status)}
-                      {p.status}
-                    </Badge>
+      </div>
+
+      <div
+        className={cn(
+          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
+          className
+        )}
+      >
+        {filteredProjects.map((p) => (
+          <Card key={p.id} className="rounded-2xl bg-gradient-card shadow-card transition-all hover:shadow-elevated">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle className="text-lg font-semibold mb-1">{p.name}</CardTitle>
+                <Badge variant={getStatusVariant(p.status)} className="flex items-center gap-1">
+                  {getStatusIcon(p.status)}
+                  {p.status}
+                </Badge>
               </div>
-            <p className="text-sm text-muted-foreground">Cliente: {p.client}</p>
-                
+              <p className="text-sm text-muted-foreground">Cliente: {p.client}</p>
+            </CardHeader>
 
-          </CardHeader>
-
-          <CardContent className="pt-0 space-y-2 justify-between">
-            
+            <CardContent className="pt-0 space-y-2 justify-between">
               <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {p.shortDescription}
+                {p.shortDescription}
               </p>
 
               <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-muted-foreground">Prazo</span>
-                    <span className="font-medium">{Math.round(calculateProgress(p))}%</span>
-                  </div>
-                  <Progress value={calculateProgress(p)} className="h-2" />
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Prazo</span>
+                  <span className="font-medium">{Math.round(calculateProgress(p))}%</span>
+                </div>
+                <Progress value={calculateProgress(p)} className="h-2" />
               </div>
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Início:</span>
-                    <span>{format(p.startDate, "dd/MM/yyyy", { locale: ptBR })}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Término Planejado:</span>
-                    <span>{format(p.plannedEndDate, "dd/MM/yyyy", { locale: ptBR })}</span>
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Início:</span>
+                  <span>{format(p.startDate, "dd/MM/yyyy", { locale: ptBR })}</span>
                 </div>
-                  {p.endDate ? (  
-                    <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Término Planejado:</span>
+                  <span>{format(p.plannedEndDate, "dd/MM/yyyy", { locale: ptBR })}</span>
+                </div>
+                {p.endDate ? (
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Término Real:</span>
                     <span>{format(p.endDate, "dd/MM/yyyy", { locale: ptBR })}</span>
-                  </div>) : null}
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Equipe:</span>
-                    <span>{p.analysts.length} membros</span>
                   </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Data da Venda:</span>
-                    <span>{format(p.saleDate, "dd/MM/yyyy", { locale: ptBR })}</span>
-                  </div>
-                  {p.price && (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Valor:</span>
-                      <span className="font-medium">R$ {p.price.toLocaleString()}</span>
-                    </div>
-                  )}
+                ) : null}
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Equipe:</span>
+                  <span>{p.analysts.length} membros</span>
                 </div>
 
-                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground">CSAT Médio</div>
-                    <div className="font-semibold">{calcAverageCSATFromSprints(p.sprints)?.toFixed(1) ?? '--'}/5.0</div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Data da Venda:</span>
+                  <span>{format(p.saleDate, "dd/MM/yyyy", { locale: ptBR })}</span>
+                </div>
+                {p.price && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Valor:</span>
+                    <span className="font-medium">R$ {p.price.toLocaleString()}</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground">NPS</div>
-                    <div className="font-semibold">
-                      {p.npsResponse?.npsScore ?? '--'}
-                    </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="text-center">
+                  <div className="text-xs text-muted-foreground">CSAT Médio</div>
+                  <div className="font-semibold">
+                    {calcAverageCSATFromSprints(p.sprints)?.toFixed(1) ?? "--"}/5.0
                   </div>
                 </div>
+                <div className="text-center">
+                  <div className="text-xs text-muted-foreground">NPS</div>
+                  <div className="font-semibold">
+                    {p.npsResponse?.npsScore ?? "--"}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
 
-
-          </CardContent>
-
-          <CardFooter className="mt-auto pt-0">
-            <Button className="w-full cursor-pointer" variant="hero" onClick={() => handleViewProject(p)}>
-              Ver Projeto Completo
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
+            <CardFooter className="mt-auto pt-0">
+              <Button className="w-full cursor-pointer" variant="hero" onClick={() => handleViewProject(p)}>
+                Ver Projeto Completo
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
- </div>    
   )
 }
-
-
-
