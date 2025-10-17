@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Lightbulb, TrendingUp, Users, Target } from "lucide-react";
+import { Lightbulb, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function QuickActions() {

@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { registerSchema } from "@/backend/schemas";
-import { blockForbiddenRequests, returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
+import { returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
 import { getAllProjects, createProject } from "../../services/projects";
-import { AllowedRoutes } from "@/types";
-import { auth } from "@/auth";
 import { toErrorMessage } from "@/utils/api/toErrorMessage";
 import { createProjectSchema } from "../../schemas/project.schema";
 

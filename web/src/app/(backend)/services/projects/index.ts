@@ -29,7 +29,6 @@ export async function getAllProjects() {
   return projects;
 }
 
-type CreateProjectData = Omit<Prisma.ProjectCreateInput, "analysts"> & { analysts: Prisma.ProjectCreateInput["analysts"][] };
 
 export async function createProject(data: {
   name: string;

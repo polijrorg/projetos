@@ -1,5 +1,3 @@
-import { error } from "console";
-import { id } from "date-fns/locale";
 import z from "zod";
 
 export const patchProjectDTO = z.object({
