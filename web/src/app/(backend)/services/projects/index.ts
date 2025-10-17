@@ -120,6 +120,7 @@ export async function updateProject(
   if (typeof data.status === "string") updateData.status = data.status;
   if (typeof data.price !== "undefined") updateData.price = data.price; // pode ser number ou null
   if (typeof data.sprintNumber === "number") updateData.sprintNumber = data.sprintNumber;
+  if (typeof data.weeksOff === "number") updateData.weeksOff = data.weeksOff;
 
   // ⬇️ Só seta endDate se A CHAVE EXISTIR no payload:
   if ("endDate" in data) {

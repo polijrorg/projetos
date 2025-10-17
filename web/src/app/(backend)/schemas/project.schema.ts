@@ -17,6 +17,7 @@ export const patchProjectDTO = z.object({
     role: z.enum(["Front", "Back", "PM", "Coord"], {error: (issue) => issue.input === undefined ? "Cargo é obrigatório" : "Cargo deve ser Front, Back, PM ou Coord"})
   })).optional(),
   saleDate: z.coerce.date().optional(), 
+  weeksOff: z.number().min(0).optional(),
 })
 
 export const createProjectSchema= z.object({
@@ -32,6 +33,7 @@ export const createProjectSchema= z.object({
     role: z.enum(["Front", "Back", "PM", "Coord"], {error: (issue) => issue.input === undefined ? "Cargo é obrigatório" : "Cargo deve ser Front, Back, PM ou Coord"})
   })),
   saleDate: z.coerce.date(),
+  weeksOff:  z.number().int().min(0).default(0),
 })
 
 export const patchProjectSchema = patchProjectDTO
