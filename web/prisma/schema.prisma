@@ -96,14 +96,6 @@ model Project {
   analysts           Analyst[]
   delayDays          Int?             @default(0)
   csatCollectionRate Float?
-  averageCSAT        Float?           @default(0)
-  isENB              Boolean          @default(false)
-  sprintNumber       Int
-  sprints            Sprint[]
-  npsResponse        NPSResponse?
-  coverImage         String?
-  handoffDocument    handoffDocument?
-
   averageCSAT      Float?        @default(0)
   isENB            Boolean       @default(false)
   sprintNumber     Int
