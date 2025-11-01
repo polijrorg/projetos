@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/app/(backend)/services/db";
@@ -13,8 +13,6 @@ import { getCSATBySprintId, getSprintByProjectAndNumber, createCSATForSprint } f
 const idSchema = z.string().uuid();
 const numberParamSchema = z.string().regex(/^\d+$/).transform((v) => parseInt(v, 10));
 
-const omitUndefined = <T extends Record<string, any>>(o: T) =>
-  Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as T;
 
 // POST /api/projects/:id/sprint/:number/csat  -> cria CSAT (1 por sprint)
 export async function POST(

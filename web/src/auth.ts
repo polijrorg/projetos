@@ -7,7 +7,7 @@ import { customSession } from "better-auth/plugins";
 import { getUserRole } from "@/backend/services/auth";
 import { expo } from "@better-auth/expo";
 // import { sendEmail } from "./lib/email";
-import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
+// import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
  
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {

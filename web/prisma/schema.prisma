@@ -104,6 +104,15 @@ model Project {
   coverImage         String?
   handoffDocument    handoffDocument?
 
+  averageCSAT      Float?        @default(0)
+  isENB            Boolean       @default(false)
+  sprintNumber     Int
+  sprints          Sprint[]
+  npsResponse      NPSResponse? 
+  coverImage       String?
+  handoffDocument  handoffDocument?
+  saleDate         DateTime
+  weeksOff         Int @default(0)
   @@map("project")
 }
 

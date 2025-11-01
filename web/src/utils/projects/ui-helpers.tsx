@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
-import { CheckCircle2, Circle, PlayCircle } from "lucide-react";
+import { CheckCircle2, Circle } from "lucide-react";
 
 
 export const getPriorityVariant = (priority: string) => {
@@ -75,7 +75,7 @@ export const getStatusVariant = (status: string) => {
     case "Possível ENB":
       return "enb";
     case "Congelado":
-      return "outline";
+      return "frozen";
     case "Finalizado":
       return "done";
     default:
@@ -112,6 +112,3 @@ export const getTaskStatusVariant = (status: string) => {
       return "enb";
   }
 };
-
-
-

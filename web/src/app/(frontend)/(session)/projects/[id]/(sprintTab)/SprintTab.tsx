@@ -9,8 +9,6 @@ import SprintList from "./SprintList";
 
 export default function SprintsTab({ project }: { project: ProjectComplete }) {
   const [isSprintDialogOpen, setIsSprintDialogOpen] = useState(false);
-  const [selectedSprint, setSelectedSprint] = useState<SprintComplete | null>(null);
-
   // dispara refetch no SprintList quando muda
   const [refreshToken, setRefreshToken] = useState(0);
 

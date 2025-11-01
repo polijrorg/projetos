@@ -1,13 +1,14 @@
-import { differenceInDays, differenceInWeeks, isAfter } from "date-fns";
+import { differenceInDays, isAfter } from "date-fns";
 import type { ProjectComplete, SprintComplete } from "@/types";
-import { Sprint } from "@/generated/prisma";
+
 
 export const calculateDelay = (project: ProjectComplete) => {
   if (project.status === 'Congelado') return 0;
   
   const today = new Date();
   if (isAfter(today, project.plannedEndDate)) {
-    return differenceInDays(today, project.plannedEndDate);
+    const delay = differenceInDays(today, project.plannedEndDate) - ((project.weeksOff ?? 0) * 7);
+    return delay;
   }
   return 0;
 };
@@ -26,13 +27,28 @@ export const calculateCSATCollectionRate = (project: ProjectComplete) => {
 
 export const calculateITIP = (project: ProjectComplete) => {
   if (!project.analysts.length || !project.price) return 0;
-  const itip = project.price /(project.analysts.length * project.sprintNumber * 2);
+  
+  const teamCount = project.analysts.filter(member => 
+    member.role !== 'Coord'
+  ).length;
+  
+  if (teamCount === 0) return 0;
+  
+  const itip = project.price / (teamCount * project.sprintNumber * 2);
   return Number(itip.toFixed(2));
 }
 
 export const calculateRealITIP = (project: ProjectComplete) => {
   if (!project.analysts.length || !project.sprints.length || !project.price) return 0;
-  const realItip = project.price / (project.analysts.length * project.sprints.length * 2);
+  
+
+  const teamCount = project.analysts.filter(member => 
+    member.role !== 'Coord'
+  ).length;
+  
+  if (teamCount === 0) return 0;
+  
+  const realItip = project.price / (teamCount * project.sprints.length * 2);
   return Number(realItip.toFixed(2));
 }
 

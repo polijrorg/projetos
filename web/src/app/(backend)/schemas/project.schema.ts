@@ -9,6 +9,14 @@ export const patchProjectDTO = z.object({
   status: z.string().optional(),
   price: z.number().optional().nullable(),
   sprintNumber: z.number().optional(),
+  endDate: z.union([z.coerce.date(), z.null()]).optional(),
+  analysts: z.array(z.object({
+    id: z.string().optional(),
+    name: z.string(),
+    role: z.enum(["Front", "Back", "PM", "Coord"], {error: (issue) => issue.input === undefined ? "Cargo é obrigatório" : "Cargo deve ser Front, Back, PM ou Coord"})
+  })).optional(),
+  saleDate: z.coerce.date().optional(), 
+  weeksOff: z.number().min(0).optional(),
 })
 
 export const createProjectSchema= z.object({
@@ -20,9 +28,12 @@ export const createProjectSchema= z.object({
   price: z.number().optional(),
   sprintNumber: z.number({error: (issue) => issue.input === undefined ? "Número de sprints é obrigatório" : "Número de sprints deve ser um número"}),
   analysts: z.array(z.object({
+    id: z.string().optional(),
     name: z.string(),
     role: z.enum(["Front", "Back", "PM", "Coord"], {error: (issue) => issue.input === undefined ? "Cargo é obrigatório" : "Cargo deve ser Front, Back, PM ou Coord"})
   })),
+  saleDate: z.coerce.date(),
+  weeksOff:  z.number().int().min(0).default(0),
 })
 
 export const patchProjectSchema = patchProjectDTO

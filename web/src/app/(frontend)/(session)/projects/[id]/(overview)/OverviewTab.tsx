@@ -9,7 +9,7 @@ import { calculateProgress, calculateCSATCollectionRate } from "@/utils/projects
 export default function OverviewTab({ project }: { project: ProjectComplete }) {
   return (
     <div className="space-y-6">
-      <StatCards project={project} />
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ProgressPanel
           temporalProgress={Math.round(calculateProgress(project))}
@@ -35,6 +35,8 @@ export default function OverviewTab({ project }: { project: ProjectComplete }) {
           </CardContent>
         </Card>
       </div>
+      <StatCards project={project} />
+      <p>* O ITIP Real é calculado com base no número de sprints criadas na aba sprints.</p>
     </div>
   );
 }

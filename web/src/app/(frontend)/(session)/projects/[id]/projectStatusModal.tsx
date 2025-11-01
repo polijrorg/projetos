@@ -10,26 +10,42 @@ interface ProjectStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentStatus: ProjectComplete["status"];
-  onStatusChange: (status: ProjectComplete["status"]) => void;
+  onStatusChange: (status: ProjectComplete["status"], endDate?: Date | null) => void;
 }
 
 const statusOptions: { status: ProjectComplete["status"]; icon: React.ReactNode; variant: string }[] = [
-  { status: 'Crítica', icon: <AlertTriangle className="h-4 w-4" />, variant: 'critical' },
-  { status: 'Ruim', icon: <BarChart3 className="h-4 w-4" />, variant: 'bad' },
-  { status: 'Normal', icon: <Clock className="h-4 w-4" />, variant: 'normal' },
-  { status: 'Possível ENB', icon: <Star className="h-4 w-4" />, variant: 'enb' },
-  { status: 'Congelado', icon: <Snowflake className="h-4 w-4" />, variant: 'frozen' },
-  { status: 'Finalizado', icon: <CheckCircle2 className="h-4 w-4" />, variant: 'done' }
+  { status: "Crítica",        icon: <AlertTriangle className="h-4 w-4" />, variant: "critical" },
+  { status: "Ruim",           icon: <BarChart3 className="h-4 w-4" />,     variant: "bad" },
+  { status: "Normal",         icon: <Clock className="h-4 w-4" />,         variant: "normal" },
+  { status: "Possível ENB",   icon: <Star className="h-4 w-4" />,          variant: "enb" },
+  { status: "Congelado",      icon: <Snowflake className="h-4 w-4" />,     variant: "frozen" },
+  { status: "Finalizado",     icon: <CheckCircle2 className="h-4 w-4" />,  variant: "done" },
 ];
 
-export function ProjectStatusModal({ isOpen, onClose, currentStatus, onStatusChange }: ProjectStatusModalProps) {
-  const handleStatusSelect = (status: ProjectComplete["status"]) => {
-    onStatusChange(status);
+export function ProjectStatusModal({
+  isOpen,
+  onClose,
+  currentStatus,
+  onStatusChange,
+}: ProjectStatusModalProps) {
+  const handleStatusSelect = (nextStatus: ProjectComplete["status"]) => {
+    // Regra do endDate:
+    // - indo para "Finalizado" => endDate = agora
+    // - saindo de "Finalizado" => endDate = null
+    // - demais casos           => endDate = undefined (não altera)
+    let nextEndDate: Date | null | undefined = undefined;
+
+    if (nextStatus === "Finalizado" && currentStatus !== "Finalizado") {
+      nextEndDate = new Date();
+    } else if (currentStatus === "Finalizado" && nextStatus !== "Finalizado") {
+      nextEndDate = null;
+    }
+
+    console.log(nextStatus, nextEndDate);
+
+    onStatusChange(nextStatus, nextEndDate);
     onClose();
   };
-
-
-  
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -37,14 +53,14 @@ export function ProjectStatusModal({ isOpen, onClose, currentStatus, onStatusCha
         <DialogHeader>
           <DialogTitle>Alterar Situação do Projeto</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
             Selecione o novo status para o projeto:
           </p>
-          
+
           <div className="grid gap-2">
-            {statusOptions.map(({ status, icon}) => (
+            {statusOptions.map(({ status, icon }) => (
               <Button
                 key={status}
                 variant={currentStatus === status ? "default" : "outline"}

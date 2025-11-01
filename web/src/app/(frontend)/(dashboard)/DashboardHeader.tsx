@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Calendar, Users, BarChart3 } from "lucide-react";
+import { Calendar, Users, BarChart3 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -17,14 +16,12 @@ export function DashboardHeader({
   totalProjects,
   activeProjects,
   enbCandidates,
-  onCreateProject,
-  onCreateSprint,
   onViewMetrics
 }: DashboardHeaderProps) {
   const today = format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR });
 
   return (
-    <div className="mb-8 pt-10">
+    <div className="mb-8">
       {/* Header with greeting and date */}
       <div className="flex items-center justify-between mb-6">
         <div>

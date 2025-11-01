@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "cursor-pointer bg-poli-blue border border-input text-primary-foreground shadow-xs hover:opacity-90 hover:text-accent-foreground",
+          "cursor-pointer bg-gradient-primary text-white hover:opacity-90 shadow-elevated border-0",
         destructive:
           "cursor-pointer bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
@@ -22,7 +22,7 @@ const buttonVariants = cva(
         link: "cursor-pointer text-primary underline-offset-4 hover:underline",
         hero: "cursor-pointer bg-gradient-primary text-white hover:opacity-90 shadow-elevated border-0",
         success: "cursor-pointer bg-status-done text-white hover:opacity-90 shadow-elevated border-0",
-        cancel: "cursor-pointer border border-input bg-background hover:bg-destructive/90 hover:text-accent-foreground hover:text-white",
+        cancel: "cursor-pointer border border-input bg-background hover:bg-destructive/90 hover:text-white",
         npsNeutral: "cursor-pointer bg-yellow-500 text-white hover:opacity-90 shadow-xs hover:bg-neutral-foreground/80",
       },
       size: {

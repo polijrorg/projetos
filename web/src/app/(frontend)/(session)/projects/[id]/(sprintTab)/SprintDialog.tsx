@@ -70,7 +70,6 @@ export function SprintCreateModal({
       return;
     }
 
-    const capacityHours = parseInt(formData.capacityHours || "0", 10) || 0;
 
     const payload = {
       number,
