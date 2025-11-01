@@ -26,13 +26,13 @@ export async function POST (request: NextRequest) {
 
     const validationResult = createProjectSchema.safeParse(body)
        
-       if (!validationResult.success) {
-         return returnInvalidDataErrors(validationResult.error);
-       }
-   
-       const validatedData = validationResult.data
-   
-       const project = await createProject(validatedData)
+    if (!validationResult.success) {
+      return returnInvalidDataErrors(validationResult.error);
+    }
+
+    const validatedData = validationResult.data
+
+    const project = await createProject(validatedData)
 
     return NextResponse.json(project, { status: 201 })
   } catch (error) {
